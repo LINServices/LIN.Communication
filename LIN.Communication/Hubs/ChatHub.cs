@@ -7,12 +7,30 @@ public class ChatHub : Hub
 {
 
 
+
+    public ProfileModel Me { get; set; } = new();
+
+
+
     /// <summary>
     /// Agrega a el grupo
     /// </summary>
-    public async Task JoinGroup(string groupName)
+    public async Task Load(string alias)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        Me = new()
+        {
+            Alias = alias
+        };
+    }
+
+
+
+    /// <summary>
+    /// Agrega a el grupo
+    /// </summary>
+    public async Task JoinGroup(string name)
+    {
+        await Groups.AddToGroupAsync(Context.ConnectionId, name);
     }
 
 
@@ -20,9 +38,9 @@ public class ChatHub : Hub
     /// <summary>
     /// Elimina un usuario de un grupo
     /// </summary>
-    public async Task LeaveGroup(string groupName)
+    public async Task LeaveGroup(string name)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
     }
 
 
@@ -32,7 +50,7 @@ public class ChatHub : Hub
     /// </summary>
     public async Task SendMessage(string groupName, string message)
     {
-        await Clients.Group(groupName).SendAsync("sendMessage", message);
+        await Clients.Group(groupName).SendAsync("sendMessage", Me.Alias ?? "Unknow", message ?? "");
     }
 
 

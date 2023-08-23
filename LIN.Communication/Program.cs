@@ -1,3 +1,5 @@
+global using LIN.Types.Communication.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
