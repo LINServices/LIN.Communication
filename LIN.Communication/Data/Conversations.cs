@@ -60,6 +60,13 @@ public class Conversations
         // Ejecución
         try
         {
+
+            List<int> s = new() { data.UsuarioBID, data.UsuarioAID };
+            s.Sort();
+
+            data.UsuarioAID = s[0];
+            data.UsuarioBID = s[1];
+
             var res = context.DataBase.Conversaciones.Add(data);
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.ID);
@@ -82,7 +89,11 @@ public class Conversations
             var con = await (from P in context.DataBase.Conversaciones
                                  where P.UsuarioAID == id
                                  || P.UsuarioBID == id
-                                 select P).DistinctBy(A=>A.ID).ToListAsync();
+                                 select new ConversaciónModel
+                                 {
+                                     UsuarioA = P.UsuarioA,
+                                     UsuarioB = P.UsuarioB
+                                 }).ToListAsync();
 
             var lista = con;
 

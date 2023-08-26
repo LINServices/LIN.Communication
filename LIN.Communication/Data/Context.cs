@@ -58,7 +58,7 @@ public class Context : DbContext
 
 
         modelBuilder.Entity<ConversaciónModel>()
-            .HasKey(a => new { a.UsuarioAID, a.UsuarioBID });
+            .HasKey(a => new { a.ID, a.UsuarioAID, a.UsuarioBID });
 
     }
 
