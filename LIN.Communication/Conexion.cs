@@ -1,6 +1,4 @@
-﻿using LIN.Inventory.Data;
-
-namespace LIN.Communication;
+﻿namespace LIN.Communication;
 
 
 /// <summary>
@@ -93,7 +91,7 @@ public sealed class Conexión
     /// <summary>
     /// Obtiene la base de datos
     /// </summary>
-    public Context DataBase { get; private set; }
+    public Data.Context DataBase { get; private set; }
 
 
   
@@ -104,10 +102,10 @@ public sealed class Conexión
     private Conexión()
     {
 
-        DbContextOptionsBuilder<Context> optionsBuilder = new();
+        DbContextOptionsBuilder<Data.Context> optionsBuilder = new();
         optionsBuilder.UseSqlServer(_connection);
 
-        DataBase = new Context(optionsBuilder.Options);
+        DataBase = new Data.Context(optionsBuilder.Options);
 
         _counter++;
         ConnectionNumber = _counter;

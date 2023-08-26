@@ -53,4 +53,27 @@ public class Profiles
 
 
 
+    public async static Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)
+    {
+     
+
+        // Ejecución
+        try
+        {
+
+            var profile = await (from P in context.DataBase.Profiles
+                                 where P.ID == id
+                                 select P).FirstOrDefaultAsync();
+
+            return new(Responses.Success, profile ?? new());
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+
 }

@@ -6,8 +6,6 @@ namespace LIN.Communication.Hubs;
 public class ChatHub : Hub
 {
 
-
-
     public ProfileModel Me { get; set; } = new();
 
 
@@ -15,12 +13,9 @@ public class ChatHub : Hub
     /// <summary>
     /// Agrega a el grupo
     /// </summary>
-    public async Task Load(string alias)
+    public async Task Load(ProfileModel profile)
     {
-        Me = new()
-        {
-            Alias = alias
-        };
+        Me = profile;
     }
 
 
