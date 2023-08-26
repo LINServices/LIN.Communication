@@ -6,17 +6,18 @@ namespace LIN.Communication.Hubs;
 public class ChatHub : Hub
 {
 
-    public ProfileModel Me { get; set; } = new();
-
-
+    public static List<ProfileModel> Profiles = new();
 
     /// <summary>
     /// Agrega a el grupo
     /// </summary>
     public async Task Load(ProfileModel profile)
     {
-        Me = profile;
+        var exist = Profiles.Where(T => T.ID == profile.ID).Any();
+        if (!exist)
+            Profiles.Add(profile);
     }
+
 
 
 
@@ -43,9 +44,11 @@ public class ChatHub : Hub
     /// <summary>
     /// Agrega un nuevo producto
     /// </summary>
-    public async Task SendMessage(string groupName, string message)
+    public async Task SendMessage(int me, string groupName, string message)
     {
-        await Clients.Group(groupName).SendAsync("sendMessage", Me.ID, Me.Alias ?? "Unknow", message ?? "");
+        var Me = Profiles.Where(T => T.ID == me).FirstOrDefault();
+        if (Me != null)
+            await Clients.Group(groupName).SendAsync("sendMessage", Me.ID, Me.Alias ?? "Unknow", message ?? "");
     }
 
 
