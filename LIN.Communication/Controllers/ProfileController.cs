@@ -42,7 +42,7 @@ public class ProfileController : ControllerBase
             return new(Responses.InvalidParam);
 
         // Respuesta de autenticación
-        var authResponse = await LIN.Access.Auth.Controllers.Authentication.Login(user, password);
+        var authResponse = await LIN.Access.Auth.Controllers.Authentication.Login(user, password, app);
 
         // Autenticación errónea
         if (authResponse.Response != Responses.Success)
