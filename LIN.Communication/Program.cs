@@ -1,5 +1,8 @@
 global using LIN.Types.Communication.Models;
 global using Microsoft.EntityFrameworkCore;
+global using LIN.Communication;
+global using LIN.Types.Enumerations;
+global using LIN.Types.Responses;
 global using LIN.Modules;
 using LIN.Inventory.Data;
 using Microsoft.Data.SqlClient;
