@@ -1,5 +1,8 @@
 global using LIN.Types.Communication.Models;
 global using Microsoft.EntityFrameworkCore;
+global using LIN.Modules;
+using LIN.Inventory.Data;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,22 @@ builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+string sqlConnection = builder.Configuration["ConnectionStrings:release"] ?? string.Empty;
+
+
+Conexión.SetStringConnection(sqlConnection);
+
+
+if (sqlConnection.Length > 0)
+{
+    // SQL Server
+    builder.Services.AddDbContext<Context>(options =>
+    {
+        options.UseSqlServer(sqlConnection);
+    });
+}
+
 
 var app = builder.Build();
 

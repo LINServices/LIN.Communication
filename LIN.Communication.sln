@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34018.315
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Communication", "LIN.Communication\LIN.Communication.csproj", "{1109CBEC-10A5-4E58-A9D5-2DF7F1445348}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Communication", "LIN.Communication\LIN.Communication.csproj", "{1109CBEC-10A5-4E58-A9D5-2DF7F1445348}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Types.Communication", "..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj", "{60FF4A90-1F72-4B85-9316-07FA233A3BC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types.Communication", "..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj", "{60FF4A90-1F72-4B85-9316-07FA233A3BC1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Modules", "..\..\Tipos\LIN.Modules\LIN.Modules.csproj", "{11DF1ED8-A0B5-4BE0-83A5-F2047DBFEA90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{60FF4A90-1F72-4B85-9316-07FA233A3BC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60FF4A90-1F72-4B85-9316-07FA233A3BC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60FF4A90-1F72-4B85-9316-07FA233A3BC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11DF1ED8-A0B5-4BE0-83A5-F2047DBFEA90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11DF1ED8-A0B5-4BE0-83A5-F2047DBFEA90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11DF1ED8-A0B5-4BE0-83A5-F2047DBFEA90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11DF1ED8-A0B5-4BE0-83A5-F2047DBFEA90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
