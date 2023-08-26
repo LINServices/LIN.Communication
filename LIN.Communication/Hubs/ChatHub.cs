@@ -50,7 +50,7 @@ public class ChatHub : Hub
     /// </summary>
     public async Task SendMessage(string groupName, string message)
     {
-        await Clients.Group(groupName).SendAsync("sendMessage", Me.ID ,Me.Alias ?? "Unknow", message ?? "");
+        await Clients.Group(groupName).SendAsync("sendMessage", Me.ID, Me.Alias ?? "Unknow", message ?? "");
     }
 
 

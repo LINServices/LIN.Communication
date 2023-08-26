@@ -1,4 +1,5 @@
 global using LIN.Types.Communication.Models;
+global using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
