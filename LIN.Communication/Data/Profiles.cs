@@ -48,6 +48,8 @@ public class Profiles
 
 
 
+
+
     public async static Task<CreateResponse> Create(ProfileModel data, Conexión context)
     {
         // ID
@@ -65,8 +67,6 @@ public class Profiles
         }
         return new();
     }
-
-
 
 
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)

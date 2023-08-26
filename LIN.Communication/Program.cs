@@ -5,6 +5,7 @@ global using LIN.Types.Enumerations;
 global using LIN.Types.Responses;
 global using LIN.Modules;
 global using Microsoft.AspNetCore.Mvc;
+global using LIN.Types.Auth.Abstracts;
 global using Http.ResponsesList;
 using LIN.Communication.Data;
 using Microsoft.Data.SqlClient;
