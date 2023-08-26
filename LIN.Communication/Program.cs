@@ -22,6 +22,18 @@ builder.Services.AddSwaggerGen();
 string sqlConnection = builder.Configuration["ConnectionStrings:release"] ?? string.Empty;
 
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAnyOrigin",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
 Conexión.SetStringConnection(sqlConnection);
 
 
@@ -43,6 +55,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAnyOrigin");
 
 
 
