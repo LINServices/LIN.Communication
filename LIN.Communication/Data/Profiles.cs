@@ -119,6 +119,9 @@ public class Profiles
                                  where P.AccountID == id
                                  select P).FirstOrDefaultAsync();
 
+            if (profile == null)
+                return new(Responses.NotExistProfile);
+
             return new(Responses.Success, profile ?? new());
         }
         catch

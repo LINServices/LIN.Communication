@@ -72,7 +72,7 @@ try
 catch
 { }
 
-
+Jwt.Open();
 
 
 app.UseHttpsRedirection();

@@ -1,4 +1,6 @@
-﻿namespace LIN.Communication.Data;
+﻿using LIN.Types.Auth.Models;
+
+namespace LIN.Communication.Data;
 
 
 public class Context : DbContext
@@ -38,6 +40,25 @@ public class Context : DbContext
            .IsUnique();
 
 
+        modelBuilder.Entity<ConversaciónModel>()
+          .HasOne(p => p.UsuarioA)
+          .WithMany()
+          .HasForeignKey(p => p.UsuarioAID)
+          .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ConversaciónModel>()
+         .HasOne(p => p.UsuarioB)
+         .WithMany()
+         .HasForeignKey(p => p.UsuarioBID)
+         .OnDelete(DeleteBehavior.NoAction);
+
+
+        modelBuilder.Entity<ConversaciónModel>()
+           .HasKey(a => a.ID);
+
+
+        modelBuilder.Entity<ConversaciónModel>()
+            .HasKey(a => new { a.UsuarioAID, a.UsuarioBID });
 
     }
 
