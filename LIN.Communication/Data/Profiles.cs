@@ -26,6 +26,22 @@ public class Profiles
 
 
 
+    public async static Task<ReadOneResponse<ProfileModel>> Read(int id)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await Read(id, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
 
 
     #endregion
