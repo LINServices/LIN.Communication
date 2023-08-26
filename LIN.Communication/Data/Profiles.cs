@@ -9,7 +9,7 @@ public class Profiles
     #region Abstracciones
 
 
-    public async static Task<CreateResponse> Create(ProfileModel data)
+    public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data)
     {
 
         // Contexto
@@ -42,6 +42,22 @@ public class Profiles
     }
 
 
+    public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await ReadByAccount(id, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
 
 
     #endregion
@@ -50,17 +66,17 @@ public class Profiles
 
 
 
-    public async static Task<CreateResponse> Create(ProfileModel data, Conexión context)
+    public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data, Conexión context)
     {
         // ID
-        data.ID = 0;
+        data.Profile.ID = 0;
 
         // Ejecución
         try
         {
-            var res = context.DataBase.Profiles.Add(data);
+            var res = context.DataBase.Profiles.Add(data.Profile);
             await context.DataBase.SaveChangesAsync();
-            return new(Responses.Success, data.ID);
+            return new(Responses.Success, data.Profile);
         }
         catch 
         {
@@ -79,6 +95,28 @@ public class Profiles
 
             var profile = await (from P in context.DataBase.Profiles
                                  where P.ID == id
+                                 select P).FirstOrDefaultAsync();
+
+            return new(Responses.Success, profile ?? new());
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+    public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id, Conexión context)
+    {
+
+
+        // Ejecución
+        try
+        {
+
+            var profile = await (from P in context.DataBase.Profiles
+                                 where P.AccountID == id
                                  select P).FirstOrDefaultAsync();
 
             return new(Responses.Success, profile ?? new());

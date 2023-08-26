@@ -34,7 +34,7 @@ public class ProfileController : ControllerBase
     /// <param name="user">Usuario único</param>
     /// <param name="password">Contraseña del usuario</param>
     [HttpGet("login")]
-    public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> Login([FromQuery] string user, [FromQuery] string password)
+    public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string app)
     {
 
         // Comprobación
@@ -65,11 +65,13 @@ public class ProfileController : ControllerBase
                 {
                     var res = await Data.Profiles.Create(new()
                     {
-                        AccountID = authResponse.Model,
+                        Account = authResponse.Model,
                         Profile = new()
                         {
+                            
                             AccountID = authResponse.Model.ID,
-                            Creación = DateTime.Now
+                            Alias = authResponse.Model.Nombre,
+                            
                         }
                     });
 
