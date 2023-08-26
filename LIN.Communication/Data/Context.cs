@@ -1,4 +1,4 @@
-﻿namespace LIN.Inventory.Data;
+﻿namespace LIN.Communication.Data;
 
 
 public class Context : DbContext

@@ -4,7 +4,7 @@ global using LIN.Communication;
 global using LIN.Types.Enumerations;
 global using LIN.Types.Responses;
 global using LIN.Modules;
-using LIN.Inventory.Data;
+using LIN.Communication.Data;
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +41,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+
+try
+{
+    // Si la base de datos no existe
+    using var scope = app.Services.CreateScope();
+    var dataContext = scope.ServiceProvider.GetRequiredService<Context>();
+    var res = dataContext.Database.EnsureCreated();
+}
+catch
+{ }
+
+
+
 
 app.UseHttpsRedirection();
 
