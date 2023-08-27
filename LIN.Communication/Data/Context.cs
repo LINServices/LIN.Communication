@@ -12,7 +12,7 @@ public class Context : DbContext
 
 
 
-    public DbSet<ConversaciónModel> Conversaciones { get; set; }
+    public DbSet<ConversationModel> Conversaciones { get; set; }
 
 
 
@@ -40,24 +40,24 @@ public class Context : DbContext
            .IsUnique();
 
 
-        modelBuilder.Entity<ConversaciónModel>()
+        modelBuilder.Entity<ConversationModel>()
           .HasOne(p => p.UsuarioA)
           .WithMany()
           .HasForeignKey(p => p.UsuarioAID)
           .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<ConversaciónModel>()
+        modelBuilder.Entity<ConversationModel>()
          .HasOne(p => p.UsuarioB)
          .WithMany()
          .HasForeignKey(p => p.UsuarioBID)
          .OnDelete(DeleteBehavior.NoAction);
 
 
-        modelBuilder.Entity<ConversaciónModel>()
+        modelBuilder.Entity<ConversationModel>()
            .HasKey(a => a.ID);
 
 
-        modelBuilder.Entity<ConversaciónModel>()
+        modelBuilder.Entity<ConversationModel>()
             .HasKey(a => new { a.ID, a.UsuarioAID, a.UsuarioBID });
 
     }

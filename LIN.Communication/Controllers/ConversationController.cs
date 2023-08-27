@@ -13,7 +13,7 @@ public class ConversationController : ControllerBase
     /// </summary>
     /// <param name="modelo">Modelo del contacto</param>
     [HttpPost("create")]
-    public async Task<HttpCreateResponse> Create([FromBody] ConversaciónModel modelo)
+    public async Task<HttpCreateResponse> Create([FromBody] ConversationModel modelo)
     {
 
         string @default = "Sin definir";
@@ -30,7 +30,7 @@ public class ConversationController : ControllerBase
 
 
     [HttpGet("read/all")]
-    public async Task<HttpReadAllResponse<ConversaciónModel>> ReadAll([FromHeader] string token)
+    public async Task<HttpReadAllResponse<ConversationModel>> ReadAll([FromHeader] string token)
     {
 
         // Comprobaciones

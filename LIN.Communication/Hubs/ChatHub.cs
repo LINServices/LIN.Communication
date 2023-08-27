@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.SignalR;
-
-namespace LIN.Communication.Hubs;
+﻿namespace LIN.Communication.Hubs;
 
 
 public class ChatHub : Hub
 {
+
+
+
 
     public static List<ProfileModel> Profiles = new();
 

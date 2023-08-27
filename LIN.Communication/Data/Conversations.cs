@@ -9,7 +9,7 @@ public class Conversations
     #region Abstracciones
 
 
-    public async static Task<CreateResponse> Create(ConversaciónModel data)
+    public async static Task<CreateResponse> Create(ConversationModel data)
     {
 
         // Contexto
@@ -26,7 +26,7 @@ public class Conversations
 
 
 
-    public async static Task<ReadAllResponse<ConversaciónModel>> ReadAll(int id)
+    public async static Task<ReadAllResponse<ConversationModel>> ReadAll(int id)
     {
 
         // Contexto
@@ -52,7 +52,7 @@ public class Conversations
 
 
 
-    public async static Task<CreateResponse> Create(ConversaciónModel data, Conexión context)
+    public async static Task<CreateResponse> Create(ConversationModel data, Conexión context)
     {
         // ID
         data.ID = 0;
@@ -78,7 +78,7 @@ public class Conversations
     }
 
 
-    public async static Task<ReadAllResponse<ConversaciónModel>> ReadAll(int id, Conexión context)
+    public async static Task<ReadAllResponse<ConversationModel>> ReadAll(int id, Conexión context)
     {
      
 
@@ -89,7 +89,7 @@ public class Conversations
             var con = await (from P in context.DataBase.Conversaciones
                                  where P.UsuarioAID == id
                                  || P.UsuarioBID == id
-                                 select new ConversaciónModel
+                                 select new ConversationModel
                                  {
                                      UsuarioA = P.UsuarioA,
                                      UsuarioB = P.UsuarioB

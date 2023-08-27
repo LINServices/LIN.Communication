@@ -8,6 +8,7 @@ global using Microsoft.AspNetCore.Mvc;
 global using LIN.Types.Auth.Abstracts;
 global using LIN.Communication.Services;
 global using Http.ResponsesList;
+global using Microsoft.AspNetCore.SignalR;
 using LIN.Communication.Data;
 using Microsoft.Data.SqlClient;
 
