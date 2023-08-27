@@ -49,7 +49,16 @@ public class ChatHub : Hub
     {
         var Me = Profiles.Where(T => T.ID == me).FirstOrDefault();
         if (Me != null)
-            await Clients.Group(groupName).SendAsync("sendMessage", Me.ID, Me.Alias ?? "Unknow", message ?? "");
+        {
+            var messageModel = new MessageModel()
+            {
+                Contenido = message,
+                Remitente = Me,
+                Time = DateTime.Now
+            };
+            await Clients.Group(groupName).SendAsync("sendMessage", messageModel);
+        }
+
     }
 
 
