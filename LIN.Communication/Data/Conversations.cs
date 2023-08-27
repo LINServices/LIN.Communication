@@ -76,6 +76,30 @@ public class Conversations
 
 
 
+    public async static Task<CreateResponse> Create(MessageModel data, Conexión context)
+    {
+        // ID
+        data.ID = 0;
+
+        // Ejecución
+        try
+        {
+
+            context.DataBase.Attach(data.Conversacion);
+            context.DataBase.Attach(data.Remitente);
+
+            var res = context.DataBase.Mensajes.Add(data);
+            await context.DataBase.SaveChangesAsync();
+            return new(Responses.Success, data.ID);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
     public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
     {
 
@@ -89,7 +113,7 @@ public class Conversations
                                 select new MemberChatModel
                                 {
                                     Conversation = M.Conversation,
-                                    Rol = M.Rol
+                                    Rol = M.Rol,
                                 }).ToListAsync();
 
             return new(Responses.Success, groups);

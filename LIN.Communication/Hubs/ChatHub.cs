@@ -57,6 +57,23 @@ public class ChatHub : Hub
                 Time = DateTime.Now
             };
             await Clients.Group(groupName).SendAsync($"sendMessage-{groupName}", messageModel);
+
+            var xo = Conexión.GetOneConnection();
+            await Data.Conversations.Create(new MessageModel()
+            {
+                Contenido = message,
+                Conversacion = new()
+                {
+                    ID = int.Parse(groupName)
+                },
+                Remitente = new()
+                {
+                    ID = me
+                },
+                Time = messageModel.Time
+            }, xo.context);
+            xo.context.CloseActions(xo.contextKey);
+
         }
 
     }
