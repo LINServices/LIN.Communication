@@ -56,7 +56,7 @@ public class ChatHub : Hub
                 Remitente = Me,
                 Time = DateTime.Now
             };
-            await Clients.Group(groupName).SendAsync("sendMessage", messageModel);
+            await Clients.Group(groupName).SendAsync($"sendMessage-{groupName}", messageModel);
         }
 
     }
