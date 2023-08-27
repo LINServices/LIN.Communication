@@ -19,7 +19,7 @@ public class Context : DbContext
 
 
    
-    public DbSet<MemberChatModel> Member { get; set; }
+    public DbSet<MemberChatModel> Members { get; set; }
 
 
 
