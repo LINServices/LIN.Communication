@@ -43,6 +43,23 @@ public class Conversations
 
 
 
+    public async static Task<ReadAllResponse<MessageModel>> ReadMessages(int id)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await ReadMessages(id, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+
 
 
 
@@ -114,6 +131,35 @@ public class Conversations
                                 {
                                     Conversation = M.Conversation,
                                     Rol = M.Rol,
+                                }).ToListAsync();
+
+            return new(Responses.Success, groups);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+    public async static Task<ReadAllResponse<MessageModel>> ReadMessages(int id, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Consulta
+            var groups = await (from M in context.DataBase.Mensajes
+                                where M.Conversacion.ID == id
+                                select new MessageModel
+                                {
+                                    Contenido = M.Contenido,
+                                    Conversacion = M.Conversacion,
+                                    ID = M.ID,
+                                    Remitente = M.Remitente,
+                                    Time = M.Time
                                 }).ToListAsync();
 
             return new(Responses.Success, groups);
