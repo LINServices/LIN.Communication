@@ -60,6 +60,10 @@ public class Conversations
         // Ejecución
         try
         {
+
+            foreach (var user in data.Members)
+                context.DataBase.Attach(user.Profile);
+
             var res = context.DataBase.Conversaciones.Add(data);
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.ID);
@@ -95,8 +99,6 @@ public class Conversations
         }
         return new();
     }
-
-
 
 
 

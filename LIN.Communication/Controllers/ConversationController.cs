@@ -1,5 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-
 namespace LIN.Communication.Controllers;
 
 
@@ -16,8 +14,6 @@ public class ConversationController : ControllerBase
     public async Task<HttpCreateResponse> Create([FromBody] ConversationModel modelo)
     {
 
-        string @default = "Sin definir";
-
         // Obtiene el resultado
         var response = await Data.Conversations.Create(modelo);
 
@@ -30,7 +26,7 @@ public class ConversationController : ControllerBase
 
 
     [HttpGet("read/all")]
-    public async Task<HttpReadAllResponse<ConversationModel>> ReadAll([FromHeader] string token)
+    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token)
     {
 
         // Comprobaciones
