@@ -5,10 +5,14 @@ public class Messages
 {
 
 
-
     #region Abstracciones
 
 
+
+    /// <summary>
+    /// Crea un nuevo mensaje
+    /// </summary>
+    /// <param name="data">Modelo del mensaje</param>
     public async static Task<CreateResponse> Create(MessageModel data)
     {
 
@@ -27,7 +31,10 @@ public class Messages
 
 
 
-
+    /// <summary>
+    /// Obtiene los mensajes asociados a una conversación.
+    /// </summary>
+    /// <param name="id">ID de la conversación</param>
     public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id)
     {
 
@@ -52,9 +59,11 @@ public class Messages
 
 
 
-
-
-
+    /// <summary>
+    /// Crea un nuevo mensaje
+    /// </summary>
+    /// <param name="data">Modelo del mensaje</param>
+    /// <param name="context">Contexto de conexión</param>
     public async static Task<CreateResponse> Create(MessageModel data, Conexión context)
     {
         // ID
@@ -80,7 +89,11 @@ public class Messages
 
 
 
-
+    /// <summary>
+    /// Obtiene los mensajes asociados a una conversación.
+    /// </summary>
+    /// <param name="id">ID de la conversación</param>
+    /// <param name="context">Contexto de conexión</param>
     public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id, Conexión context)
     {
 
