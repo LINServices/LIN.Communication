@@ -9,6 +9,10 @@ public class Profiles
     #region Abstracciones
 
 
+    /// <summary>
+    /// Crea un perfil.
+    /// </summary>
+    /// <param name="data">Modelo.</param>
     public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data)
     {
 
@@ -26,6 +30,10 @@ public class Profiles
 
 
 
+    /// <summary>
+    /// Obtiene un perfil
+    /// </summary>
+    /// <param name="id">ID del perfil</param>
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id)
     {
 
@@ -42,6 +50,11 @@ public class Profiles
     }
 
 
+
+    /// <summary>
+    /// Obtiene un perfil por medio del ID de su cuenta.
+    /// </summary>
+    /// <param name="id">ID de la cuenta</param>
     public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id)
     {
 
@@ -59,13 +72,16 @@ public class Profiles
 
 
 
-
     #endregion
 
 
 
 
-
+    /// <summary>
+    /// Crea un perfil.
+    /// </summary>
+    /// <param name="data">Modelo.</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data, Conexión context)
     {
         // ID
@@ -85,6 +101,12 @@ public class Profiles
     }
 
 
+
+    /// <summary>
+    /// Obtiene un perfil
+    /// </summary>
+    /// <param name="id">ID del perfil</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)
     {
      
@@ -107,6 +129,11 @@ public class Profiles
 
 
 
+    /// <summary>
+    /// Obtiene un perfil por medio del ID de su cuenta.
+    /// </summary>
+    /// <param name="id">ID de la cuenta</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id, Conexión context)
     {
 
@@ -129,7 +156,6 @@ public class Profiles
         }
         return new();
     }
-
 
 
 
