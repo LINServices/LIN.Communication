@@ -1,7 +1,7 @@
 ﻿namespace LIN.Communication.Data;
 
 
-public class Conversations
+public class Messages
 {
 
 
@@ -9,7 +9,7 @@ public class Conversations
     #region Abstracciones
 
 
-    public async static Task<CreateResponse> Create(ConversationModel data)
+    public async static Task<CreateResponse> Create(MessageModel data)
     {
 
         // Contexto
@@ -26,7 +26,9 @@ public class Conversations
 
 
 
-    public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id)
+
+
+    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id)
     {
 
         // Contexto
@@ -46,15 +48,14 @@ public class Conversations
 
 
 
-
-
     #endregion
 
 
 
 
 
-    public async static Task<CreateResponse> Create(ConversationModel data, Conexión context)
+
+    public async static Task<CreateResponse> Create(MessageModel data, Conexión context)
     {
         // ID
         data.ID = 0;
@@ -63,10 +64,10 @@ public class Conversations
         try
         {
 
-            foreach (var user in data.Members)
-                context.DataBase.Attach(user.Profile);
+            context.DataBase.Attach(data.Conversacion);
+            context.DataBase.Attach(data.Remitente);
 
-            var res = context.DataBase.Conversaciones.Add(data);
+            var res = context.DataBase.Mensajes.Add(data);
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.ID);
         }
@@ -80,8 +81,7 @@ public class Conversations
 
 
 
-
-    public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
+    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución
@@ -89,12 +89,15 @@ public class Conversations
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Members
-                                where M.Profile.ID == id
-                                select new MemberChatModel
+            var groups = await (from M in context.DataBase.Mensajes
+                                where M.Conversacion.ID == id
+                                select new MessageModel
                                 {
-                                    Conversation = M.Conversation,
-                                    Rol = M.Rol,
+                                    Contenido = M.Contenido,
+                                    Conversacion = M.Conversacion,
+                                    ID = M.ID,
+                                    Remitente = M.Remitente,
+                                    Time = M.Time
                                 }).ToListAsync();
 
             return new(Responses.Success, groups);

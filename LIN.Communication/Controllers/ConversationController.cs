@@ -48,8 +48,6 @@ public class ConversationController : ControllerBase
     [HttpGet("read/messages")]
     public async Task<HttpReadAllResponse<MessageModel>> readM([FromHeader] int conversacion)
     {
-
-
         // Obtiene el usuario
         var result = await Data.Conversations.ReadMessages(conversacion);
 
