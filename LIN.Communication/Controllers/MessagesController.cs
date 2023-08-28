@@ -11,7 +11,7 @@ public class MessagesController : ControllerBase
     /// </summary>
     /// <param name="conversation">ID de la conversación</param>
     [HttpGet("{id}/messages")]
-    public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int conversation)
+    public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id)
     {
         // Obtiene el usuario
         var result = await Data.Messages.ReadAll(conversation);
