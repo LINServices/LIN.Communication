@@ -5,10 +5,13 @@ public class Conversations
 {
 
 
-
     #region Abstracciones
 
 
+    /// <summary>
+    /// Crea una conversación (Grupo).
+    /// </summary>
+    /// <param name="data">Modelo</param>
     public async static Task<CreateResponse> Create(ConversationModel data)
     {
 
@@ -26,6 +29,10 @@ public class Conversations
 
 
 
+    /// <summary>
+    /// Obtiene las conversaciones asociadas a un perfil
+    /// </summary>
+    /// <param name="id">ID del perfil.</param>
     public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id)
     {
 
@@ -43,17 +50,15 @@ public class Conversations
 
 
 
-
-
-
-
-
     #endregion
 
 
 
-
-
+    /// <summary>
+    /// Crea una conversación (Grupo).
+    /// </summary>
+    /// <param name="data">Modelo</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<CreateResponse> Create(ConversationModel data, Conexión context)
     {
         // ID
@@ -78,9 +83,11 @@ public class Conversations
 
 
 
-
-
-
+    /// <summary>
+    /// Obtiene las conversaciones asociadas a un perfil
+    /// </summary>
+    /// <param name="id">ID del perfil.</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
     {
 
@@ -104,7 +111,6 @@ public class Conversations
         }
         return new();
     }
-
 
 
 }
