@@ -59,7 +59,7 @@ public class ChatHub : Hub
             await Clients.Group(groupName).SendAsync($"sendMessage-{groupName}", messageModel);
 
             var xo = Conexión.GetOneConnection();
-            await Data.Conversations.Create(new MessageModel()
+            await Data.Messages.Create(new MessageModel()
             {
                 Contenido = message,
                 Conversacion = new()
