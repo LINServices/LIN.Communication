@@ -28,12 +28,6 @@ public sealed class Conexión
     private static int _cantidad = 1;
 
 
-    /// <summary>
-    /// Palabra secreta para la encriptación
-    /// </summary>
-    internal static readonly string SecreteWord = "ipass:";
-
-
 
     //===== Propiedades =====//
 
