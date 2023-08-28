@@ -14,7 +14,7 @@ public class MessagesController : ControllerBase
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id)
     {
         // Obtiene el usuario
-        var result = await Data.Messages.ReadAll(conversation);
+        var result = await Data.Messages.ReadAll(id);
 
         // Retorna el resultado
         return result ?? new();
