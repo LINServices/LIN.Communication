@@ -5,26 +5,35 @@ public class ChatHub : Hub
 {
 
 
+    /// <summary>
+    /// Lista perfiles.
+    /// </summary>
+    public static readonly HashSet<ProfileModel> Profiles = new();
 
 
-    public static List<ProfileModel> Profiles = new();
 
     /// <summary>
     /// Agrega a el grupo
     /// </summary>
-    public async Task Load(ProfileModel profile)
+    public void Load(ProfileModel profile)
     {
-        var exist = Profiles.Where(T => T.ID == profile.ID).Any();
-        if (!exist)
-            Profiles.Add(profile);
+        try
+        {
+            var exist = Profiles.Where(T => T.ID == profile.ID).Any();
+            if (!exist)
+                Profiles.Add(profile);
+        }
+        catch
+        {
+        }
     }
 
 
 
-
     /// <summary>
-    /// Agrega a el grupo
+    /// Une una conexión a un grupo de tiempo real.
     /// </summary>
+    /// <param name="name">ID del grupo</param>
     public async Task JoinGroup(string name)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, name);
@@ -33,8 +42,9 @@ public class ChatHub : Hub
 
 
     /// <summary>
-    /// Elimina un usuario de un grupo
+    /// Elimina un usuario de un grupo.
     /// </summary>
+    /// <param name="name">ID del grupo</param>
     public async Task LeaveGroup(string name)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
@@ -43,38 +53,40 @@ public class ChatHub : Hub
 
 
     /// <summary>
-    /// Agrega un nuevo producto
+    /// Enviar un mensaje.
     /// </summary>
+    /// <param name="me">ID del perfil</param>
+    /// <param name="groupName">ID del grupo</param>
+    /// <param name="message">Mensaje</param>
     public async Task SendMessage(int me, string groupName, string message)
     {
-        var Me = Profiles.Where(T => T.ID == me).FirstOrDefault();
-        if (Me != null)
+
+        // Obtiene el perfil.
+        ProfileModel? profile = Profiles.Where(P => P.ID == me).FirstOrDefault();
+
+        // Si el perfil no existe, o esta registrado.
+        if (profile == null)
+            return;
+
+        // Modelo del mensaje.
+        MessageModel messageModel = new()
         {
-            var messageModel = new MessageModel()
-            {
-                Contenido = message,
-                Remitente = Me,
-                Time = DateTime.Now
-            };
-            await Clients.Group(groupName).SendAsync($"sendMessage-{groupName}", messageModel);
+            Contenido = message,
+            Remitente = profile,
+            Time = DateTime.Now
+        };
 
-            var xo = Conexión.GetOneConnection();
-            await Data.Messages.Create(new MessageModel()
-            {
-                Contenido = message,
-                Conversacion = new()
-                {
-                    ID = int.Parse(groupName)
-                },
-                Remitente = new()
-                {
-                    ID = me
-                },
-                Time = messageModel.Time
-            }, xo.context);
-            xo.context.CloseActions(xo.contextKey);
+        // Envía el mensaje en tiempo real.
+        await Clients.Group(groupName).SendAsync($"sendMessage-{groupName}", messageModel);
 
-        }
+        // Establece el ID de la conversación
+        messageModel.Conversacion = new()
+        {
+            ID = int.Parse(groupName)
+        };
+
+        // Crea el mensaje en la BD
+        await Data.Messages.Create(messageModel);
 
     }
 
