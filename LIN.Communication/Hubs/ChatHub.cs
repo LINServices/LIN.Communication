@@ -61,6 +61,10 @@ public class ChatHub : Hub
     public async Task SendMessage(int me, string groupName, string message)
     {
 
+        // Si el mansaje esta vacio.
+        if (message.Trim() == string.Empty)
+            return;
+
         // Obtiene el perfil.
         ProfileModel? profile = Profiles.Where(P => P.ID == me).FirstOrDefault();
 
