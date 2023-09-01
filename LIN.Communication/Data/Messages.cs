@@ -102,7 +102,7 @@ public class Messages
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Mensajes
+            var baseQuery = (from M in context.DataBase.Mensajes
                                 where M.Conversacion.ID == id
                                 select new MessageModel
                                 {
@@ -111,7 +111,10 @@ public class Messages
                                     ID = M.ID,
                                     Remitente = M.Remitente,
                                     Time = M.Time
-                                }).Take(100).OrderByDescending(A=>A.ID).ToListAsync();
+                                }).Take(100);
+
+            // Grupos
+            var groups = await baseQuery.OrderBy(A => A.ID).ToListAsync();
 
             return new(Responses.Success, groups);
         }
