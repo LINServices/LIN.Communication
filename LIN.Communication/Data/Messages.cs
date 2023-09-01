@@ -104,6 +104,7 @@ public class Messages
             // Consulta
             var baseQuery = (from M in context.DataBase.Mensajes
                                 where M.Conversacion.ID == id
+                                orderby M.ID descending
                                 select new MessageModel
                                 {
                                     Contenido = M.Contenido,
