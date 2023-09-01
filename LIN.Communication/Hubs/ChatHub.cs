@@ -61,7 +61,7 @@ public class ChatHub : Hub
     public async Task SendMessage(int me, string groupName, string message)
     {
 
-        // Si el mansaje esta vacio.
+        // Si el mansaje esta vacío.
         if (message.Trim() == string.Empty)
             return;
 

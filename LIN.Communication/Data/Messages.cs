@@ -104,6 +104,7 @@ public class Messages
             // Consulta
             var groups = await (from M in context.DataBase.Mensajes
                                 where M.Conversacion.ID == id
+                                orderby M.ID descending
                                 select new MessageModel
                                 {
                                     Contenido = M.Contenido,
@@ -111,7 +112,7 @@ public class Messages
                                     ID = M.ID,
                                     Remitente = M.Remitente,
                                     Time = M.Time
-                                }).ToListAsync();
+                                }).Take(100).ToListAsync();
 
             return new(Responses.Success, groups);
         }
