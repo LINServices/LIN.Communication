@@ -35,14 +35,14 @@ public class Messages
     /// Obtiene los mensajes asociados a una conversación.
     /// </summary>
     /// <param name="id">ID de la conversación</param>
-    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id)
+    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id, int lastID)
     {
 
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
-        var response = await ReadAll(id, context);
+        var response = await ReadAll(id, lastID, context);
 
         context.CloseActions(connectionKey);
 
@@ -94,7 +94,7 @@ public class Messages
     /// </summary>
     /// <param name="id">ID de la conversación</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id, Conexión context)
+    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id, int lastID, Conexión context)
     {
 
         // Ejecución
@@ -103,16 +103,17 @@ public class Messages
 
             // Consulta
             var baseQuery = (from M in context.DataBase.Mensajes
-                                where M.Conversacion.ID == id
-                                orderby M.ID descending
-                                select new MessageModel
-                                {
-                                    Contenido = M.Contenido,
-                                    Conversacion = M.Conversacion,
-                                    ID = M.ID,
-                                    Remitente = M.Remitente,
-                                    Time = M.Time
-                                }).Take(100);
+                             where M.Conversacion.ID == id
+                             && M.ID > lastID
+                             orderby M.ID descending
+                             select new MessageModel
+                             {
+                                 Contenido = M.Contenido,
+                                 Conversacion = M.Conversacion,
+                                 ID = M.ID,
+                                 Remitente = M.Remitente,
+                                 Time = M.Time
+                             }).Take(100);
 
             // Grupos
             var groups = await baseQuery.OrderBy(A => A.ID).ToListAsync();
