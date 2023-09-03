@@ -53,7 +53,7 @@ public class ConversationController : ControllerBase
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
     [HttpGet("{id}/members")]
-    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromQuery] int id)
+    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromRoute] int id)
     {
 
         // Obtiene el usuario
