@@ -152,9 +152,14 @@ public class Conversations
                                 where M.Conversation.ID == id
                                 select new MemberChatModel
                                 {
-                                    Conversation = M.Conversation,
+                                    Profile = new()
+                                    {
+                                        Alias = M.Profile.Alias,
+                                        ID = M.Profile.ID,
+                                        AccountID = M.Profile.ID
+                                    },
                                     Rol = M.Rol,
-                                }).DistinctBy(T => T.Profile.ID).ToListAsync();
+                                }).ToListAsync();
 
             return new(Responses.Success, groups);
         }
