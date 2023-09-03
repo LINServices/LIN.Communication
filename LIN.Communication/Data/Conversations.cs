@@ -50,6 +50,27 @@ public class Conversations
 
 
 
+    /// <summary>
+    /// Obtiene los miembros asociadas a una conversación.
+    /// </summary>
+    /// <param name="id">ID de la conversación.</param>
+    public async static Task<ReadAllResponse<MemberChatModel>> ReadMembers(int id)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await ReadMembers(id, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+
     #endregion
 
 
@@ -103,6 +124,37 @@ public class Conversations
                                     Conversation = M.Conversation,
                                     Rol = M.Rol,
                                 }).ToListAsync();
+
+            return new(Responses.Success, groups);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Obtiene los miembros asociadas a una conversación.
+    /// </summary>
+    /// <param name="id">ID de la conversación.</param>
+    /// <param name="context">Contexto de conexión.</param>
+    public async static Task<ReadAllResponse<MemberChatModel>> ReadMembers(int id, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Consulta
+            var groups = await (from M in context.DataBase.Members
+                                where M.Conversation.ID == id
+                                select new MemberChatModel
+                                {
+                                    Conversation = M.Conversation,
+                                    Rol = M.Rol,
+                                }).DistinctBy(T => T.Profile.ID).ToListAsync();
 
             return new(Responses.Success, groups);
         }
