@@ -77,17 +77,18 @@ public class ChatHub : Hub
         {
             Contenido = message,
             Remitente = profile,
-            Time = DateTime.Now
+            Time = DateTime.Now,
+            Conversacion = new()
+            {
+                ID = int.Parse(groupName)
+            }
         };
 
         // Envía el mensaje en tiempo real.
-        await Clients.Group(groupName).SendAsync($"sendMessage-{groupName}", messageModel);
+        await Clients.Group(groupName).SendAsync($"sendMessage", messageModel);
 
         // Establece el ID de la conversación
-        messageModel.Conversacion = new()
-        {
-            ID = int.Parse(groupName)
-        };
+
 
         // Crea el mensaje en la BD
         await Data.Messages.Create(messageModel);
