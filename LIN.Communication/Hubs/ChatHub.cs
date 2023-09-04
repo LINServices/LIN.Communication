@@ -34,9 +34,9 @@ public class ChatHub : Hub
     /// Une una conexión a un grupo de tiempo real.
     /// </summary>
     /// <param name="name">ID del grupo</param>
-    public async Task JoinGroup(string name)
+    public async Task JoinGroup(int name)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, name);
+        await Groups.AddToGroupAsync(Context.ConnectionId, name.ToString());
     }
 
 
@@ -58,7 +58,7 @@ public class ChatHub : Hub
     /// <param name="me">ID del perfil</param>
     /// <param name="groupName">ID del grupo</param>
     /// <param name="message">Mensaje</param>
-    public async Task SendMessage(int me, string groupName, string message)
+    public async Task SendMessage(int me, int groupName, string message)
     {
 
         // Si el mansaje esta vacío.
@@ -80,12 +80,12 @@ public class ChatHub : Hub
             Time = DateTime.Now,
             Conversacion = new()
             {
-                ID = int.Parse(groupName)
+                ID = groupName
             }
         };
 
         // Envía el mensaje en tiempo real.
-        await Clients.Group(groupName).SendAsync($"sendMessage", messageModel);
+        await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
 
         // Establece el ID de la conversación
 
