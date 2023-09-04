@@ -86,6 +86,7 @@ public class Profiles
     {
         // ID
         data.Profile.ID = 0;
+        data.Profile.Friends = new();
 
         // Ejecución
         try
