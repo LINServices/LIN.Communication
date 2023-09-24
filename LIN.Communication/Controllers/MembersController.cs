@@ -79,7 +79,7 @@ public class MembersController : ControllerBase
     /// <param name="id">ID de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("{id}/members/info")]
-    public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token)
+    public async Task<HttpReadAllResponse<SessionModel<MemberChatModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token)
     {
 
         // Obtiene el usuario
@@ -93,15 +93,24 @@ public class MembersController : ControllerBase
         var re = (from P in result.Models
                   join A in resultAccounts.Models
                   on P.Profile.AccountID equals A.ID
-                  select new SessionModel<ProfileModel>
+                  select new SessionModel<MemberChatModel>
                   {
                       Account = A,
-                      Profile = P.Profile
+                      Profile = new()
+                      {
+                          Rol = P.Rol,
+                          Profile = new()
+                          {
+                              ID = P.Profile.ID,
+                              Alias = P.Profile.Alias
+                          }
+
+                      }
                   }).ToList();
 
 
         // Retorna el resultado
-        return new ReadAllResponse<SessionModel<ProfileModel>>
+        return new ReadAllResponse<SessionModel<MemberChatModel>>
         {
             Models = re,
             Response = Responses.Success
