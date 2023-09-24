@@ -12,18 +12,26 @@ public class MembersController : ControllerBase
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
     [HttpGet("isOnline")]
-    public async Task<HttpReadOneResponse<bool>> ReadOnline([FromQuery] int id)
+    public HttpReadOneResponse<IsOnlineResult> ReadOnline([FromQuery] int id)
     {
 
+        // Obtiene el perfil
+        var profile = Hubs.ChatHub.Profiles.Where(T => T.Key == id).FirstOrDefault().Value;
 
-        var x = Hubs.ChatHub.DevicesCount.Where(T=>T.Key == id).FirstOrDefault().Value ?? new();
-
-        return new ReadOneResponse<bool> { 
-            Model = x.Any()
+        return new ReadOneResponse<IsOnlineResult>()
+        {
+            Response = Responses.Success,
+            Model =  new()
+            {
+                ID = id,
+                IsOnline = profile?.Devices.Any() ?? false,
+                LastTime = profile?.LastTime ?? new(),
+            } 
         };
 
-
     }
+
+
 
 
     /// <summary>
@@ -34,14 +42,14 @@ public class MembersController : ControllerBase
     public async Task<HttpReadAllResponse<string>> ReadOe([FromQuery] int id)
     {
 
+        // Obtiene el perfil
+        var profile = Hubs.ChatHub.Profiles.Where(T => T.Key == id).FirstOrDefault().Value;
 
-        var x = Hubs.ChatHub.DevicesCount.Where(T => T.Key == id).FirstOrDefault().Value ?? new();
-
-        return new ReadAllResponse<string>
+        return new ReadAllResponse<string>()
         {
-            Models = x
+            Response = Responses.Success,
+            Models = profile?.Devices ?? new(),
         };
-
 
     }
 
@@ -83,15 +91,14 @@ public class MembersController : ControllerBase
         var resultAccounts = await LIN.Access.Auth.Controllers.Account.Read(x, token);
 
 
-
         var re = (from P in result.Models
-                 join A in resultAccounts.Models
-                 on P.Profile.AccountID equals A.ID
-                 select new SessionModel<ProfileModel>
-                 {
-                     Account = A,
-                     Profile = P.Profile
-                 }).ToList();
+                  join A in resultAccounts.Models
+                  on P.Profile.AccountID equals A.ID
+                  select new SessionModel<ProfileModel>
+                  {
+                      Account = A,
+                      Profile = P.Profile
+                  }).ToList();
 
 
         // Retorna el resultado

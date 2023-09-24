@@ -5,17 +5,18 @@ public class ChatHub : Hub
 {
 
 
+    public class Proff
+    {
+        public ProfileModel Profile { get; set; }
+        public List<string> Devices { get; set; }
+        public DateTime LastTime { get; set; }
+    }
+
+
     /// <summary>
     /// Lista perfiles.
     /// </summary>
-    public static readonly HashSet<ProfileModel> Profiles = new();
-
-
-
-    /// <summary>
-    /// Lista perfiles.
-    /// </summary>
-    public static readonly Dictionary<int, List<string>> DevicesCount = new();
+    public static readonly Dictionary<int, Proff> Profiles = new();
 
 
 
@@ -26,12 +27,15 @@ public class ChatHub : Hub
     {
         try
         {
-            var counter = DevicesCount.Where(T => T.Value.Contains(this.Context.ConnectionId)).FirstOrDefault();
-            counter.Value.Remove(this.Context.ConnectionId);
+
+            var count = Profiles.Where(T => T.Value.Devices.Contains(this.Context.ConnectionId)).FirstOrDefault();
+
+            count.Value.LastTime = DateTime.Now;
+
+            count.Value.Devices.Remove(this.Context.ConnectionId);
         }
         catch
         {
-
         }
     }
 
@@ -45,21 +49,27 @@ public class ChatHub : Hub
     {
         try
         {
-            var exist = Profiles.Where(T => T.ID == profile.ID).Any();
-            if (!exist)
-                Profiles.Add(profile);
 
+            Proff proff = new Proff();
 
-
-            var counter = DevicesCount.Where(T => T.Key == profile.ID).FirstOrDefault().Value;
-
-            if (counter == null)
+            var exist = Profiles.Where(T => T.Key == profile.ID).FirstOrDefault();
+            if (exist.Key == 0)
             {
-                counter = new();
-                DevicesCount.Add(profile.ID, counter);
+                proff = new Proff()
+                {
+                    Profile = profile,
+                    Devices = new List<string>()
+                };
+
+                Profiles.Add(profile.ID, proff
+               );
+            }
+            else
+            {
+                proff = exist.Value;
             }
 
-            counter.Add(this.Context.ConnectionId);
+            proff.Devices.Add(this.Context.ConnectionId);
 
         }
         catch
@@ -105,7 +115,7 @@ public class ChatHub : Hub
             return;
 
         // Obtiene el perfil.
-        ProfileModel? profile = Profiles.Where(P => P.ID == me).FirstOrDefault();
+        ProfileModel? profile = Profiles.Where(P => P.Key == me).FirstOrDefault().Value?.Profile;
 
         // Si el perfil no existe, o esta registrado.
         if (profile == null)
