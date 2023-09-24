@@ -1,5 +1,3 @@
-using LIN.Types.Auth.Enumerations;
-
 namespace LIN.Communication.Controllers;
 
 
@@ -49,10 +47,8 @@ public class ProfileController : ControllerBase
                         Account = authResponse.Model,
                         Profile = new()
                         {
-                            
                             AccountID = authResponse.Model.ID,
-                            Alias = authResponse.Model.Nombre,
-                            
+                            Alias = authResponse.Model.Nombre
                         }
                     });
 

@@ -6,11 +6,10 @@ public class MembersController : ControllerBase
 {
 
 
-
     /// <summary>
-    /// Obtiene los miembros de una conversación
+    /// Un usuario esta online
     /// </summary>
-    /// <param name="id">ID de la conversación.</param>
+    /// <param name="id">ID del usuario</param>
     [HttpGet("isOnline")]
     public HttpReadOneResponse<IsOnlineResult> ReadOnline([FromQuery] int id)
     {
@@ -33,36 +32,36 @@ public class MembersController : ControllerBase
 
 
 
-
     /// <summary>
     /// Obtiene los miembros de una conversación
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
-    [HttpGet("test")]
-    public async Task<HttpReadAllResponse<string>> ReadOe([FromQuery] int id)
-    {
-
-        // Obtiene el perfil
-        var profile = Hubs.ChatHub.Profiles.Where(T => T.Key == id).FirstOrDefault().Value;
-
-        return new ReadAllResponse<string>()
-        {
-            Response = Responses.Success,
-            Models = profile?.Devices ?? new(),
-        };
-
-    }
-
-
-
-
-    /// <summary>
-    /// Obtiene los miembros de una conversación
-    /// </summary>
-    /// <param name="id">ID de la conversación.</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpGet("{id}/members")]
-    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromRoute] int id)
+    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromRoute] int id, [FromHeader] string token)
     {
+
+        // Obtiene la info del token
+        var (isValid, profileID, _, _) = Jwt.Validate(token);
+
+        // Token es invalido
+        if (!isValid)
+            return new ReadAllResponse<MemberChatModel>()
+            {
+                Message = "El token es invalido.",
+                Response = Responses.Unauthorized
+            };
+
+        // Busca el acceso
+        var have = await Data.Conversations.HaveAccessFor(profileID, id);
+
+        // Si no tiene acceso
+        if (have.Response != Responses.Success)
+            return new ReadAllResponse<MemberChatModel>
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes acceso a esta conversación."
+            };
 
         // Obtiene el usuario
         var result = await Data.Conversations.ReadMembers(id);
@@ -74,11 +73,11 @@ public class MembersController : ControllerBase
 
 
 
-
     /// <summary>
-    /// Obtiene los miembros de una conversación
+    /// Obtiene los miembros de una conversación con info del usuario.
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
+    /// <param name="token">Token de acceso.</param>
     [HttpGet("{id}/members/info")]
     public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token)
     {
