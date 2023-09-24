@@ -13,6 +13,32 @@ public class ChatHub : Hub
 
 
     /// <summary>
+    /// Lista perfiles.
+    /// </summary>
+    public static readonly Dictionary<int, List<string>> DevicesCount = new();
+
+
+
+
+
+
+    public override async Task OnDisconnectedAsync(Exception? exception)
+    {
+        try
+        {
+            var counter = DevicesCount.Where(T => T.Value.Contains(this.Context.ConnectionId)).FirstOrDefault();
+            counter.Value.Remove(this.Context.ConnectionId);
+        }
+        catch
+        {
+
+        }
+    }
+
+
+
+
+    /// <summary>
     /// Agrega a el grupo
     /// </summary>
     public void Load(ProfileModel profile)
@@ -22,6 +48,19 @@ public class ChatHub : Hub
             var exist = Profiles.Where(T => T.ID == profile.ID).Any();
             if (!exist)
                 Profiles.Add(profile);
+
+
+
+            var counter = DevicesCount.Where(T => T.Key == profile.ID).FirstOrDefault().Value;
+
+            if (counter == null)
+            {
+                counter = new();
+                DevicesCount.Add(profile.ID, counter);
+            }
+
+            counter.Add(this.Context.ConnectionId);
+
         }
         catch
         {

@@ -6,6 +6,48 @@ public class MembersController : ControllerBase
 {
 
 
+
+    /// <summary>
+    /// Obtiene los miembros de una conversación
+    /// </summary>
+    /// <param name="id">ID de la conversación.</param>
+    [HttpGet("isOnline")]
+    public async Task<HttpReadOneResponse<bool>> ReadOnline([FromQuery] int id)
+    {
+
+
+        var x = Hubs.ChatHub.DevicesCount.Where(T=>T.Key == id).FirstOrDefault().Value ?? new();
+
+        return new ReadOneResponse<bool> { 
+            Model = x.Any()
+        };
+
+
+    }
+
+
+    /// <summary>
+    /// Obtiene los miembros de una conversación
+    /// </summary>
+    /// <param name="id">ID de la conversación.</param>
+    [HttpGet("test")]
+    public async Task<HttpReadAllResponse<string>> ReadOe([FromQuery] int id)
+    {
+
+
+        var x = Hubs.ChatHub.DevicesCount.Where(T => T.Key == id).FirstOrDefault().Value ?? new();
+
+        return new ReadAllResponse<string>
+        {
+            Models = x
+        };
+
+
+    }
+
+
+
+
     /// <summary>
     /// Obtiene los miembros de una conversación
     /// </summary>
@@ -30,7 +72,7 @@ public class MembersController : ControllerBase
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
     [HttpGet("{id}/members/info")]
-    public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> ReadAllInfo([FromRoute] int id)
+    public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token)
     {
 
         // Obtiene el usuario
@@ -38,7 +80,7 @@ public class MembersController : ControllerBase
 
         var x = result.Models.Select(T => T.Profile.AccountID).ToList();
 
-        var resultAccounts = await LIN.Access.Auth.Controllers.Account.Read(x);
+        var resultAccounts = await LIN.Access.Auth.Controllers.Account.Read(x, token);
 
 
 
