@@ -32,6 +32,8 @@ public class ChatHub : Hub
 
             count.Value.LastTime = DateTime.Now;
 
+            _ = Data.Profiles.SetLastConnection(count.Key, DateTime.Now);
+
             count.Value.Devices.Remove(this.Context.ConnectionId);
         }
         catch

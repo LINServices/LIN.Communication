@@ -20,12 +20,12 @@ public class MembersController : ControllerBase
         return new ReadOneResponse<IsOnlineResult>()
         {
             Response = Responses.Success,
-            Model =  new()
+            Model = new()
             {
                 ID = id,
                 IsOnline = profile?.Devices.Any() ?? false,
                 LastTime = profile?.LastTime ?? new(),
-            } 
+            }
         };
 
     }
@@ -102,7 +102,8 @@ public class MembersController : ControllerBase
                           Profile = new()
                           {
                               ID = P.Profile.ID,
-                              Alias = P.Profile.Alias
+                              Alias = P.Profile.Alias,
+                              LastConnection = P.Profile.LastConnection,
                           }
 
                       }

@@ -71,6 +71,38 @@ public class Profiles
     }
 
 
+    public async static Task<ReadOneResponse<DateTime>> GetLastConnection(int id)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await GetLastConnection(id, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+    public async static Task<ResponseBase> SetLastConnection(int id, DateTime time)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await SetLastConnection(id,time, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
 
     #endregion
 
@@ -151,6 +183,57 @@ public class Profiles
                 return new(Responses.NotExistProfile);
 
             return new(Responses.Success, profile ?? new());
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+   
+    public async static Task<ResponseBase> SetLastConnection(int id, DateTime time, Conexión context)
+    {
+
+
+        // Ejecución
+        try
+        {
+
+            var profile = await (from P in context.DataBase.Profiles
+                                 where P.AccountID == id
+                                 select P).FirstOrDefaultAsync();
+
+            if (profile == null)
+                return new(Responses.NotExistProfile);
+
+            profile.LastConnection = time;
+            context.DataBase.SaveChanges();
+
+            return new(Responses.Success);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+    public async static Task<ReadOneResponse<DateTime>> GetLastConnection(int id, Conexión context)
+    {
+
+
+        // Ejecución
+        try
+        {
+
+            var profile = await (from P in context.DataBase.Profiles
+                                 where P.AccountID == id
+                                 select P.LastConnection).FirstOrDefaultAsync();
+
+
+            return new(Responses.Success, profile);
         }
         catch
         {
