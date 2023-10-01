@@ -11,7 +11,7 @@ public class MembersController : ControllerBase
     /// </summary>
     /// <param name="id">ID del usuario</param>
     [HttpGet("isOnline")]
-    public HttpReadOneResponse<IsOnlineResult> ReadOnline([FromQuery] int id)
+    public async Task<HttpReadOneResponse<IsOnlineResult>> ReadOnline([FromQuery] int id)
     {
 
         // Obtiene el perfil
@@ -24,7 +24,7 @@ public class MembersController : ControllerBase
             {
                 ID = id,
                 IsOnline = profile?.Devices.Any() ?? false,
-                LastTime = profile?.LastTime ?? new(),
+                LastTime = profile?.LastTime ?? (await Data.Profiles.GetLastConnection(id)).Model,
             }
         };
 
