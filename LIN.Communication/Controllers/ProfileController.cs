@@ -141,4 +141,50 @@ public class ProfileController : ControllerBase
 
 
 
+
+
+    /// <summary>
+    /// Obtiene los miembros de una conversación
+    /// </summary>
+    /// <param name="id">ID de la conversación.</param>
+    /// <param name="token">Token de acceso.</param>
+    [HttpGet("search")]
+    public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> Search([FromQuery] string pattern, [FromHeader] string token)
+    {
+
+        // Busca el acceso
+        var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token, false);
+
+        // Si no tiene acceso
+        if (accounts.Response != Responses.Success)
+            return new ReadAllResponse<SessionModel<ProfileModel>>
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes acceso a LIN Identity"
+            };
+
+
+        var mappedIds = accounts.Models.Select(T => T.ID).ToList();
+
+        var profiles = await Data.Profiles.ReadByAccounts(mappedIds);
+
+
+        var final = from P in profiles.Models
+                    join A in accounts.Models
+                    on P.AccountID equals A.ID
+                    select new LIN.Types.Auth.Abstracts.SessionModel<ProfileModel>
+                    {
+                        Account = A,
+                        Profile = P
+                    };
+
+        // Retorna el resultado
+        return new ReadAllResponse<SessionModel<ProfileModel>>
+        {
+            Response = Responses.Success,
+            Models = final.ToList()
+        };
+
+    }
+
 }

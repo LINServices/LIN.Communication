@@ -71,6 +71,25 @@ public class Profiles
     }
 
 
+
+    public async static Task<ReadAllResponse<ProfileModel>> ReadByAccounts(IEnumerable<int> ids)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await ReadByAccounts(ids, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+
+
     public async static Task<ReadOneResponse<DateTime>> GetLastConnection(int id)
     {
 
@@ -94,7 +113,7 @@ public class Profiles
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
-        var response = await SetLastConnection(id,time, context);
+        var response = await SetLastConnection(id, time, context);
 
         context.CloseActions(connectionKey);
 
@@ -127,7 +146,7 @@ public class Profiles
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.Profile);
         }
-        catch 
+        catch
         {
         }
         return new();
@@ -142,7 +161,7 @@ public class Profiles
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)
     {
-     
+
 
         // Ejecución
         try
@@ -193,6 +212,32 @@ public class Profiles
 
 
    
+    public async static Task<ReadAllResponse<ProfileModel>> ReadByAccounts(IEnumerable<int> ids, Conexión context)
+    {
+
+
+        // Ejecución
+        try
+        {
+
+            var profile = await (from P in context.DataBase.Profiles
+                                 where ids.Contains(P.AccountID)
+                                 select P).ToListAsync();
+
+            if (profile == null)
+                return new(Responses.NotExistProfile);
+
+            return new(Responses.Success, profile ?? new());
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+
     public async static Task<ResponseBase> SetLastConnection(int id, DateTime time, Conexión context)
     {
 
