@@ -6,10 +6,7 @@ public class ConversationController : ControllerBase
 {
 
 
-    /// <summary>
-    /// Crea una nueva conversación.
-    /// </summary>
-    /// <param name="modelo">Modelo</param>
+
     [HttpPost("create")]
     public async Task<HttpCreateResponse> Create([FromBody] ConversationModel modelo)
     {
@@ -24,10 +21,6 @@ public class ConversationController : ControllerBase
 
 
 
-    /// <summary>
-    /// Obtiene las conversaciones asociadas a un perfil.
-    /// </summary>
-    /// <param name="token">Token de acceso.</param>
     [HttpGet("read/all")]
     public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token)
     {
@@ -45,6 +38,21 @@ public class ConversationController : ControllerBase
         return result ?? new();
 
     }
+
+
+
+    [HttpGet("read/one")]
+    public async Task<HttpReadOneResponse<ConversationModel>> ReadOne([FromQuery] int id)
+    {
+
+        // Obtiene el usuario
+        var result = await Data.Conversations.ReadOne(id);
+
+        // Retorna el resultado
+        return result ?? new();
+
+    }
+
 
 
 }

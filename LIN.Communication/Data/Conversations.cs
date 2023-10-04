@@ -50,6 +50,41 @@ public class Conversations
 
 
 
+  
+    public async static Task<ResponseBase> InsertMember(int id, int profile)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await InsertMember(id, profile, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+
+    public async static Task<ReadOneResponse<ConversationModel>> ReadOne(int id)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await ReadOne(id, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+
     /// <summary>
     /// Obtiene los miembros asociadas a una conversación.
     /// </summary>
@@ -137,11 +172,35 @@ public class Conversations
             // Consulta
             var groups = await (from M in context.DataBase.Members
                                 where M.Profile.ID == id
+                                && M.Conversation.Visibility == Types.Communication.Enumerations.ConversationVisibility.@public
                                 select new MemberChatModel
                                 {
                                     Conversation = M.Conversation,
                                     Rol = M.Rol,
                                 }).ToListAsync();
+
+            return new(Responses.Success, groups);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+
+    public async static Task<ReadOneResponse<ConversationModel>> ReadOne(int id, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Consulta
+            var groups = await (from M in context.DataBase.Conversaciones
+                                where M.ID == id
+                                select M).FirstOrDefaultAsync();
 
             return new(Responses.Success, groups);
         }
@@ -207,6 +266,63 @@ public class Conversations
                                 }).ToListAsync();
 
             return new(Responses.Success, groups);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+    public async static Task<ResponseBase> InsertMember(int id, int profile, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+            // Consulta
+            var group = await (from M in context.DataBase.Conversaciones
+                               where M.ID == id
+                               select M).FirstOrDefaultAsync();
+
+            if (group == null)
+            {
+                return new(Responses.NotRows);
+            }
+
+
+            var exist   = await (from M in context.DataBase.Conversaciones
+                                           where M.ID == id
+                                           join MM in context.DataBase.Members
+                                           on M.ID equals MM.Conversation.ID
+                                           where MM.Profile.ID == profile
+                                           select MM).AnyAsync();
+
+            if (exist)
+            {
+                return new(Responses.Success);
+            }
+
+            var profileModel = new ProfileModel()
+            {
+                ID = profile
+            };
+
+            context.DataBase.Attach(profileModel);
+
+            var member = new MemberChatModel()
+            {
+                Conversation = group,
+                Profile = profileModel,
+                Rol = Types.Communication.Enumerations.MemberRoles.None
+            };
+
+            group.Members.Add(member);
+
+            context.DataBase.SaveChanges();
+
+            return new(Responses.Success);
         }
         catch
         {

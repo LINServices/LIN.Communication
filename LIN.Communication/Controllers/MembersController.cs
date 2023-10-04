@@ -120,4 +120,56 @@ public class MembersController : ControllerBase
     }
 
 
+
+    [HttpGet("{id}/members/add")]
+    public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromHeader] string token)
+    {
+
+        var account = await LIN.Access.Auth.Controllers.Account.Read(id, token);
+
+        if (account.Response != Responses.Success)
+        {
+            return new ResponseBase()
+            {
+                Message = "Cuenta invalida",
+                Response = account.Response
+            };
+        }
+
+
+        var getProfile = await Data.Profiles.ReadByAccount(account.Model.ID);
+
+        if (getProfile.Response == Responses.NotExistProfile)
+        {
+
+            // Crear perfil
+            var res = await Data.Profiles.Create(new()
+            {
+                Account = account.Model,
+                Profile = new()
+                {
+                    AccountID = account.Model.ID,
+                    Alias = account.Model.Nombre
+                }
+            });
+
+            if (res.Response != Responses.Success)
+            {
+                return new ReadOneResponse<AuthModel<ProfileModel>>
+                {
+                    Response = Responses.UnavailableService,
+                    Message = "Un error grave ocurrió"
+                };
+            }
+
+            getProfile.Model = res.Model;
+
+        }
+
+
+        return await Data.Conversations.InsertMember(id, getProfile.Model.ID);
+
+
+
+    }
 }
