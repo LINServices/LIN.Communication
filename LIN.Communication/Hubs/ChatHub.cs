@@ -135,11 +135,24 @@ public class ChatHub : Hub
             }
         };
 
+        
+        if (message.Contains("@emma"))
+        {
+            var s = new LIN.Access.OpenIA.IA("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");
+            s.LoadEmma();
+            var x = await Data.Conversations.ReadOne(groupName);
+            s.LoadInstructions(x.Model.Name);
+            var result = await s.Respond(message);
+
+            messageModel.Contenido = result.Result;
+        }
+
         // Envía el mensaje en tiempo real.
         await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
 
-        // Establece el ID de la conversación
 
+
+        // Establece el ID de la conversación
 
         // Crea el mensaje en la BD
         await Data.Messages.Create(messageModel);
