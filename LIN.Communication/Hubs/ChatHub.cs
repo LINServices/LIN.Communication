@@ -4,7 +4,7 @@
 public class ChatHub : Hub
 {
 
-
+    public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = new();
     public class Proff
     {
         public ProfileModel Profile { get; set; }
@@ -131,6 +131,15 @@ public class ChatHub : Hub
         // Data
         var data = Profiles.Where(P => P.Key == me).FirstOrDefault().Value;
 
+        var conversationOnMemory = Conversations.Where(T=>T.Key == groupName).FirstOrDefault().Value;
+
+        List<MessageModel>? mensajes = conversationOnMemory;
+        if (mensajes == null)
+        {
+            mensajes = new List<MessageModel>();
+            Conversations.Add(groupName, mensajes);
+        }
+
         // Obtiene el perfil.
         ProfileModel? profile = data?.Profile;
 
@@ -150,7 +159,11 @@ public class ChatHub : Hub
             }
         };
 
+        // Envía el mensaje en tiempo real.
         
+        await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
+        
+
         if (message.Contains("@emma"))
         {
             var emma = new Access.OpenIA.IA(Configuration.GetConfiguration("openIa:key"));
@@ -158,22 +171,45 @@ public class ChatHub : Hub
             // Carga el modelo
             emma.LoadWho();
             emma.LoadRecomendations();
-            emma.LoadCommands();
             emma.LoadPersonality();
+            emma.LoadSomething($""" 
+                           Importante, en este momento estas un chat/grupo o conversación con una o mas personas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
+                           el usuario probablemente te halla etiquetado, asi que deveras contestar como si fueras un integrante mas del grupo
+                           """);
 
             emma.LoadSomething($""" 
-                           Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
-                           Estos son los nombres de los chats que tiene el usuario: {data?.GetStringOfConversations()}
-                           Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team etc, primero busca en su lista de nombres de chats
+                           Estos son los mensajes de contexto:
+                           {ContextToEmma(mensajes)}
                            """);
 
             var result = await emma.Respond(message);
 
-            messageModel.Contenido = result.Result;
-        }
+            
+            MessageModel mensajeEmma = new()
+            {
+                Contenido = result.Result,
+                Remitente = new()
+                {
+                    Alias = "Emma Asistente in Chat",
+                    ID = -1
+                },
+                Time = DateTime.Now,
+                Conversacion = new()
+                {
+                    ID = groupName
+                }
+            };
 
-        // Envía el mensaje en tiempo real.
-        await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
+            mensajes.Add(messageModel);
+            mensajes.Add(mensajeEmma);
+            await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", mensajeEmma);
+
+
+        }
+        else
+        {
+            mensajes.Add(messageModel);
+        }
 
 
 
@@ -185,4 +221,20 @@ public class ChatHub : Hub
     }
 
 
+
+
+    string ContextToEmma(List<MessageModel> messages)
+    {
+        var lasts = messages.TakeLast(8).ToList();
+
+        string content = "";
+
+        foreach(var message in lasts)
+        {
+            string alias = message.Remitente.ID == -1 ? "tu respondiste" : $"{message.Remitente.Alias} dijo";
+            content += $"{alias} <<<{message.Contenido}>>>.";
+        }
+
+        return content;
+    }
 }
