@@ -1,4 +1,5 @@
 using LIN.Access.OpenIA.ModelsData;
+using LIN.Communication.Memory;
 
 namespace LIN.Communication.Controllers;
 
@@ -24,9 +25,8 @@ public class EmmaController : ControllerBase
                 Response = Responses.Unauthorized
             };
         }
-        
 
-        var getProf = Hubs.ChatHub.Profiles.Values.Where(T=>T.Profile.ID == profileID).FirstOrDefault() ?? new();
+        var getProf = Mems.Sessions[profileID] ;
 
 
         var emma = new Access.OpenIA.IA(Configuration.GetConfiguration("openIa:key"));
@@ -38,7 +38,7 @@ public class EmmaController : ControllerBase
         emma.LoadPersonality();
         emma.LoadSomething($""" 
                            Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
-                           Estos son los nombres de los chats que tiene el usuario: {getProf.GetStringOfConversations()}
+                           Estos son los nombres de los chats que tiene el usuario: {getProf.StringOfConversations()}
                            Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team etc, primero busca en su lista de nombres de chats
                            """);
 

@@ -1,4 +1,6 @@
-﻿namespace LIN.Communication.Controllers;
+﻿using LIN.Communication.Memory;
+
+namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
@@ -15,7 +17,7 @@ public class MembersController : ControllerBase
     {
 
         // Obtiene el perfil
-        var profile = Hubs.ChatHub.Profiles.Where(T => T.Key == id).FirstOrDefault().Value;
+        var profile = Mems.Sessions[id];
 
         return new ReadOneResponse<IsOnlineResult>()
         {

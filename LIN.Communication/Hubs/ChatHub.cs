@@ -1,36 +1,12 @@
-﻿namespace LIN.Communication.Hubs;
+﻿using LIN.Communication.Memory;
+
+namespace LIN.Communication.Hubs;
 
 
 public class ChatHub : Hub
 {
 
     public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = new();
-    public class Proff
-    {
-        public ProfileModel Profile { get; set; }
-        public List<string> Conversations { get; set; } = new();
-        public List<string> Devices { get; set; }
-        public DateTime LastTime { get; set; }
-
-
-        public string GetStringOfConversations()
-        {
-            string final = "";
-            foreach(var s in Conversations)
-            {
-                final += $"'{s}',";
-            }
-            return final ;
-        }
-    }
-
-
-    /// <summary>
-    /// Lista perfiles.
-    /// </summary>
-    public static readonly Dictionary<int, Proff> Profiles = new();
-
-
 
 
 
@@ -40,13 +16,20 @@ public class ChatHub : Hub
         try
         {
 
-            var count = Profiles.Where(T => T.Value.Devices.Contains(this.Context.ConnectionId)).FirstOrDefault();
+            // Obtiene la sesión por el dispositivo
+            var session = Mems.Sessions[Context.ConnectionId];
 
-            count.Value.LastTime = DateTime.Now;
+            // No existe.
+            if (session == null)
+                return;
 
-            _ = Data.Profiles.SetLastConnection(count.Key, DateTime.Now);
+            // Remover el dispositivo.
+            session.Devices.RemoveAll(T=>T == Context.ConnectionId);
+            session.LastTime = DateTime.Now;
 
-            count.Value.Devices.Remove(this.Context.ConnectionId);
+            // Establece la ultima conexión.
+            await Data.Profiles.SetLastConnection(session.Profile.ID, DateTime.Now);
+
         }
         catch
         {
@@ -64,26 +47,24 @@ public class ChatHub : Hub
         try
         {
 
-            Proff proff = new Proff();
+            // Perfil actual.
+            MemorySession? memorySession = Mems.Sessions[profile.ID];
 
-            var exist = Profiles.Where(T => T.Key == profile.ID).FirstOrDefault();
-            if (exist.Key == 0)
+            // Si no existe la sesión.
+            if (memorySession == null)
             {
-                proff = new Proff()
+                // Modelo.
+                memorySession = new()
                 {
-                    Profile = profile,
-                    Devices = new List<string>()
+                    Profile = profile
                 };
 
-                Profiles.Add(profile.ID, proff
-               );
-            }
-            else
-            {
-                proff = exist.Value;
+                // Agrega la sesión.
+                Mems.Sessions.Add(memorySession);
             }
 
-            proff.Devices.Add(this.Context.ConnectionId);
+            // Agrega el dispositivo actual.
+            memorySession.Devices.Add(Context.ConnectionId);
 
         }
         catch
@@ -129,9 +110,9 @@ public class ChatHub : Hub
             return;
 
         // Data
-        var data = Profiles.Where(P => P.Key == me).FirstOrDefault().Value;
+        var data = Mems.Sessions[me];
 
-        var conversationOnMemory = Conversations.Where(T=>T.Key == groupName).FirstOrDefault().Value;
+        var conversationOnMemory = Conversations.Where(T => T.Key == groupName).FirstOrDefault().Value;
 
         List<MessageModel>? mensajes = conversationOnMemory;
         if (mensajes == null)
@@ -160,9 +141,9 @@ public class ChatHub : Hub
         };
 
         // Envía el mensaje en tiempo real.
-        
+
         await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
-        
+
 
         if (message.Contains("@emma"))
         {
@@ -184,7 +165,7 @@ public class ChatHub : Hub
 
             var result = await emma.Respond(message);
 
-            
+
             MessageModel mensajeEmma = new()
             {
                 Contenido = result.Result,
@@ -229,7 +210,7 @@ public class ChatHub : Hub
 
         string content = "";
 
-        foreach(var message in lasts)
+        foreach (var message in lasts)
         {
             string alias = message.Remitente.ID == -1 ? "tu respondiste" : $"{message.Remitente.Alias} dijo";
             content += $"{alias} <<<{message.Contenido}>>>.";

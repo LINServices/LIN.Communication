@@ -1,3 +1,5 @@
+using LIN.Communication.Memory;
+
 namespace LIN.Communication.Controllers;
 
 
@@ -34,9 +36,7 @@ public class ConversationController : ControllerBase
         // Obtiene el usuario
         var result = await Data.Conversations.ReadAll(profileID);
 
-
-        var onHub = Hubs.ChatHub.Profiles.Values.Where(T => T.Profile.ID == profileID).FirstOrDefault();
-
+        var onHub = Mems.Sessions[profileID];
         if (onHub != null)
         {
             onHub.Conversations = new();
