@@ -1,10 +1,9 @@
 using LIN.Access.OpenIA.ModelsData;
-using LIN.Communication.Memory;
 
 namespace LIN.Communication.Controllers;
 
 
-[Route("emma")]
+[Route("Emma")]
 public class EmmaController : ControllerBase
 {
 
@@ -26,8 +25,7 @@ public class EmmaController : ControllerBase
             };
         }
 
-        var getProf = Mems.Sessions[profileID] ;
-
+        var getProf = Mems.Sessions[profileID];
 
         var emma = new Access.OpenIA.IA(Configuration.GetConfiguration("openIa:key"));
 
@@ -38,12 +36,13 @@ public class EmmaController : ControllerBase
         emma.LoadPersonality();
         emma.LoadSomething($""" 
                            Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
-                           Estos son los nombres de los chats que tiene el usuario: {getProf.StringOfConversations()}
+                           Estos son los nombres de los chats que tiene el usuario: {getProf?.StringOfConversations()}
                            Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team etc, primero busca en su lista de nombres de chats
                            """);
 
         emma.LoadSomething($""" 
-                           El alias del usuario es '{alias}'
+                           El alias del usuario es '{alias}'.
+                           El usuario tiene {getProf?.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo
                            """);
 
         var result = await emma.Respond(consult);

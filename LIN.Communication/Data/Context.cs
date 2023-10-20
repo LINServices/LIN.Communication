@@ -4,29 +4,28 @@
 public class Context : DbContext
 {
 
-
     /// <summary>
-    /// Perfiles
+    /// Tabla de perfiles.
     /// </summary>
     public DbSet<ProfileModel> Profiles { get; set; }
 
 
     /// <summary>
-    /// Conversaciones
+    /// Tabla de conversaciones.
     /// </summary>
     public DbSet<ConversationModel> Conversaciones { get; set; }
 
 
-
-   
+    /// <summary>
+    /// Tabla de miembros.
+    /// </summary>
     public DbSet<MemberChatModel> Members { get; set; }
 
 
-
+    /// <summary>
+    /// Tabla de mensajes
+    /// </summary>
     public DbSet<MessageModel> Mensajes { get; set; }
-
-
-
 
 
 
@@ -34,17 +33,6 @@ public class Context : DbContext
     /// Nuevo contexto a la base de datos
     /// </summary>
     public Context(DbContextOptions<Context> options) : base(options) { }
-
-
-
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-
-      
-
-    }
-
 
 
 }
