@@ -10,6 +10,7 @@ global using LIN.Communication.Services;
 global using Http.ResponsesList;
 global using Microsoft.AspNetCore.SignalR;
 global using LIN.Types.Auth.Enumerations;
+global using LIN.Communication.Memory;
 using LIN.Communication.Data;
 using Microsoft.Data.SqlClient;
 

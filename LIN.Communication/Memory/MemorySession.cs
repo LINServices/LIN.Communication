@@ -40,13 +40,15 @@ public class MemorySession
     }
 
 
+    /// <summary>
+    /// Obtiene un string con la concatenación de los nombres de las conversaciones.
+    /// </summary>
     public string StringOfConversations()
     {
         string final = "";
         foreach (var conversation in Conversations)
-        {
             final += $"'{conversation}',";
-        }
+        
         return final;
     }
 
