@@ -8,8 +8,20 @@ public class ChatHub : Hub
     public class Proff
     {
         public ProfileModel Profile { get; set; }
+        public List<string> Conversations { get; set; } = new();
         public List<string> Devices { get; set; }
         public DateTime LastTime { get; set; }
+
+
+        public string GetStringOfConversations()
+        {
+            string final = "";
+            foreach(var s in Conversations)
+            {
+                final += $"'{s}',";
+            }
+            return final ;
+        }
     }
 
 
@@ -116,8 +128,11 @@ public class ChatHub : Hub
         if (message.Trim() == string.Empty)
             return;
 
+        // Data
+        var data = Profiles.Where(P => P.Key == me).FirstOrDefault().Value;
+
         // Obtiene el perfil.
-        ProfileModel? profile = Profiles.Where(P => P.Key == me).FirstOrDefault().Value?.Profile;
+        ProfileModel? profile = data?.Profile;
 
         // Si el perfil no existe, o esta registrado.
         if (profile == null)
@@ -138,11 +153,21 @@ public class ChatHub : Hub
         
         if (message.Contains("@emma"))
         {
-            var s = new LIN.Access.OpenIA.IA("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");
-            s.LoadEmma();
-            var x = await Data.Conversations.ReadOne(groupName);
-            s.LoadInstructions(x.Model.Name);
-            var result = await s.Respond(message);
+            var emma = new Access.OpenIA.IA(Configuration.GetConfiguration("openIa:key"));
+
+            // Carga el modelo
+            emma.LoadWho();
+            emma.LoadRecomendations();
+            emma.LoadCommands();
+            emma.LoadPersonality();
+
+            emma.LoadSomething($""" 
+                           Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
+                           Estos son los nombres de los chats que tiene el usuario: {data?.GetStringOfConversations()}
+                           Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team etc, primero busca en su lista de nombres de chats
+                           """);
+
+            var result = await emma.Respond(message);
 
             messageModel.Contenido = result.Result;
         }

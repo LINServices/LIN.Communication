@@ -34,6 +34,16 @@ public class ConversationController : ControllerBase
         // Obtiene el usuario
         var result = await Data.Conversations.ReadAll(profileID);
 
+
+        var onHub = Hubs.ChatHub.Profiles.Values.Where(T => T.Profile.ID == profileID).FirstOrDefault();
+
+        if (onHub != null)
+        {
+            onHub.Conversations = new();
+            foreach (var c in result.Models)
+                onHub.Conversations.Add(c.Conversation.Name);
+        }
+
         // Retorna el resultado
         return result ?? new();
 
