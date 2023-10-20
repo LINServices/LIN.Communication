@@ -1,21 +1,14 @@
-﻿using LIN.Communication.Memory;
-
-namespace LIN.Communication.Hubs;
+﻿namespace LIN.Communication.Hubs;
 
 
 public partial class ChatHub : Hub
 {
 
-    public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = new();
-
-
-
-
-
 
     /// <summary>
-    /// Agrega a el grupo
+    /// Carga una sesión.
     /// </summary>
+    /// <param name="profile">Perfil</param>
     public void Load(ProfileModel profile)
     {
         try
@@ -177,7 +170,7 @@ public partial class ChatHub : Hub
 
 
 
-
+    public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = new();
     string ContextToEmma(List<MessageModel> messages)
     {
         var lasts = messages.TakeLast(8).ToList();
