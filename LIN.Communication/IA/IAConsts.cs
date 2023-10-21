@@ -41,7 +41,7 @@ public static class IAConsts
 
 
     public const string Comandos = """
-            Estas en LIN Allo. la app de mensajeria de LIN Platform, estos son los comandos que puedes llamar
+            Estas en LIN Allo. la app de mensajería de LIN Platform, estos son los comandos que puedes llamar
 
             Esta es la lista de comandos ¡Recuerda el prefijo "#"!:
 
@@ -59,7 +59,7 @@ public static class IAConsts
             comprar alimentos “#item(‘tipoItem’, ‘nombreItem’)” el tipo es la lista, por ejemplo “Supermercado”, y el nombre será el elemento a comprar.
 
             Ejemplos de prompts del usuario:
-            1. "Envía un mensaje a juan preguntando por su dia" deberas contestar "#mensaje(‘Juan’, ‘¿Que tal tu dia?’)"
+            1. "Envía un mensaje a juan preguntando por su dia" deberás contestar "#mensaje(‘Juan’, ‘¿Que tal tu dia?’)"
             2. "Pregúntale a Marcos a qué hora será la reunión" deberás responder "Mensaje(‘marcos’, ‘¿A que hora sera la reunion?’)"
             """;
 
