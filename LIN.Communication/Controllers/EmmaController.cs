@@ -1,4 +1,4 @@
-using LIN.Access.OpenIA.ModelsData;
+using LIN.Types.Emma.Models;
 
 namespace LIN.Communication.Controllers;
 
@@ -8,53 +8,61 @@ public class EmmaController : ControllerBase
 {
 
 
-
-
-
+    /// <summary>
+    /// Consulta para LIN Allo Emma
+    /// </summary>
+    /// <param name="token">Token de acceso</param>
+    /// <param name="consult">Consulta</param>
     [HttpPost]
-    public async Task<HttpReadOneResponse<Message>> ReadAll([FromHeader] string token, [FromBody] string consult)
+    public async Task<HttpReadOneResponse<ResponseIAModel>> Response([FromHeader] string token, [FromBody] string consult)
     {
 
+        // Info del token.
         var (isValid, profileID, _, alias) = Jwt.Validate(token);
 
+        // Token es invalido.
         if (!isValid)
-        {
-            return new ReadOneResponse<Message>()
+            return new ReadOneResponse<ResponseIAModel>()
             {
                 Response = Responses.Unauthorized
             };
-        }
+        
+        // Obtiene la sesión
+        var session = Mems.Sessions[profileID] ?? new();
 
-        var getProf = Mems.Sessions[profileID];
+        // Modelo de Emma.
+        var modelIA = new Access.OpenIA.IAModelBuilder(Configuration.GetConfiguration("openIa:key"));
 
-        var emma = new Access.OpenIA.IA(Configuration.GetConfiguration("openIa:key"));
+        // Cargar el modelo
+        modelIA.Load(IA.IAConsts.Base);
+        modelIA.Load(IA.IAConsts.Personalidad);
+        modelIA.Load(IA.IAConsts.ComandosBase);
+        modelIA.Load(IA.IAConsts.Comandos);
 
-        // Carga el modelo
-        emma.LoadWho();
-        emma.LoadRecomendations();
-        emma.LoadCommands();
-        emma.LoadPersonality();
-        emma.LoadSomething($""" 
-                           Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
-                           Estos son los nombres de los chats que tiene el usuario: {getProf?.StringOfConversations()}
-                           Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team etc, primero busca en su lista de nombres de chats
-                           """);
+        // Recomendaciones del contexto
+        modelIA.Load($"""
+            Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
+            Estos son los nombres de los chats que tiene el usuario: {session.StringOfConversations()}
+            Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team/conversación etc, primero busca en su lista de nombres de chats
+            """);
 
-        emma.LoadSomething($""" 
-                           El alias del usuario es '{alias}'.
-                           El usuario tiene {getProf?.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo.
-                           """);
+        // Contexto del usuario
+        modelIA.Load($"""
+            El alias del usuario es '{alias}'.
+            El usuario tiene {session.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo.
+            """);
 
-        var result = await emma.Respond(consult);
+        // Respuesta
+        var response = await modelIA.Reply(consult);
 
-        return new ReadOneResponse<Message>()
+        // Respuesta
+        return new ReadOneResponse<ResponseIAModel>()
         {
-            Model = result,
-            Response = Responses.Success
+            Model = response,
+            Response = response.IsSuccess ? Responses.Success : Responses.Undefined
         };
 
     }
-
 
 
 

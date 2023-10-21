@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\..\Tipos\LIN.Modules\LIN.Modules.csproj" />
     <ProjectReference Include="..\..\..\Tipos\LIN.Types.Auth\LIN.Types.Auth.csproj" />
     <ProjectReference Include="..\..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj" />
+    <ProjectReference Include="..\..\..\Tipos\LIN.Types.Emma\LIN.Types.Emma.csproj" />
     <ProjectReference Include="..\..\..\Tipos\LIN.Types\LIN.Types.csproj" />
   </ItemGroup>
 

@@ -114,31 +114,38 @@ public partial class ChatHub : Hub
 
         if (message.Contains("@emma"))
         {
-            var emma = new Access.OpenIA.IA(Configuration.GetConfiguration("openIa:key"));
 
-            // Carga el modelo
-            emma.LoadWho();
-            emma.LoadRecomendations();
-            emma.LoadPersonality();
-            emma.LoadSomething($""" 
+            // Modelo de Emma.
+            var modelIA = new Access.OpenIA.IAModelBuilder(Configuration.GetConfiguration("openIa:key"));
+
+            // Cargar el modelo
+            modelIA.Load(IA.IAConsts.Base);
+            modelIA.Load(IA.IAConsts.Personalidad);
+            modelIA.Load($""" 
                            Importante, en este momento estas un chat/grupo o conversación con una o mas personas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
-                           el usuario probablemente te halla etiquetado, asi que deveras contestar como si fueras un integrante mas del grupo
+                           el usuario probablemente te halla etiquetado, asi que deveras contestar como si fueras un integrante mas del grupo y debes de tener de contexto los mensajes del usuario y de los otros usuarios
                            """);
 
-            emma.LoadSomething($""" 
-                           Estos son los mensajes de contexto:
-                           {ContextToEmma(mensajes)}
-                           """);
+            // Mensajes
+            var lastMessages = mensajes.TakeLast(8);
 
-            var result = await emma.Respond(message);
+            string chatHistory = "";
+            foreach (var lastMessage in lastMessages)
+                chatHistory += $"'{lastMessage.Remitente.Alias}' ha enviado el mensaje '{lastMessage.Contenido}', ";
 
+            modelIA.Load($""" 
+                          Este es el historial de chat de la conversación, recuerda analizar minuciosamente, recuerda que tu eres Emma, el usuario se llama '{profile.Alias}' y los demas son integrantes de la conversacion.
+                           Historial:{chatHistory}
+                          """);
+
+            var response = await modelIA.Reply(message);
 
             MessageModel mensajeEmma = new()
             {
-                Contenido = result.Result,
+                Contenido = response.Content,
                 Remitente = new()
                 {
-                    Alias = "Emma Asistente in Chat",
+                    Alias = "Emma assistant in Chat",
                     ID = -1
                 },
                 Time = DateTime.Now,
@@ -152,16 +159,11 @@ public partial class ChatHub : Hub
             mensajes.Add(mensajeEmma);
             await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", mensajeEmma);
 
-
         }
         else
         {
             mensajes.Add(messageModel);
         }
-
-
-
-        // Establece el ID de la conversación
 
         // Crea el mensaje en la BD
         await Data.Messages.Create(messageModel);
@@ -171,18 +173,5 @@ public partial class ChatHub : Hub
 
 
     public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = new();
-    string ContextToEmma(List<MessageModel> messages)
-    {
-        var lasts = messages.TakeLast(8).ToList();
-
-        string content = "";
-
-        foreach (var message in lasts)
-        {
-            string alias = message.Remitente.ID == -1 ? "tu respondiste" : $"{message.Remitente.Alias} dijo";
-            content += $"{alias} <<<{message.Contenido}>>>.";
-        }
-
-        return content;
-    }
+  
 }
