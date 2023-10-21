@@ -42,7 +42,7 @@ public class EmmaController : ControllerBase
 
         emma.LoadSomething($""" 
                            El alias del usuario es '{alias}'.
-                           El usuario tiene {getProf?.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo
+                           El usuario tiene {getProf?.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo.
                            """);
 
         var result = await emma.Respond(consult);
