@@ -69,7 +69,7 @@ public partial class ChatHub : Hub
     /// <param name="me">ID del perfil</param>
     /// <param name="groupName">ID del grupo</param>
     /// <param name="message">Mensaje</param>
-    public async Task SendMessage(int me, int groupName, string message)
+    public async Task SendMessage(int me, int groupName, string message, string guid)
     {
 
         // Si el mansaje esta vacío.
@@ -101,6 +101,7 @@ public partial class ChatHub : Hub
             Contenido = message,
             Remitente = profile,
             Time = DateTime.Now,
+            Guid = guid,
             Conversacion = new()
             {
                 ID = groupName
@@ -108,7 +109,6 @@ public partial class ChatHub : Hub
         };
 
         // Envía el mensaje en tiempo real.
-
         await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
 
 
@@ -134,7 +134,7 @@ public partial class ChatHub : Hub
                 chatHistory += $"'{lastMessage.Remitente.Alias}' ha enviado el mensaje '{lastMessage.Contenido}', ";
 
             modelIA.Load($""" 
-                          Este es el historial de chat de la conversación, recuerda analizar minuciosamente, recuerda que tu eres Emma, el usuario se llama '{profile.Alias}' y los demas son integrantes de la conversacion.
+                          Este es el historial de chat de la conversación, recuerda analizar minuciosamente, recuerda que tu eres Emma, el usuario se llama '{profile.Alias}' y los demás son integrantes de la conversación.
                            Historial:{chatHistory}
                           """);
 
