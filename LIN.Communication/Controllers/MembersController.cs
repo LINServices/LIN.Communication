@@ -10,7 +10,6 @@ public class MembersController : ControllerBase
     /// Validación si un usuario esta online.
     /// </summary>
     /// <param name="id">Id del usuario.</param>
-    /// <returns></returns>
     [HttpGet("isOnline")]
     public async Task<HttpReadOneResponse<IsOnlineResult>> ReadOnline([FromQuery] int id)
     {

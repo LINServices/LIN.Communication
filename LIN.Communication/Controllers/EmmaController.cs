@@ -12,7 +12,6 @@ public class EmmaController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="consult">Consulta.</param>
     [HttpPost]
-    [Experimental("Este método necesita la función de Threads")]
     public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string token, [FromHeader] string? thread, [FromBody] string consult)
     {
 
@@ -39,6 +38,7 @@ public class EmmaController : ControllerBase
         // Valida el hilo valido.
         if (threadModel.Key == null || threadModel.Value == null)
         {
+            // Nuevo hilo.
             threadModel = new(Guid.NewGuid().ToString(), []);
             ThreadsEmma.Threads.Add(threadModel.Key, threadModel.Value);
 
@@ -59,15 +59,12 @@ public class EmmaController : ControllerBase
             El usuario tiene {session.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo.
             """, Roles.System));
 
-
         }
-
 
         // Consulta del usuario.
         threadModel.Value.Add(new(consult, Roles.User));
 
-
-
+        // Armar el modelo IA.
         foreach (var x in threadModel.Value)
         {
             if (x.Rol == Roles.System)
