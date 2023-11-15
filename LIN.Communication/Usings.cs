@@ -17,3 +17,4 @@ global using LIN.Modules;
 global using LIN.Types.Auth.Abstracts;
 global using LIN.Types.Auth.Enumerations;
 global using LIN.Types.Responses;
+global using LIN.Types.Enumerations;

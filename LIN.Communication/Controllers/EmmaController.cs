@@ -1,5 +1,4 @@
 using LIN.Types.Emma.Models;
-using System.Diagnostics.CodeAnalysis;
 
 namespace LIN.Communication.Controllers;
 

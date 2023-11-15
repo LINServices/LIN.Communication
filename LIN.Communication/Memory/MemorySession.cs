@@ -35,8 +35,8 @@ public class MemorySession
     public MemorySession()
     {
         Profile = new ProfileModel();
-        Conversations = new List<string>();
-        Devices = new List<string>();
+        Conversations = [];
+        Devices = [];
     }
 
 

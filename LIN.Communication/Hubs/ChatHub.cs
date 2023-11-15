@@ -84,7 +84,7 @@ public partial class ChatHub : Hub
         List<MessageModel>? mensajes = conversationOnMemory;
         if (mensajes == null)
         {
-            mensajes = new List<MessageModel>();
+            mensajes = [];
             Conversations.Add(groupName, mensajes);
         }
 

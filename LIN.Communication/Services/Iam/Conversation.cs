@@ -1,6 +1,4 @@
-﻿using LIN.Types.Enumerations;
-
-namespace LIN.Communication.Services.Iam;
+﻿namespace LIN.Communication.Services.Iam;
 
 
 public class Conversation
@@ -34,7 +32,7 @@ public class Conversation
                 return IamLevels.NotAccess;
 
             // Administrador.
-            if (have.Rol == Types.Communication.Enumerations.MemberRoles.Admin)
+            if (have.Rol == MemberRoles.Admin)
                 return IamLevels.Privileged;
 
             // Visualizador.
@@ -44,10 +42,6 @@ public class Conversation
         {
         }
         return IamLevels.NotAccess;
-
-
-
-
     }
 
 
