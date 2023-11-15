@@ -8,8 +8,9 @@ public class Conversations
     #region Abstracciones
 
 
+
     /// <summary>
-    /// Crea una conversación (Grupo).
+    /// Crea una conversación.
     /// </summary>
     /// <param name="data">Modelo</param>
     public async static Task<CreateResponse> Create(ConversationModel data)
@@ -50,15 +51,18 @@ public class Conversations
 
 
 
-  
-    public async static Task<ResponseBase> InsertMember(int id, int profile)
+    /// <summary>
+    /// Obtiene una conversación.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    public async static Task<ReadOneResponse<ConversationModel>> ReadOne(int id)
     {
 
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
-        var response = await InsertMember(id, profile, context);
+        var response = await ReadOne(id, context);
 
         context.CloseActions(connectionKey);
 
@@ -68,14 +72,19 @@ public class Conversations
 
 
 
-    public async static Task<ReadOneResponse<ConversationModel>> ReadOne(int id)
+    /// <summary>
+    /// Agregar un miembro a una conversación.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    /// <param name="profile">Id del perfil.</param>
+    public async static Task<ResponseBase> InsertMember(int id, int profile)
     {
 
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
-        var response = await ReadOne(id, context);
+        var response = await InsertMember(id, profile, context);
 
         context.CloseActions(connectionKey);
 
@@ -103,8 +112,6 @@ public class Conversations
         return response;
 
     }
-
-
 
 
 
@@ -142,7 +149,7 @@ public class Conversations
 
 
     /// <summary>
-    /// Obtiene las conversaciones asociadas a un perfil
+    /// Obtiene las conversaciones asociadas a un perfil.
     /// </summary>
     /// <param name="id">ID del perfil.</param>
     /// <param name="context">Contexto de conexión.</param>
@@ -173,7 +180,11 @@ public class Conversations
 
 
 
-
+    /// <summary>
+    /// Obtiene una conversación.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ConversationModel>> ReadOne(int id, Conexión context)
     {
 
@@ -197,12 +208,6 @@ public class Conversations
         }
         return new();
     }
-
-
-
-
-
-
 
 
 
@@ -242,6 +247,12 @@ public class Conversations
 
 
 
+    /// <summary>
+    /// Insertar un miembro a una conversación.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    /// <param name="profile">Id del perfil.</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ResponseBase> InsertMember(int id, int profile, Conexión context)
     {
 
