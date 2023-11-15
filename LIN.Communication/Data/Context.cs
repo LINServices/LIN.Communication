@@ -1,7 +1,10 @@
 ﻿namespace LIN.Communication.Data;
 
 
-public class Context : DbContext
+/// <summary>
+/// Nuevo contexto a la base de datos
+/// </summary>
+public class Context(DbContextOptions<Context> options) : DbContext(options)
 {
 
     /// <summary>
@@ -26,13 +29,4 @@ public class Context : DbContext
     /// Tabla de mensajes
     /// </summary>
     public DbSet<MessageModel> Mensajes { get; set; }
-
-
-
-    /// <summary>
-    /// Nuevo contexto a la base de datos
-    /// </summary>
-    public Context(DbContextOptions<Context> options) : base(options) { }
-
-
 }
