@@ -29,4 +29,5 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     /// Tabla de mensajes
     /// </summary>
     public DbSet<MessageModel> Mensajes { get; set; }
+
 }

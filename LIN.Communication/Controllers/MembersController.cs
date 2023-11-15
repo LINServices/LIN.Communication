@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace LIN.Communication.Controllers;
+﻿namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
