@@ -1,5 +1,3 @@
-using LIN.Types.Emma.Models;
-
 namespace LIN.Communication.Controllers;
 
 
@@ -15,7 +13,7 @@ public class EmmaController : ControllerBase
     /// <param name="consult">Consulta.</param>
     [HttpPost]
     [Experimental("Este método necesita la función de Threads")]
-    public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string token, [FromBody] string consult)
+    public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string token, [FromHeader] string? thread, [FromBody] string consult)
     {
 
         // Info del token.
@@ -27,40 +25,74 @@ public class EmmaController : ControllerBase
             {
                 Response = Responses.Unauthorized
             };
-        
+
         // Obtiene la sesión
         var session = Mems.Sessions[profileID] ?? new();
 
         // Modelo de Emma.
         var modelIA = new Access.OpenIA.IAModelBuilder(Configuration.GetConfiguration("openIa:key"));
 
-        // Cargar el modelo
-        modelIA.Load(IA.IAConsts.Base);
-        modelIA.Load(IA.IAConsts.Personalidad);
-        modelIA.Load(IA.IAConsts.ComandosBase);
-        modelIA.Load(IA.IAConsts.Comandos);
 
-        // Recomendaciones del contexto
-        modelIA.Load($"""
+        // Valida el hilo.
+        var threadModel = ThreadsEmma.Threads.Where(x => x.Key == (thread ?? "")).FirstOrDefault();
+
+        // Valida el hilo valido.
+        if (threadModel.Key == null || threadModel.Value == null)
+        {
+            threadModel = new(Guid.NewGuid().ToString(), []);
+            ThreadsEmma.Threads.Add(threadModel.Key, threadModel.Value);
+
+            // Cargar el hilo.
+            threadModel.Value.Add(new(IA.IAConsts.Base, Roles.System));
+            threadModel.Value.Add(new(IA.IAConsts.Personalidad, Roles.System));
+            threadModel.Value.Add(new(IA.IAConsts.ComandosBase, Roles.System));
+            threadModel.Value.Add(new(IA.IAConsts.Comandos, Roles.System));
+            threadModel.Value.Add(new($"""
             Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
             Estos son los nombres de los chats que tiene el usuario: {session.StringOfConversations()}
             Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team/conversación etc, primero busca en su lista de nombres de chats
-            """);
+            """, Roles.System));
 
-        // Contexto del usuario
-        modelIA.Load($"""
+            // Contexto del usuario
+            threadModel.Value.Add(new($"""
             El alias del usuario es '{alias}'.
             El usuario tiene {session.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo.
-            """);
+            """, Roles.System));
+
+
+        }
+
+
+        // Consulta del usuario.
+        threadModel.Value.Add(new(consult, Roles.User));
+
+
+
+        foreach (var x in threadModel.Value)
+        {
+            if (x.Rol == Roles.System)
+                modelIA.Load(x.Content);
+
+            if (x.Rol == Roles.User)
+                modelIA.LoadFromUser(x.Content);
+
+            if (x.Rol == Roles.Emma)
+                modelIA.LoadFromEmma(x.Content);
+        }
 
         // Respuesta
-        var response = await modelIA.Reply(consult);
+        var response = await modelIA.Reply();
+
+        if (response.IsSuccess)
+            threadModel.Value.Add(new(response.Content, Roles.Emma));
+
 
         // Respuesta
         return new ReadOneResponse<ResponseIAModel>()
         {
             Model = response,
-            Response = response.IsSuccess ? Responses.Success : Responses.Undefined
+            Response = response.IsSuccess ? Responses.Success : Responses.Undefined,
+            Message = threadModel.Key
         };
 
     }

@@ -8,6 +8,8 @@ global using System.Diagnostics.CodeAnalysis;
 global using LIN.Types.Communication.Models;
 global using LIN.Types.Communication.Enumerations;
 
+global using LIN.Types.Emma.Models;
+
 // Otros tipos.
 global using Http.ResponsesList;
 global using LIN.Communication;
