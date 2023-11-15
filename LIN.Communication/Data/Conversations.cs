@@ -107,22 +107,6 @@ public class Conversations
 
 
 
-    public async static Task<ResponseBase> HaveAccessFor(int profile, int conversation)
-    {
-
-        // Contexto
-        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
-
-        // respuesta
-        var response = await HaveAccessFor(profile, conversation, context);
-
-        context.CloseActions(connectionKey);
-
-        return response;
-
-    }
-
-
 
     #endregion
 
@@ -213,27 +197,6 @@ public class Conversations
 
 
 
-
-
-    public async static Task<ResponseBase> HaveAccessFor(int profile, int conversation, Conexión context)
-    {
-
-        // Ejecución
-        try
-        {
-
-            var have = await (from PA in context.DataBase.Members
-                              where PA.Profile.ID == profile
-                              && PA.Conversation.ID == conversation
-                              select PA).AnyAsync();
-
-            return new((have) ? Responses.Success : Responses.NotRows);
-        }
-        catch
-        {
-        }
-        return new();
-    }
 
 
 
