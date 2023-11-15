@@ -75,7 +75,7 @@ public sealed class Conexión
     /// <summary>
     /// Cache de conexiones
     /// </summary>
-    private static List<Conexión> CacheConnections { get; set; } = new();
+    private static List<Conexión> CacheConnections { get; set; } = [];
 
 
 
@@ -136,17 +136,17 @@ public sealed class Conexión
 
 
 
-    private string mykey = string.Empty;
+    private string MyKey = string.Empty;
 
     public void CloseActions(string key)
     {
         lock (this)
         {
-            if (mykey != key)
+            if (MyKey != key)
                 return;
 
             DataBase.ChangeTracker.Clear();
-            mykey = string.Empty;
+            MyKey = string.Empty;
             OnUse = false;
         }
     }
@@ -200,13 +200,13 @@ public sealed class Conexión
         // Obtiene una Conexión de la pool
         var con = CacheConnections.FirstOrDefault(T => !T.OnUseAction);
 
-        if (con != null && con.mykey == string.Empty)
+        if (con != null && con.MyKey == string.Empty)
         {
             lock (con)
             {
                 con.SetOnUse();
                 string key = KeyGen.Generate(10, "con.");
-                con.mykey = key;
+                con.MyKey = key;
                 return (con, key);
             }
         }
@@ -214,10 +214,10 @@ public sealed class Conexión
         // Retorna la Conexión
         var conexión = new Conexión
         {
-            mykey = KeyGen.Generate(10, "con.")
+            MyKey = KeyGen.Generate(10, "con.")
         };
         conexión.SetOnUse();
-        return (conexión, conexión.mykey);
+        return (conexión, conexión.MyKey);
 
     }
 
@@ -226,7 +226,7 @@ public sealed class Conexión
     /// <summary>
     /// Obtiene una Conexión alterna a la base de datos
     /// </summary>
-    public static Conexión GetForcedConnection(string? message = null)
+    public static Conexión GetForcedConnection()
     {
         return new();
     }

@@ -242,7 +242,7 @@ public class Profiles
             if (profiles == null)
                 return new(Responses.NotExistProfile);
 
-            return new(Responses.Success, profiles ?? new());
+            return new(Responses.Success, profiles ?? []);
         }
         catch
         {

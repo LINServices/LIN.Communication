@@ -172,6 +172,6 @@ public partial class ChatHub : Hub
 
 
 
-    public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = new();
+    public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = [];
   
 }
