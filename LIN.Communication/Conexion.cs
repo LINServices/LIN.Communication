@@ -2,7 +2,7 @@
 
 
 /// <summary>
-/// Conexión con la base de datos
+/// Conexión con la base de datos.
 /// </summary>
 public sealed class Conexión
 {

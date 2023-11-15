@@ -16,7 +16,7 @@ public class Profiles
     public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data)
     {
 
-        // Contexto
+        // Contexto de conexión.
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
@@ -31,7 +31,7 @@ public class Profiles
 
 
     /// <summary>
-    /// Obtiene un perfil
+    /// Obtiene un perfil.
     /// </summary>
     /// <param name="id">ID del perfil</param>
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id)
@@ -72,6 +72,10 @@ public class Profiles
 
 
 
+    /// <summary>
+    /// Obtiene una lista de usuarios según los Ids de las cuentas.
+    /// </summary>
+    /// <param name="ids">Ids de las cuentas</param>
     public async static Task<ReadAllResponse<ProfileModel>> ReadByAccounts(IEnumerable<int> ids)
     {
 
@@ -89,7 +93,10 @@ public class Profiles
 
 
 
-
+    /// <summary>
+    /// Obtener la ultima conexión.
+    /// </summary>
+    /// <param name="id">Id del perfil.</param>
     public async static Task<ReadOneResponse<DateTime>> GetLastConnection(int id)
     {
 
@@ -106,6 +113,12 @@ public class Profiles
     }
 
 
+
+    /// <summary>
+    /// Establecer la ultima conexión.
+    /// </summary>
+    /// <param name="id">Id del perfil.</param>
+    /// <param name="time">Hora de conexión</param>
     public async static Task<ResponseBase> SetLastConnection(int id, DateTime time)
     {
 
@@ -127,7 +140,6 @@ public class Profiles
 
 
 
-
     /// <summary>
     /// Crea un perfil.
     /// </summary>
@@ -137,7 +149,7 @@ public class Profiles
     {
         // ID
         data.Profile.ID = 0;
-        data.Profile.Friends = new();
+        data.Profile.Friends = [];
 
         // Ejecución
         try
@@ -155,18 +167,18 @@ public class Profiles
 
 
     /// <summary>
-    /// Obtiene un perfil
+    /// Obtiene un perfil.
     /// </summary>
     /// <param name="id">ID del perfil</param>
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)
     {
 
-
         // Ejecución
         try
         {
 
+            // Consulta.
             var profile = await (from P in context.DataBase.Profiles
                                  where P.ID == id
                                  select P).FirstOrDefaultAsync();
@@ -189,11 +201,11 @@ public class Profiles
     public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id, Conexión context)
     {
 
-
         // Ejecución
         try
         {
 
+            // Consulta.
             var profile = await (from P in context.DataBase.Profiles
                                  where P.AccountID == id
                                  select P).FirstOrDefaultAsync();
@@ -211,23 +223,26 @@ public class Profiles
 
 
 
-   
+    /// <summary>
+    /// Obtiene una lista de usuarios según los Ids de las cuentas.
+    /// </summary>
+    /// <param name="ids">Ids de las cuentas</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadAllResponse<ProfileModel>> ReadByAccounts(IEnumerable<int> ids, Conexión context)
     {
-
 
         // Ejecución
         try
         {
-
-            var profile = await (from P in context.DataBase.Profiles
+            // Consulta.
+            var profiles = await (from P in context.DataBase.Profiles
                                  where ids.Contains(P.AccountID)
                                  select P).ToListAsync();
 
-            if (profile == null)
+            if (profiles == null)
                 return new(Responses.NotExistProfile);
 
-            return new(Responses.Success, profile ?? new());
+            return new(Responses.Success, profiles ?? new());
         }
         catch
         {
@@ -237,7 +252,12 @@ public class Profiles
 
 
 
-
+    /// <summary>
+    /// Establecer la ultima conexión.
+    /// </summary>
+    /// <param name="id">Id del perfil.</param>
+    /// <param name="time">Hora de conexión</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ResponseBase> SetLastConnection(int id, DateTime time, Conexión context)
     {
 
@@ -246,6 +266,7 @@ public class Profiles
         try
         {
 
+            // Consulta.
             var profile = await (from P in context.DataBase.Profiles
                                  where P.AccountID == id
                                  select P).FirstOrDefaultAsync();
@@ -265,20 +286,26 @@ public class Profiles
     }
 
 
+
+    /// <summary>
+    /// Obtener la ultima conexión.
+    /// </summary>
+    /// <param name="id">Id del perfil.</param>
+    /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<DateTime>> GetLastConnection(int id, Conexión context)
     {
-
 
         // Ejecución
         try
         {
 
-            var profile = await (from P in context.DataBase.Profiles
+            // Consulta.
+            var lastConnection = await (from P in context.DataBase.Profiles
                                  where P.AccountID == id
                                  select P.LastConnection).FirstOrDefaultAsync();
 
-
-            return new(Responses.Success, profile);
+            // Respuesta.
+            return new(Responses.Success, lastConnection);
         }
         catch
         {
