@@ -26,7 +26,7 @@ public class MembersController : ControllerBase
             Model = new()
             {
                 ID = id,
-                IsOnline = profile?.Devices.Any() ?? false,
+                IsOnline = profile?.Devices.Count != 0,
                 LastTime = profile?.LastTime ?? (await Data.Profiles.GetLastConnection(id)).Model,
             }
         };

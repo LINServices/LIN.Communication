@@ -186,6 +186,10 @@ public class Conversations
                                 where M.ID == id
                                 select M).FirstOrDefaultAsync();
 
+
+            if (groups == null)
+                return new(Responses.NotRows);
+
             return new(Responses.Success, groups);
         }
         catch

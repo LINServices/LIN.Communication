@@ -31,11 +31,11 @@ public class ConversationController : ControllerBase
 
         // Organizar el modelo.
         modelo.ID = 0;
-        modelo.Mensajes = new();
-        modelo.Members ??= new();
+        modelo.Mensajes = [];
+        modelo.Members ??= [];
 
         // Integrantes.
-        List<MemberChatModel> members = new();
+        List<MemberChatModel> members = [];
         foreach(var member in modelo.Members)
         {
             member.ID = 0;
@@ -90,7 +90,7 @@ public class ConversationController : ControllerBase
         var onHub = Mems.Sessions[profileID];
         if (onHub != null)
         {
-            onHub.Conversations = new();
+            onHub.Conversations = [];
             foreach (var c in result.Models)
                 onHub.Conversations.Add(c.Conversation.Name);
         }
@@ -108,9 +108,30 @@ public class ConversationController : ControllerBase
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/one")]
-    [Experimental("Este método no tiene las medidas de seguridad requerida.")]
     public async Task<HttpReadOneResponse<ConversationModel>> ReadOne([FromQuery] int id, [FromHeader] string token)
     {
+
+        // Información del token.
+        var (isValid, profileId, _, _) = Jwt.Validate(token);
+
+        // Valida el token.
+        if (isValid)
+            return new()
+            {
+                Message = "El token es invalido.",
+                Response = Responses.Unauthorized
+            };
+
+        // Validación Iam.
+        var iam = await Services.Iam.Conversation.Validate(profileId, id);
+
+        // Valida el acceso Iam.
+        if (iam == Types.Enumerations.IamLevels.NotAccess)
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes acceso a esta conversación."
+            };
 
         // Obtiene el usuario
         var result = await Data.Conversations.ReadOne(id);
