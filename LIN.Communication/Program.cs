@@ -12,7 +12,6 @@ global using Microsoft.AspNetCore.SignalR;
 global using LIN.Types.Auth.Enumerations;
 global using LIN.Communication.Memory;
 using LIN.Communication.Data;
-using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,7 +78,11 @@ Jwt.Open();
 app.UseHttpsRedirection();
 
 
-app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat");
+app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
+{
+    options.AllowStatefulReconnects = true;
+    options.ApplicationMaxBufferSize = long.MaxValue;
+});
 app.UseAuthorization();
 
 app.MapControllers();
