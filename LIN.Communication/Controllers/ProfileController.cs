@@ -147,8 +147,6 @@ public class ProfileController : ControllerBase
 
 
 
-
-
     /// <summary>
     /// Obtiene los miembros de una conversación
     /// </summary>
@@ -192,5 +190,6 @@ public class ProfileController : ControllerBase
         };
 
     }
+
 
 }

@@ -16,10 +16,10 @@ public class MessagesController : ControllerBase
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id, [FromHeader] int lastID, [FromHeader] string token)
     {
 
-        // Obtiene la info del token
+        // Obtiene la info del token.
         var (isValid, profileID, _, _) = Jwt.Validate(token);
 
-        // Token es invalido
+        // Token es invalido.
         if (!isValid)
             return new ReadAllResponse<MessageModel>()
             {
@@ -27,10 +27,10 @@ public class MessagesController : ControllerBase
                 Response = Responses.Unauthorized
             };
 
-        // Busca el acceso
+        // Busca el acceso.
         var have = await Data.Conversations.HaveAccessFor(profileID, id);
 
-        // Si no tiene acceso
+        // Si no tiene acceso.
         if (have.Response != Responses.Success)
             return new ReadAllResponse<MessageModel>
             {
@@ -38,10 +38,10 @@ public class MessagesController : ControllerBase
                 Message = "No tienes acceso a esta conversación."
             };
         
-        // Obtiene el usuario
+        // Obtiene el usuario.
         var result = await Data.Messages.ReadAll(id, lastID);
 
-        // Retorna el resultado
+        // Retorna el resultado.
         return result ?? new();
 
     }

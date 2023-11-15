@@ -1,6 +1,4 @@
-﻿using LIN.Communication.Memory;
-
-namespace LIN.Communication.Controllers;
+﻿namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
@@ -9,9 +7,10 @@ public class MembersController : ControllerBase
 
 
     /// <summary>
-    /// Un usuario esta online
+    /// Validación si un usuario esta online.
     /// </summary>
-    /// <param name="id">ID del usuario</param>
+    /// <param name="id">Id del usuario.</param>
+    /// <returns></returns>
     [HttpGet("isOnline")]
     public async Task<HttpReadOneResponse<IsOnlineResult>> ReadOnline([FromQuery] int id)
     {
@@ -35,7 +34,7 @@ public class MembersController : ControllerBase
 
 
     /// <summary>
-    /// Obtiene los miembros de una conversación
+    /// Obtiene los miembros de una conversación.
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
@@ -123,6 +122,12 @@ public class MembersController : ControllerBase
 
 
 
+    /// <summary>
+    /// Agrega un miembro a una conversación.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     [HttpGet("{id}/members/add")]
     public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromHeader] string token)
     {

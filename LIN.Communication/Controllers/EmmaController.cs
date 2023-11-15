@@ -9,12 +9,12 @@ public class EmmaController : ControllerBase
 
 
     /// <summary>
-    /// Consulta para LIN Allo Emma
+    /// Consulta para LIN Allo Emma.
     /// </summary>
-    /// <param name="token">Token de acceso</param>
-    /// <param name="consult">Consulta</param>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="consult">Consulta.</param>
     [HttpPost]
-    public async Task<HttpReadOneResponse<ResponseIAModel>> Response([FromHeader] string token, [FromBody] string consult)
+    public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string token, [FromBody] string consult)
     {
 
         // Info del token.
