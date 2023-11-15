@@ -1,4 +1,6 @@
-﻿namespace LIN.Communication.Controllers;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
@@ -54,10 +56,9 @@ public class MembersController : ControllerBase
             };
 
         // Busca el acceso
-        var have = await Data.Conversations.HaveAccessFor(profileID, id);
+        var iam = await Services.Iam.Conversation.Validate(profileID, id);
 
-        // Si no tiene acceso
-        if (have.Response != Responses.Success)
+        if (iam == Types.Enumerations.IamLevels.NotAccess)
             return new ReadAllResponse<MemberChatModel>
             {
                 Response = Responses.Unauthorized,
@@ -80,41 +81,64 @@ public class MembersController : ControllerBase
     /// <param name="id">ID de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("{id}/members/info")]
-    public async Task<HttpReadAllResponse<SessionModel<MemberChatModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token)
+    public async Task<HttpReadAllResponse<SessionModel<MemberChatModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
     {
 
-        // Obtiene el usuario
-        var result = await Data.Conversations.ReadMembers(id);
+        // Información del token.
+        var (isValid, profile, _, _) = Jwt.Validate(token);
 
-        var x = result.Models.Select(T => T.Profile.AccountID).ToList();
+        // Si el token es invalido.
+        if (!isValid)
+            return new()
+            {
+                Message = "Token invalido.",
+                Response = Responses.Unauthorized
+            };
 
-        var resultAccounts = await LIN.Access.Auth.Controllers.Account.Read(x, token);
+        // Validación Iam.
+        var iam = await Services.Iam.Conversation.Validate(profile, id);
+
+        // Valida el acceso Iam.
+        if (iam == Types.Enumerations.IamLevels.NotAccess)
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes acceso a esta conversación."
+            };
 
 
-        var re = (from P in result.Models
-                  join A in resultAccounts.Models
-                  on P.Profile.AccountID equals A.ID
+        // Obtiene los miembros.
+        var members = await Data.Conversations.ReadMembers(id);
+
+        // Obtiene los Id de las cuentas.
+        var accountsId = members.Models.Select(member => member.Profile.AccountID).ToList();
+
+        // Información de las cuentas.
+        var accounts = await Access.Auth.Controllers.Account.Read(accountsId, tokenAuth);
+
+        // Armar los modelos.
+        var response = (from member in members.Models
+                  join account in accounts.Models
+                  on member.Profile.AccountID equals account.ID
                   select new SessionModel<MemberChatModel>
                   {
-                      Account = A,
+                      Account = account,
                       Profile = new()
                       {
-                          Rol = P.Rol,
+                          Rol = member.Rol,
                           Profile = new()
                           {
-                              ID = P.Profile.ID,
-                              Alias = P.Profile.Alias,
-                              LastConnection = P.Profile.LastConnection,
+                              ID = member.Profile.ID,
+                              Alias = member.Profile.Alias,
+                              LastConnection = member.Profile.LastConnection,
                           }
-
                       }
                   }).ToList();
-
 
         // Retorna el resultado
         return new ReadAllResponse<SessionModel<MemberChatModel>>
         {
-            Models = re,
+            Models = response,
             Response = Responses.Success
         };
 
@@ -129,6 +153,7 @@ public class MembersController : ControllerBase
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpGet("{id}/members/add")]
+    [Experimental("Este método no esta completo y faltan los limites de seguridad.")]
     public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromHeader] string token)
     {
 
@@ -179,4 +204,6 @@ public class MembersController : ControllerBase
 
 
     }
+
+
 }

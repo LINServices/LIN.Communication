@@ -1,4 +1,5 @@
 using LIN.Types.Emma.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LIN.Communication.Controllers;
 
@@ -14,6 +15,7 @@ public class EmmaController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="consult">Consulta.</param>
     [HttpPost]
+    [Experimental("Este método necesita la función de Threads")]
     public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string token, [FromBody] string consult)
     {
 

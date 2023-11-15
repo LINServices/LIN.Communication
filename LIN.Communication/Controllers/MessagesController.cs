@@ -27,17 +27,17 @@ public class MessagesController : ControllerBase
                 Response = Responses.Unauthorized
             };
 
-        // Busca el acceso.
-        var have = await Data.Conversations.HaveAccessFor(profileID, id);
+        // Valida el acceso Iam.
+        var iam = await Services.Iam.Conversation.Validate(profileID, id);
 
-        // Si no tiene acceso.
-        if (have.Response != Responses.Success)
-            return new ReadAllResponse<MessageModel>
+        // Valida el acceso Iam.
+        if (iam == Types.Enumerations.IamLevels.NotAccess)
+            return new()
             {
                 Response = Responses.Unauthorized,
                 Message = "No tienes acceso a esta conversación."
             };
-        
+
         // Obtiene el usuario.
         var result = await Data.Messages.ReadAll(id, lastID);
 

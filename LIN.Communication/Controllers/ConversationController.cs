@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace LIN.Communication.Controllers;
 
 
@@ -106,6 +108,7 @@ public class ConversationController : ControllerBase
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/one")]
+    [Experimental("Este método no tiene las medidas de seguridad requerida.")]
     public async Task<HttpReadOneResponse<ConversationModel>> ReadOne([FromQuery] int id, [FromHeader] string token)
     {
 
