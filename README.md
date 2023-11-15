@@ -4,6 +4,6 @@ LIN Communication Services es un servicio de comunicación en tiempo real que ut
 
 ## Requisitos
 
-- .NET Core SDK (versión 3.1 o superior)
+- .NET Core SDK (versión 8)
 - SQL Server instalado y configurado
 - Conexión a internet (para la comunicación en tiempo real)

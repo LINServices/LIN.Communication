@@ -1,16 +1,15 @@
-global using LIN.Types.Communication.Models;
-global using Microsoft.EntityFrameworkCore;
-global using LIN.Communication;
-global using LIN.Types.Enumerations;
-global using LIN.Types.Responses;
-global using LIN.Modules;
-global using Microsoft.AspNetCore.Mvc;
-global using LIN.Types.Auth.Abstracts;
-global using LIN.Communication.Services;
 global using Http.ResponsesList;
-global using Microsoft.AspNetCore.SignalR;
-global using LIN.Types.Auth.Enumerations;
+global using LIN.Communication;
 global using LIN.Communication.Memory;
+global using LIN.Communication.Services;
+global using LIN.Modules;
+global using LIN.Types.Auth.Abstracts;
+global using LIN.Types.Auth.Enumerations;
+global using LIN.Types.Communication.Models;
+global using LIN.Types.Responses;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.AspNetCore.SignalR;
+global using Microsoft.EntityFrameworkCore;
 using LIN.Communication.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,8 +53,8 @@ if (sqlConnection.Length > 0)
 var app = builder.Build();
 
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 
 app.UseCors("AllowAnyOrigin");
