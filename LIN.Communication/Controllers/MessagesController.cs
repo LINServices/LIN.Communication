@@ -12,7 +12,7 @@ public class MessagesController : ControllerBase
     /// <param name="id">ID de la conversación</param>
     /// <param name="lastID">A partir del mensaje con ID</param>
     /// <param name="token">Token de acceso</param>
-    [HttpGet("{id}/messages")]
+    [HttpGet("{id:int}/messages")]
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id, [FromHeader] int lastID, [FromHeader] string token)
     {
 
@@ -31,7 +31,7 @@ public class MessagesController : ControllerBase
         var iam = await Services.Iam.Conversation.Validate(profileID, id);
 
         // Valida el acceso Iam.
-        if (iam == Types.Enumerations.IamLevels.NotAccess)
+        if (iam == IamLevels.NotAccess)
             return new()
             {
                 Response = Responses.Unauthorized,
@@ -45,6 +45,7 @@ public class MessagesController : ControllerBase
         return result ?? new();
 
     }
+
 
 
 }

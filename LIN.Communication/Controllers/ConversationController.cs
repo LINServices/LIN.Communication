@@ -6,7 +6,6 @@ public class ConversationController : ControllerBase
 {
 
 
-
     /// <summary>
     /// Crear nueva conversación.
     /// </summary>
@@ -50,7 +49,7 @@ public class ConversationController : ControllerBase
             {
                 ID = profileID
             },
-            Rol = Types.Communication.Enumerations.MemberRoles.Admin
+            Rol = MemberRoles.Admin
         });
 
         // Establecer los miembros.
@@ -124,7 +123,7 @@ public class ConversationController : ControllerBase
         var iam = await Services.Iam.Conversation.Validate(profileId, id);
 
         // Valida el acceso Iam.
-        if (iam == Types.Enumerations.IamLevels.NotAccess)
+        if (iam == IamLevels.NotAccess)
             return new()
             {
                 Response = Responses.Unauthorized,

@@ -37,7 +37,7 @@ public class MembersController : ControllerBase
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
-    [HttpGet("{id}/members")]
+    [HttpGet("{id:int}/members")]
     public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromRoute] int id, [FromHeader] string token)
     {
 
@@ -77,7 +77,7 @@ public class MembersController : ControllerBase
     /// </summary>
     /// <param name="id">ID de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
-    [HttpGet("{id}/members/info")]
+    [HttpGet("{id:int}/members/info")]
     public async Task<HttpReadAllResponse<SessionModel<MemberChatModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
     {
 
@@ -115,22 +115,22 @@ public class MembersController : ControllerBase
 
         // Armar los modelos.
         var response = (from member in members.Models
-                  join account in accounts.Models
-                  on member.Profile.AccountID equals account.ID
-                  select new SessionModel<MemberChatModel>
-                  {
-                      Account = account,
-                      Profile = new()
-                      {
-                          Rol = member.Rol,
-                          Profile = new()
-                          {
-                              ID = member.Profile.ID,
-                              Alias = member.Profile.Alias,
-                              LastConnection = member.Profile.LastConnection,
-                          }
-                      }
-                  }).ToList();
+                        join account in accounts.Models
+                        on member.Profile.AccountID equals account.ID
+                        select new SessionModel<MemberChatModel>
+                        {
+                            Account = account,
+                            Profile = new()
+                            {
+                                Rol = member.Rol,
+                                Profile = new()
+                                {
+                                    ID = member.Profile.ID,
+                                    Alias = member.Profile.Alias,
+                                    LastConnection = member.Profile.LastConnection,
+                                }
+                            }
+                        }).ToList();
 
         // Retorna el resultado
         return new ReadAllResponse<SessionModel<MemberChatModel>>
@@ -149,58 +149,42 @@ public class MembersController : ControllerBase
     /// <param name="id"></param>
     /// <param name="token"></param>
     /// <returns></returns>
-    [HttpGet("{id}/members/add")]
-    [Experimental("Este método no esta completo y faltan los limites de seguridad.")]
-    public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromHeader] string token)
+    [HttpGet("{id:int}/members/add")]
+    public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromRoute] int profileId, [FromHeader] string token)
     {
 
-        var account = await LIN.Access.Auth.Controllers.Account.Read(id, token);
+        // Información del token.
+        var (isValid, meId, _, _) = Jwt.Validate(token);
 
-        if (account.Response != Responses.Success)
-        {
-            return new ResponseBase()
+        // Invalido.
+        if (!isValid)
+            return new()
             {
-                Message = "Cuenta invalida",
-                Response = account.Response
+                Message = "Token invalido",
+                Response = Responses.Unauthorized
             };
-        }
 
+        // Validación Iam.
+        var iam = await Services.Iam.Conversation.Validate(meId, id);
 
-        var getProfile = await Data.Profiles.ReadByAccount(account.Model.ID);
+        // Valida el acceso Iam.
+        if (iam != IamLevels.Privileged)
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes permisos para modificar a esta conversación."
+            };
 
-        if (getProfile.Response == Responses.NotExistProfile)
+        // Insertar el integrante.
+        var response = await Data.Conversations.InsertMember(id, profileId);
+
+        return new()
         {
-
-            // Crear perfil
-            var res = await Data.Profiles.Create(new()
-            {
-                Account = account.Model,
-                Profile = new()
-                {
-                    AccountID = account.Model.ID,
-                    Alias = account.Model.Nombre
-                }
-            });
-
-            if (res.Response != Responses.Success)
-            {
-                return new ReadOneResponse<AuthModel<ProfileModel>>
-                {
-                    Response = Responses.UnavailableService,
-                    Message = "Un error grave ocurrió"
-                };
-            }
-
-            getProfile.Model = res.Model;
-
-        }
-
-
-        return await Data.Conversations.InsertMember(id, getProfile.Model.ID);
-
-
-
+            Message = response.Response == Responses.Success ? "Correcto" : "No se pudo insertar el integrante.",
+            Response = response.Response
+        };
     }
+    
 
 
 }

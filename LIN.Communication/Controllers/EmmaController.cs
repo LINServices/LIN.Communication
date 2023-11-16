@@ -31,7 +31,6 @@ public class EmmaController : ControllerBase
         // Modelo de Emma.
         var modelIA = new Access.OpenIA.IAModelBuilder(Configuration.GetConfiguration("openIa:key"));
 
-
         // Valida el hilo.
         var threadModel = ThreadsEmma.Threads.Where(x => x.Key == (thread ?? "")).FirstOrDefault();
 
@@ -77,12 +76,12 @@ public class EmmaController : ControllerBase
                 modelIA.LoadFromEmma(x.Content);
         }
 
-        // Respuesta
+        // Respuesta del modelo IA.
         var response = await modelIA.Reply();
 
+        // Si es correcto.
         if (response.IsSuccess)
             threadModel.Value.Add(new(response.Content, Roles.Emma));
-
 
         // Respuesta
         return new ReadOneResponse<ResponseIAModel>()
