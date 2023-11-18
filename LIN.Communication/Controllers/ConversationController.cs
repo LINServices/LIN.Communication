@@ -19,7 +19,7 @@ public class ConversationController : ControllerBase
         var (isValid, profileID, _, _) = Jwt.Validate(token);
 
         // Valida el token.
-        if (isValid)
+        if (!isValid)
             return new()
             {
                 Message = "El token es invalido.",
