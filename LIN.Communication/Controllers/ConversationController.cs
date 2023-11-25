@@ -33,7 +33,7 @@ public class ConversationController : ControllerBase
 
         // Integrantes.
         List<MemberChatModel> members = [];
-        foreach(var member in modelo.Members)
+        foreach (var member in modelo.Members)
         {
             member.ID = 0;
             if (member.Profile.ID == profileID)
@@ -70,11 +70,11 @@ public class ConversationController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/all")]
-    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token)
+    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token, [FromHeader] string tokenAuth)
     {
 
         // Información del token.
-        var (isValid, profileID, _, _) = Jwt.Validate(token);
+        var (isValid, profileID, accountId, _) = Jwt.Validate(token);
 
         // Si el token es invalido.
         if (!isValid)
@@ -82,6 +82,15 @@ public class ConversationController : ControllerBase
 
         // Obtiene el usuario.
         var result = await Data.Conversations.ReadAll(profileID);
+
+        // Cuentas.
+        List<int> accounts = [];
+
+        foreach (var account in result.Models)
+            accounts.AddRange(account.Conversation.Members.Select(t => t.Profile.AccountID));
+
+        var x = await LIN.Access.Auth.Controllers.Account.Read(accounts, tokenAuth);
+
 
         // Sesión en memoria.
         var onHub = Mems.Sessions[profileID];
@@ -93,7 +102,12 @@ public class ConversationController : ControllerBase
         }
 
         // Retorna el resultado
-        return result ?? new();
+        return new ReadAllResponse<MemberChatModel>
+        {
+            Models = result.Models,
+            AlternativeObject = x.Models,
+            Response = result.Response,
+        };
 
     }
 
@@ -105,14 +119,14 @@ public class ConversationController : ControllerBase
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/one")]
-    public async Task<HttpReadOneResponse<ConversationModel>> ReadOne([FromQuery] int id, [FromHeader] string token)
+    public async Task<HttpReadOneResponse<MemberChatModel>> ReadOne([FromQuery] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
     {
 
         // Información del token.
         var (isValid, profileId, _, _) = Jwt.Validate(token);
 
         // Valida el token.
-        if (isValid)
+        if (!isValid)
             return new()
             {
                 Message = "El token es invalido.",
@@ -133,8 +147,22 @@ public class ConversationController : ControllerBase
         // Obtiene el usuario
         var result = await Data.Conversations.ReadOne(id);
 
-        // Retorna el resultado
-        return result ?? new();
+
+
+        // Cuentas.
+        List<int> accounts = result.Model.Conversation.Members.Select(t => t.Profile.AccountID).ToList();
+
+
+        var x = await LIN.Access.Auth.Controllers.Account.Read(accounts, tokenAuth);
+
+
+        return new ReadOneResponse<MemberChatModel>()
+        {
+            AlternativeObject = x.Models,
+            Model = result.Model,
+            Response = result.Response,
+            
+        };
 
     }
 

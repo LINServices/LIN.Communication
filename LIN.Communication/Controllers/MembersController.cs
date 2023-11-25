@@ -184,7 +184,87 @@ public class MembersController : ControllerBase
             Response = response.Response
         };
     }
-    
+
+
+
+
+
+
+    [HttpPost("find")]
+    public async Task<HttpCreateResponse> Find([FromHeader] string token, [FromHeader] int friendId)
+    {
+
+        // Información del token.
+        var (isValid, profile, _, _) = Jwt.Validate(token);
+
+        // Si el token es invalido.
+        if (!isValid)
+            return new()
+            {
+                Message = "Token invalido.",
+                Response = Responses.Unauthorized
+            };
+
+
+        var (context, contextKey) = Conexión.GetOneConnection();
+
+
+        var c = await (from u in context.DataBase.Conversaciones
+                       where u.Type == ConversationsTypes.Personal
+                       && u.Members.Count == 2
+                       && u.Members.Where(t => t.Profile.ID == friendId).Any()
+                       && u.Members.Where(t => t.Profile.ID == profile).Any()
+                       select u).FirstOrDefaultAsync();
+
+
+        if (c != null)
+        {
+            return new CreateResponse()
+            {
+                Response = Responses.Success,
+                LastID = c.ID,
+                Message ="Se encontró."
+            };
+        }
+
+
+        // Crear el chat
+        var response = await Data.Conversations.Create(new()
+        {
+            ID = 0,
+            Name = "Chat Personal",
+            Type = ConversationsTypes.Personal,
+            Visibility = ConversationVisibility.@public,
+            Members = [
+                     new MemberChatModel()
+                     {
+                         ID = 0,
+                         Profile = new()
+                         {
+                             ID = profile
+                         },
+                         Rol = MemberRoles.Admin
+                     },
+
+                new MemberChatModel()
+                {
+                    ID = 0,
+                    Profile = new()
+                    {
+                        ID = friendId
+                    },
+                    Rol = MemberRoles.Admin
+                }
+                 ]
+        }, context);
+
+
+
+        // Retorna el resultado
+        return response;
+
+    }
+
 
 
 }

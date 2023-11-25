@@ -55,7 +55,7 @@ public class Conversations
     /// Obtiene una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
-    public async static Task<ReadOneResponse<ConversationModel>> ReadOne(int id)
+    public async static Task<ReadOneResponse<MemberChatModel>> ReadOne(int id)
     {
 
         // Contexto
@@ -161,13 +161,30 @@ public class Conversations
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Members
+            var groups = await (from M in context.DataBase.Members.Include(x => x.Conversation.Members)
                                 where M.Profile.ID == id
-                                && M.Conversation.Visibility == Types.Communication.Enumerations.ConversationVisibility.@public
+                                && M.Conversation.Visibility == ConversationVisibility.@public
                                 select new MemberChatModel
                                 {
-                                    Conversation = M.Conversation,
-                                    Rol = M.Rol,
+                                    Conversation = new ConversationModel
+                                    {
+                                        ID = M.Conversation.ID,
+                                        Name = M.Conversation.Name,
+                                        Type = M.Conversation.Type,
+                                        Visibility = M.Conversation.Visibility,
+                                        Members = (M.Conversation.Type == ConversationsTypes.Personal)
+                                                    ? (from member in M.Conversation.Members
+                                                       select new MemberChatModel
+                                                       {
+                                                           ID = member.ID,
+                                                           Profile = new()
+                                                           {
+                                                               ID = member.Profile.ID,
+                                                               AccountID = member.Profile.AccountID,
+                                                           }
+                                                       }).ToList() : new List<MemberChatModel>()
+                                    },
+                                    Rol = M.Rol
                                 }).ToListAsync();
 
             return new(Responses.Success, groups);
@@ -185,7 +202,7 @@ public class Conversations
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<ConversationModel>> ReadOne(int id, Conexión context)
+    public async static Task<ReadOneResponse<MemberChatModel>> ReadOne(int id, Conexión context)
     {
 
         // Ejecución
@@ -193,9 +210,32 @@ public class Conversations
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Conversaciones
+            var groups = await (from M in context.DataBase.Members.Include(x => x.Conversation.Members)
                                 where M.ID == id
-                                select M).FirstOrDefaultAsync();
+                                && M.Conversation.Visibility == ConversationVisibility.@public
+                                select new MemberChatModel
+                                {
+                                    Conversation = new ConversationModel
+                                    {
+                                        ID = M.Conversation.ID,
+                                        Name = M.Conversation.Name,
+                                        Type = M.Conversation.Type,
+                                        Visibility = M.Conversation.Visibility,
+                                        Members = (M.Conversation.Type == ConversationsTypes.Personal)
+                                                    ? (from member in M.Conversation.Members
+                                                       select new MemberChatModel
+                                                       {
+                                                           ID = member.ID,
+                                                           Rol = member.Rol,
+                                                           Profile = new()
+                                                           {
+                                                               ID = member.Profile.ID,
+                                                               AccountID = member.Profile.AccountID,
+                                                           }
+                                                       }).ToList() : new List<MemberChatModel>()
+                                    },
+                                    Rol = M.Rol
+                                }).FirstOrDefaultAsync();
 
 
             if (groups == null)
@@ -270,12 +310,12 @@ public class Conversations
             }
 
 
-            var exist   = await (from M in context.DataBase.Conversaciones
-                                           where M.ID == id
-                                           join MM in context.DataBase.Members
-                                           on M.ID equals MM.Conversation.ID
-                                           where MM.Profile.ID == profile
-                                           select MM).AnyAsync();
+            var exist = await (from M in context.DataBase.Conversaciones
+                               where M.ID == id
+                               join MM in context.DataBase.Members
+                               on M.ID equals MM.Conversation.ID
+                               where MM.Profile.ID == profile
+                               select MM).AnyAsync();
 
             if (exist)
             {
