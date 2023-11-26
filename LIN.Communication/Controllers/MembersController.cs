@@ -17,6 +17,14 @@ public class MembersController : ControllerBase
         // Obtiene el perfil
         var profile = Mems.Sessions[id];
 
+        // Perfil no existe.
+        if (profile == null)
+            return new()
+            {
+                Message = "Sesión no encontrada",
+                Response = Responses.NotRows
+            };
+        
         return new ReadOneResponse<IsOnlineResult>()
         {
             Response = Responses.Success,
