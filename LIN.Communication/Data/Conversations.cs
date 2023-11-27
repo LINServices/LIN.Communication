@@ -272,7 +272,7 @@ public class Conversations
                                     {
                                         Alias = M.Profile.Alias,
                                         ID = M.Profile.ID,
-                                        AccountID = M.Profile.ID
+                                        AccountID = M.Profile.AccountID
                                     },
                                     Rol = M.Rol,
                                 }).ToListAsync();
