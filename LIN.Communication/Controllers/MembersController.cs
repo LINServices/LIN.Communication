@@ -158,7 +158,7 @@ public class MembersController : ControllerBase
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpGet("{id:int}/members/add")]
-    public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromRoute] int profileId, [FromHeader] string token)
+    public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromQuery] int profileId, [FromHeader] string token)
     {
 
         // Información del token.
@@ -195,9 +195,11 @@ public class MembersController : ControllerBase
 
 
 
-
-
-
+    /// <summary>
+    /// Encuentra o crea una conversación personal.
+    /// </summary>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="friendId">Id del otro usuario.</param>
     [HttpPost("find")]
     public async Task<HttpCreateResponse> Find([FromHeader] string token, [FromHeader] int friendId)
     {
@@ -214,23 +216,26 @@ public class MembersController : ControllerBase
             };
 
 
+        // Contexto de conexión.
         var (context, contextKey) = Conexión.GetOneConnection();
 
-
-        var c = await (from u in context.DataBase.Conversaciones
+        // Consulta.
+        var conversation = await (from u in context.DataBase.Conversaciones
                        where u.Type == ConversationsTypes.Personal
                        && u.Members.Count == 2
                        && u.Members.Where(t => t.Profile.ID == friendId).Any()
                        && u.Members.Where(t => t.Profile.ID == profile).Any()
                        select u).FirstOrDefaultAsync();
 
-
-        if (c != null)
+        
+        // Si ya existe.
+        if (conversation != null)
         {
+            context.CloseActions(contextKey);
             return new CreateResponse()
             {
                 Response = Responses.Success,
-                LastID = c.ID,
+                LastID = conversation.ID,
                 Message ="Se encontró."
             };
         }
@@ -266,7 +271,8 @@ public class MembersController : ControllerBase
                  ]
         }, context);
 
-
+        // Cierra la conexión.
+        context.CloseActions(contextKey);
 
         // Retorna el resultado
         return response;
