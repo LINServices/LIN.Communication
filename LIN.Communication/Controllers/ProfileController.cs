@@ -176,7 +176,7 @@ public class ProfileController : ControllerBase
         var final = from P in profiles.Models
                     join A in accounts.Models
                     on P.AccountID equals A.ID
-                    select new LIN.Types.Auth.Abstracts.SessionModel<ProfileModel>
+                    select new LIN.Types.Identity.Abstracts.SessionModel<ProfileModel>
                     {
                         Account = A,
                         Profile = P
