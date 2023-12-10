@@ -157,7 +157,7 @@ public class ProfileController : ControllerBase
     {
 
         // Busca el acceso
-        var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token, false);
+        var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token);
 
         // Si no tiene acceso
         if (accounts.Response != Responses.Success)
