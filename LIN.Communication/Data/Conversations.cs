@@ -140,7 +140,7 @@ public class Conversations
             await context.DataBase.SaveChangesAsync();
             return new(Responses.Success, data.ID);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
