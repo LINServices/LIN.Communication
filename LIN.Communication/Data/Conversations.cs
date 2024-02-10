@@ -33,7 +33,7 @@ public class Conversations
     /// <summary>
     /// Obtiene las conversaciones asociadas a un perfil
     /// </summary>
-    /// <param name="id">ID del perfil.</param>
+    /// <param name="id">Id del perfil.</param>
     public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id)
     {
 
@@ -97,7 +97,7 @@ public class Conversations
     /// <summary>
     /// Obtiene los miembros asociadas a una conversación.
     /// </summary>
-    /// <param name="id">ID de la conversación.</param>
+    /// <param name="id">Id de la conversación.</param>
     public async static Task<ReadAllResponse<MemberChatModel>> ReadMembers(int id)
     {
 
@@ -126,7 +126,7 @@ public class Conversations
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<CreateResponse> Create(ConversationModel data, Conexión context)
     {
-        // ID
+        // Id
         data.ID = 0;
 
         // Ejecución
@@ -151,7 +151,7 @@ public class Conversations
     /// <summary>
     /// Obtiene las conversaciones asociadas a un perfil.
     /// </summary>
-    /// <param name="id">ID del perfil.</param>
+    /// <param name="id">Id del perfil.</param>
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
     {
@@ -254,7 +254,7 @@ public class Conversations
     /// <summary>
     /// Obtiene los miembros asociadas a una conversación.
     /// </summary>
-    /// <param name="id">ID de la conversación.</param>
+    /// <param name="id">Id de la conversación.</param>
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadAllResponse<MemberChatModel>> ReadMembers(int id, Conexión context)
     {

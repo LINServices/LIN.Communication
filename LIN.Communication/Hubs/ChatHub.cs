@@ -44,7 +44,7 @@ public partial class ChatHub : Hub
     /// <summary>
     /// Une una conexión a un grupo de tiempo real.
     /// </summary>
-    /// <param name="name">ID del grupo</param>
+    /// <param name="name">Id del grupo</param>
     public async Task JoinGroup(int name)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, name.ToString());
@@ -55,7 +55,7 @@ public partial class ChatHub : Hub
     /// <summary>
     /// Elimina un usuario de un grupo.
     /// </summary>
-    /// <param name="name">ID del grupo</param>
+    /// <param name="name">Id del grupo</param>
     public async Task LeaveGroup(string name)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
@@ -66,8 +66,8 @@ public partial class ChatHub : Hub
     /// <summary>
     /// Enviar un mensaje.
     /// </summary>
-    /// <param name="me">ID del perfil</param>
-    /// <param name="groupName">ID del grupo</param>
+    /// <param name="me">Id del perfil</param>
+    /// <param name="groupName">Id del grupo</param>
     /// <param name="message">Mensaje</param>
     public async Task SendMessage(int me, int groupName, string message, string guid)
     {

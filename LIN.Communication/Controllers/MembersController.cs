@@ -43,7 +43,7 @@ public class MembersController : ControllerBase
     /// <summary>
     /// Obtiene los miembros de una conversación.
     /// </summary>
-    /// <param name="id">ID de la conversación.</param>
+    /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("{id:int}/members")]
     public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromRoute] int id, [FromHeader] string token)
@@ -63,7 +63,7 @@ public class MembersController : ControllerBase
         // Busca el acceso
         var iam = await Services.Iam.Conversation.Validate(profileID, id);
 
-        if (iam == Types.Enumerations.IamLevels.NotAccess)
+        if (iam == IamLevels.NotAccess)
             return new ReadAllResponse<MemberChatModel>
             {
                 Response = Responses.Unauthorized,
@@ -83,7 +83,7 @@ public class MembersController : ControllerBase
     /// <summary>
     /// Obtiene los miembros de una conversación con info del usuario.
     /// </summary>
-    /// <param name="id">ID de la conversación.</param>
+    /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("{id:int}/members/info")]
     public async Task<HttpReadAllResponse<SessionModel<MemberChatModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
@@ -124,7 +124,7 @@ public class MembersController : ControllerBase
         // Armar los modelos.
         var response = (from member in members.Models
                         join account in accounts.Models
-                        on member.Profile.AccountID equals account.ID
+                        on member.Profile.AccountID equals account.Id
                         select new SessionModel<MemberChatModel>
                         {
                             Account = account,

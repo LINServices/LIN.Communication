@@ -9,8 +9,8 @@ public class MessagesController : ControllerBase
     /// <summary>
     /// Obtiene la lista de mensajes asociados a una conversación.
     /// </summary>
-    /// <param name="id">ID de la conversación</param>
-    /// <param name="lastID">A partir del mensaje con ID</param>
+    /// <param name="id">Id de la conversación</param>
+    /// <param name="lastID">A partir del mensaje con Id</param>
     /// <param name="token">Token de acceso</param>
     [HttpGet("{id:int}/messages")]
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id, [FromHeader] int lastID, [FromHeader] string token)

@@ -21,9 +21,9 @@
         <ProjectReference Include="..\..\..\AccesoAPI\LIN.Access.OpenIA\LIN.Access.OpenIA.csproj" />
         <ProjectReference Include="..\..\..\Tipos\Http\Http.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Modules\LIN.Modules.csproj" />
+        <ProjectReference Include="..\..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Emma\LIN.Types.Emma.csproj" />
-        <ProjectReference Include="..\..\..\Tipos\LIN.Types.Identity\LIN.Types.Identity\LIN.Types.Identity.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types\LIN.Types.csproj" />
     </ItemGroup>
 

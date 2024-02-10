@@ -6,7 +6,7 @@ public class Sessions : Dictionary<int, MemorySession>
     /// <summary>
     /// Obtiene una session
     /// </summary>
-    /// <param name="profile">ID del perfil</param>
+    /// <param name="profile">Id del perfil</param>
     public new MemorySession? this[int profile]
     {
         get
@@ -21,7 +21,7 @@ public class Sessions : Dictionary<int, MemorySession>
     /// <summary>
     /// Obtiene una session de acuerdo
     /// </summary>
-    /// <param name="profile">ID del dispositivo</param>
+    /// <param name="profile">Id del dispositivo</param>
     public MemorySession? this[string profile]
     {
         get

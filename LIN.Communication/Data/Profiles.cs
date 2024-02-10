@@ -33,7 +33,7 @@ public class Profiles
     /// <summary>
     /// Obtiene un perfil.
     /// </summary>
-    /// <param name="id">ID del perfil</param>
+    /// <param name="id">Id del perfil</param>
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id)
     {
 
@@ -52,9 +52,9 @@ public class Profiles
 
 
     /// <summary>
-    /// Obtiene un perfil por medio del ID de su cuenta.
+    /// Obtiene un perfil por medio del Id de su cuenta.
     /// </summary>
-    /// <param name="id">ID de la cuenta</param>
+    /// <param name="id">Id de la cuenta</param>
     public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id)
     {
 
@@ -147,7 +147,7 @@ public class Profiles
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data, Conexión context)
     {
-        // ID
+        // Id
         data.Profile.ID = 0;
         data.Profile.Friends = [];
 
@@ -169,7 +169,7 @@ public class Profiles
     /// <summary>
     /// Obtiene un perfil.
     /// </summary>
-    /// <param name="id">ID del perfil</param>
+    /// <param name="id">Id del perfil</param>
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)
     {
@@ -194,9 +194,9 @@ public class Profiles
 
 
     /// <summary>
-    /// Obtiene un perfil por medio del ID de su cuenta.
+    /// Obtiene un perfil por medio del Id de su cuenta.
     /// </summary>
-    /// <param name="id">ID de la cuenta</param>
+    /// <param name="id">Id de la cuenta</param>
     /// <param name="context">Contexto de conexión.</param>
     public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id, Conexión context)
     {

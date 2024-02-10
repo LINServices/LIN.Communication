@@ -34,7 +34,7 @@ public class ProfileController : ControllerBase
         }
 
         // Obtiene el perfil
-        var profile = await Data.Profiles.ReadByAccount(authResponse.Model.ID);
+        var profile = await Data.Profiles.ReadByAccount(authResponse.Model.Id);
 
         switch (profile.Response)
         {
@@ -47,8 +47,8 @@ public class ProfileController : ControllerBase
                         Account = authResponse.Model,
                         Profile = new()
                         {
-                            AccountID = authResponse.Model.ID,
-                            Alias = authResponse.Model.Nombre
+                            AccountID = authResponse.Model.Id,
+                            Alias = authResponse.Model.Name
                         }
                     });
 
@@ -110,12 +110,8 @@ public class ProfileController : ControllerBase
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-        if (response.Model.Estado != AccountStatus.Normal)
-            return new(Responses.NotExistAccount);
 
-
-
-        var profile = await Data.Profiles.ReadByAccount(response.Model.ID);
+        var profile = await Data.Profiles.ReadByAccount(response.Model.Id);
 
 
         var httpResponse = new ReadOneResponse<AuthModel<ProfileModel>>()
@@ -168,15 +164,15 @@ public class ProfileController : ControllerBase
             };
 
 
-        var mappedIds = accounts.Models.Select(T => T.ID).ToList();
+        var mappedIds = accounts.Models.Select(T => T.Id).ToList();
 
         var profiles = await Data.Profiles.ReadByAccounts(mappedIds);
 
 
         var final = from P in profiles.Models
                     join A in accounts.Models
-                    on P.AccountID equals A.ID
-                    select new LIN.Types.Identity.Abstracts.SessionModel<ProfileModel>
+                    on P.AccountID equals A.Id
+                    select new LIN.Types.Cloud.Identity.Abstracts.SessionModel<ProfileModel>
                     {
                         Account = A,
                         Profile = P
