@@ -121,6 +121,47 @@ public class ProfileController : ControllerBase
 
         };
 
+
+
+        switch (profile.Response)
+        {
+            case Responses.Success:
+                break;
+
+            case Responses.NotExistProfile:
+                {
+                    var res = await Data.Profiles.Create(new()
+                    {
+                        Account = response.Model,
+                        Profile = new()
+                        {
+                            AccountID = response.Model.Id,
+                            Alias = response.Model.Name
+                        }
+                    });
+
+                    if (res.Response != Responses.Success)
+                    {
+                        return new ReadOneResponse<AuthModel<ProfileModel>>
+                        {
+                            Response = Responses.UnavailableService,
+                            Message = "Un error grave ocurrió"
+                        };
+                    }
+
+                    profile = res;
+                    break;
+                }
+            default:
+                return new ReadOneResponse<AuthModel<ProfileModel>>
+                {
+                    Response = Responses.UnavailableService,
+                    Message = "Un error grave ocurrió"
+                };
+        }
+
+
+
         if (profile.Response == Responses.Success)
         {
             // Genera el token
