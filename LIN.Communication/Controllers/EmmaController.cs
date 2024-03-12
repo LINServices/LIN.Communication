@@ -1,3 +1,4 @@
+using System.Text;
 using Roles = LIN.Communication.Services.Roles;
 
 namespace LIN.Communication.Controllers;
@@ -14,86 +15,150 @@ public class EmmaController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="consult">Consulta.</param>
     [HttpPost]
-    public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string token, [FromHeader] string? thread, [FromBody] string consult)
+    public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string tokenAuth, [FromBody] string consult)
     {
 
-        // Info del token.
-        var (isValid, profileID, _, alias) = Jwt.Validate(token);
 
-        // Token es invalido.
-        if (!isValid)
-            return new ReadOneResponse<ResponseIAModel>()
+
+        HttpClient client = new HttpClient();
+
+        client.DefaultRequestHeaders.Add("token", tokenAuth);
+        client.DefaultRequestHeaders.Add("useDefaultContext", true.ToString().ToLower());
+
+
+        var request = new LIN.Types.Models.EmmaRequest
+        {
+            AppsMethods = """
             {
-                Response = Responses.Unauthorized
-            };
+              "name": "#mensaje",
+              "description": "Enviar mensaje a un usuario o grupo",
+              "example":"#mensaje(1, '¿Hola Como estas?')",
+              "parameters": {
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "description": "Id de la conversación"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Contenido del mensaje"
+                  }
+                },
+                "required": [
+                  "id",
+                  "description"
+                ]
+              }
+            }
+            {
+              "name": "#select",
+              "description": "Abrir una conversación, cuando el usuario se refiera a abrir una conversación",
+              "example":"#select(0)",
+              "parameters": {
+                "properties": {
+                  "content": {
+                    "type": "number",
+                    "description": "Id de la conversación"
+                  }
+                }
+              }
+            }
+            """,
+            Asks = consult
+        };
 
-        // Obtiene la sesión
-        var session = Mems.Sessions[profileID] ?? new();
 
-        // Modelo de Emma.
-        var modelIA = new Access.OpenIA.IAModelBuilder(Configuration.GetConfiguration("openIa:key"));
 
-        // Valida el hilo.
-        var threadModel = ThreadsEmma.Threads.Where(x => x.Key == (thread ?? "")).FirstOrDefault();
+        StringContent stringContent = new(Newtonsoft.Json.JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
-        // Valida el hilo valido.
-        if (threadModel.Key == null || threadModel.Value == null)
-        {
-            // Nuevo hilo.
-            threadModel = new(Guid.NewGuid().ToString(), []);
-            ThreadsEmma.Threads.Add(threadModel.Key, threadModel.Value);
+        var result = await client.PostAsync("http://api.emma.linapps.co/emma", stringContent);
 
-            // Cargar el hilo.
-            threadModel.Value.Add(new(IA.IAConsts.Base, Roles.System));
-            threadModel.Value.Add(new(IA.IAConsts.Personalidad, Roles.System));
-            threadModel.Value.Add(new(IA.IAConsts.ComandosBase, Roles.System));
-            threadModel.Value.Add(new(IA.IAConsts.Comandos, Roles.System));
-            threadModel.Value.Add(new($"""
-            Estas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
-            Estos son los nombres de los chats que tiene el usuario: {session.StringOfConversations()}
-            Recuerda que si el usuario quiere mandar un mensaje a un usuario/grupo/team/conversación etc, primero busca en su lista de nombres de chats
-            """, Roles.System));
 
-            // Contexto del usuario
-            threadModel.Value.Add(new($"""
-            El alias del usuario es '{alias}'.
-            El usuario tiene {session.Devices.Count} sesiones (dispositivos) conectados actualmente a LIN Allo.
-            """, Roles.System));
+        var ss = await result.Content.ReadAsStringAsync();
 
-        }
 
-        // Consulta del usuario.
-        threadModel.Value.Add(new(consult, Roles.User));
+       dynamic fin = Newtonsoft.Json.JsonConvert.DeserializeObject(ss);
 
-        // Armar el modelo IA.
-        foreach (var x in threadModel.Value)
-        {
-            if (x.Rol == Roles.System)
-                modelIA.Load(x.Content);
-
-            if (x.Rol == Roles.User)
-                modelIA.LoadFromUser(x.Content);
-
-            if (x.Rol == Roles.Emma)
-                modelIA.LoadFromEmma(x.Content);
-        }
-
-        // Respuesta del modelo IA.
-        var response = await modelIA.Reply();
-
-        // Si es correcto.
-        if (response.IsSuccess)
-            threadModel.Value.Add(new(response.Content, Roles.Emma));
 
         // Respuesta
         return new ReadOneResponse<ResponseIAModel>()
         {
-            Model = response,
-            Response = response.IsSuccess ? Responses.Success : Responses.Undefined,
-            Message = threadModel.Key
+            Model = new()
+            {
+                IsSuccess = true,
+                Content = fin?.result
+            },
+            Response = Responses.Success
         };
 
     }
+
+
+
+
+
+
+    /// <summary>
+    /// Emma IA.
+    /// </summary>
+    /// <param name="token">Token de acceso.</param>
+    /// <param name="consult">Prompt.</param>
+    [HttpGet]
+    public async Task<HttpReadOneResponse<object>> RequestFromEmma([FromHeader] string tokenAuth)
+    {
+
+        // Validar token.
+        var response = await LIN.Access.Auth.Controllers.Authentication.Login(tokenAuth);
+
+
+        if (response.Response != Responses.Success)
+        {
+            return new ReadOneResponse<object>()
+            {
+                Model = "Este usuario no autenticado en LIN Allo."
+            };
+        }
+
+        // 
+        var profile = await Data.Profiles.ReadByAccount(response.Model.Id);
+
+
+        if (profile.Response != Responses.Success)
+        {
+            return new ReadOneResponse<object>()
+            {
+                Model = "Este usuario no tiene una cuenta en LIN Allo."
+            };
+        }
+
+
+        var getProf = Mems.Sessions[profile.Model.ID];
+
+        if (getProf == null)
+        {
+
+            var convs = (await Data.Conversations.ReadAll(profile.Model.ID))?.Models.Select(t =>
+            (t.Conversation.ID, t.Conversation.Name));
+
+            getProf = new MemorySession()
+            {
+                Profile = profile.Model,
+                Conversations = convs?.ToList() ?? [],
+            };
+            Mems.Sessions.Add(getProf);
+        }
+
+
+        var final = getProf?.StringOfConversations() ?? "No hay conversaciones";
+
+        return new ReadOneResponse<object>()
+        {
+            Model = final,
+            Response = Responses.Success
+        };
+
+    }
+
 
 
 

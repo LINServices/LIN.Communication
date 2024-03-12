@@ -10,15 +10,14 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.10.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\AccesoAPI\LIN.Access.Auth\LIN.Access.Auth.csproj" />
-        <ProjectReference Include="..\..\..\AccesoAPI\LIN.Access.OpenIA\LIN.Access.OpenIA.csproj" />
         <ProjectReference Include="..\..\..\Tipos\Http\Http.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Modules\LIN.Modules.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj" />

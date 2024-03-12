@@ -59,9 +59,9 @@ catch
 
 Jwt.Open();
 
+LIN.Access.Auth.Build.Init();
 
 app.UseHttpsRedirection();
-
 
 app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
 {

@@ -13,7 +13,7 @@ public class MemorySession
     /// <summary>
     /// Lista de nombres de los chats.
     /// </summary>
-    public List<string> Conversations { get; set; }
+    public List<(int, string)> Conversations { get; set; }
 
 
     /// <summary>
@@ -45,11 +45,12 @@ public class MemorySession
     /// </summary>
     public string StringOfConversations()
     {
-        string final = "";
+        string final = "Estas son las conversaciones / chats del usuario: \n";
+
         foreach (var conversation in Conversations)
-            final += $"'{conversation}',";
+            final += $$"""{ id:{{conversation.Item1}}, name:'{{conversation.Item2}}' }""";
         
-        return final;
+        return final + "Recuerda que las conversaciones son grupos, chats u cualquier otra palabra relacionada.";
     }
 
 }

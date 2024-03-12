@@ -26,6 +26,15 @@ public class ConversationController : ControllerBase
                 Response = Responses.Unauthorized
             };
 
+
+        // Validar modelo.
+        if (modelo == null || string.IsNullOrWhiteSpace(modelo.Name))
+            return new()
+            {
+                Message = "El modelo es invalido.",
+                Response = Responses.InvalidParam
+            };
+
         // Organizar el modelo.
         modelo.ID = 0;
         modelo.Mensajes = [];
@@ -98,7 +107,7 @@ public class ConversationController : ControllerBase
         {
             onHub.Conversations = [];
             foreach (var c in result.Models)
-                onHub.Conversations.Add(c.Conversation.Name);
+                onHub.Conversations.Add((c.Conversation.ID, c.Conversation.Name));
         }
 
         // Retorna el resultado
@@ -161,7 +170,7 @@ public class ConversationController : ControllerBase
             AlternativeObject = x.Models,
             Model = result.Model,
             Response = result.Response,
-            
+
         };
 
     }

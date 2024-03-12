@@ -112,58 +112,9 @@ public partial class ChatHub : Hub
         await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
 
 
-        if (message.Contains("@emma"))
-        {
-
-            // Modelo de Emma.
-            var modelIA = new Access.OpenIA.IAModelBuilder(Configuration.GetConfiguration("openIa:key"));
-
-            // Cargar el modelo
-            modelIA.Load(IA.IAConsts.Base);
-            modelIA.Load(IA.IAConsts.Personalidad);
-            modelIA.Load($""" 
-                           Importante, en este momento estas un chat/grupo o conversación con una o mas personas en el contexto de LIN Allo, la app de comunicación de LIN Platform.
-                           el usuario probablemente te halla etiquetado, asi que deveras contestar como si fueras un integrante mas del grupo y debes de tener de contexto los mensajes del usuario y de los otros usuarios
-                           """);
-
-            // Mensajes
-            var lastMessages = mensajes.TakeLast(8);
-
-            string chatHistory = "";
-            foreach (var lastMessage in lastMessages)
-                chatHistory += $"'{lastMessage.Remitente.Alias}' ha enviado el mensaje '{lastMessage.Contenido}', ";
-
-            modelIA.Load($""" 
-                          Este es el historial de chat de la conversación, recuerda analizar minuciosamente, recuerda que tu eres Emma, el usuario se llama '{profile.Alias}' y los demás son integrantes de la conversación.
-                           Historial:{chatHistory}
-                          """);
-
-            var response = await modelIA.Reply(message);
-
-            MessageModel mensajeEmma = new()
-            {
-                Contenido = response.Content,
-                Remitente = new()
-                {
-                    Alias = "Emma assistant in Chat",
-                    ID = -1
-                },
-                Time = DateTime.Now,
-                Conversacion = new()
-                {
-                    ID = groupName
-                }
-            };
-
+        
             mensajes.Add(messageModel);
-            mensajes.Add(mensajeEmma);
-            await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", mensajeEmma);
-
-        }
-        else
-        {
-            mensajes.Add(messageModel);
-        }
+       
 
         // Crea el mensaje en la BD
         await Data.Messages.Create(messageModel);
