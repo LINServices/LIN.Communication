@@ -28,42 +28,7 @@ public class EmmaController : ControllerBase
 
         var request = new LIN.Types.Models.EmmaRequest
         {
-            AppsMethods = """
-            {
-              "name": "#mensaje",
-              "description": "Enviar mensaje a un usuario o grupo",
-              "example":"#mensaje(1, '¿Hola Como estas?')",
-              "parameters": {
-                "properties": {
-                  "id": {
-                    "type": "number",
-                    "description": "Id de la conversación"
-                  },
-                  "content": {
-                    "type": "string",
-                    "description": "Contenido del mensaje"
-                  }
-                },
-                "required": [
-                  "id",
-                  "description"
-                ]
-              }
-            }
-            {
-              "name": "#select",
-              "description": "Abrir una conversación, cuando el usuario se refiera a abrir una conversación",
-              "example":"#select(0)",
-              "parameters": {
-                "properties": {
-                  "content": {
-                    "type": "number",
-                    "description": "Id de la conversación"
-                  }
-                }
-              }
-            }
-            """,
+            AppContext = "allo",
             Asks = consult
         };
 
@@ -104,7 +69,7 @@ public class EmmaController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="consult">Prompt.</param>
     [HttpGet]
-    public async Task<HttpReadOneResponse<object>> RequestFromEmma([FromHeader] string tokenAuth)
+    public async Task<HttpReadOneResponse<object>> RequestFromEmma([FromHeader] string tokenAuth, [FromHeader] bool includeMethods)
     {
 
         // Validar token.
@@ -149,7 +114,76 @@ public class EmmaController : ControllerBase
         }
 
 
-        var final = getProf?.StringOfConversations() ?? "No hay conversaciones";
+
+
+        string final = $$""""
+
+                        Estos son los chats y conversaciones que el usuario tiene:
+
+                        {{getProf?.StringOfConversations()}}
+
+                        """";
+
+        final += includeMethods ? """
+             Estos son comandos, los cuales debes responder con el formato igual a este:
+            
+            "#Comando(Propiedades en orden separados por coma si es necesario)"
+            
+            {
+              "name": "#mensaje",
+              "description": "Enviar mensaje a un usuario o grupo",
+              "example":"#mensaje(1, '¿Hola Como estas?')",
+              "parameters": {
+                "properties": {
+                  "id": {
+                    "type": "number",
+                    "description": "Id de la conversación"
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Contenido del mensaje"
+                  }
+                },
+                "required": [
+                  "id",
+                  "description"
+                ]
+              }
+            }
+            {
+              "name": "#select",
+              "description": "Abrir una conversación, cuando el usuario se refiera a abrir una conversación",
+              "example":"#select(0)",
+              "parameters": {
+                "properties": {
+                  "content": {
+                    "type": "number",
+                    "description": "Id de la conversación"
+                  }
+                }
+              }
+            }
+            
+            
+            {
+              "name": "#say",
+              "description": "Utiliza esta función para decirle algo al usuario como saludos o responder a preguntas.",
+              "example":"#say('Hola')",
+              "parameters": {
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "contenido"
+                  }
+                }
+              }
+            }
+            
+            IMPORTANTE:
+            No en todos los casos en necesario usar comandos, solo úsalos cuando se cumpla la descripción.
+            
+            NUNCA debes inventar comandos nuevos, solo puedes usar los que ya existen.
+            """ : "\nPuedes contestar con la información de los chats del usuario, pero si te piden que hagas algo que no puedes hacer debes responder que en el contexto de la app actual no puedes ejecutar ninguna función";
 
         return new ReadOneResponse<object>()
         {
