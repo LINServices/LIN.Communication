@@ -154,12 +154,12 @@ public class ConversationController : ControllerBase
             };
 
         // Obtiene el usuario
-        var result = await Data.Conversations.ReadOne(id);
+        var result = await Data.Conversations.ReadOne(id, profileId);
 
 
 
         // Cuentas.
-        List<int> accounts = result.Model.Conversation.Members.Select(t => t.Profile.AccountID).ToList();
+        List<int> accounts = result.Model.Conversation?.Members?.Select(t => t.Profile.AccountID).ToList() ?? [];
 
 
         var x = await LIN.Access.Auth.Controllers.Account.Read(accounts, tokenAuth);

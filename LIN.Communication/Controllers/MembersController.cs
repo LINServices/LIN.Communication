@@ -24,7 +24,7 @@ public class MembersController : ControllerBase
                 Message = "Sesión no encontrada",
                 Response = Responses.NotRows
             };
-        
+
         return new ReadOneResponse<IsOnlineResult>()
         {
             Response = Responses.Success,
@@ -196,6 +196,53 @@ public class MembersController : ControllerBase
 
 
     /// <summary>
+    /// Eliminar un miembro a una conversación.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    [HttpDelete("{id:int}/members")]
+    public async Task<HttpResponseBase> Delete([FromRoute] int id, [FromQuery] int profileId, [FromHeader] string token)
+    {
+
+        // Información del token.
+        var (isValid, meId, _, _) = Jwt.Validate(token);
+
+        // Invalido.
+        if (!isValid)
+            return new()
+            {
+                Message = "Token invalido",
+                Response = Responses.Unauthorized
+            };
+
+        // Validación Iam.
+        if (meId != profileId)
+        {
+            var iam = await Services.Iam.Conversation.Validate(meId, id);
+
+            // Valida el acceso Iam.
+            if (iam != IamLevels.Privileged)
+                return new()
+                {
+                    Response = Responses.Unauthorized,
+                    Message = "No tienes permisos para modificar a esta conversación."
+                };
+        }
+
+        // Insertar el integrante.
+        var response = await Data.Conversations.LeaveMember(id, profileId);
+
+        return new()
+        {
+            Message = response.Response == Responses.Success ? "Correcto" : "No se pudo eliminar el integrante.",
+            Response = response.Response
+        };
+    }
+
+
+
+    /// <summary>
     /// Encuentra o crea una conversación personal.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
@@ -221,13 +268,13 @@ public class MembersController : ControllerBase
 
         // Consulta.
         var conversation = await (from u in context.DataBase.Conversaciones
-                       where u.Type == ConversationsTypes.Personal
-                       && u.Members.Count == 2
-                       && u.Members.Where(t => t.Profile.ID == friendId).Any()
-                       && u.Members.Where(t => t.Profile.ID == profile).Any()
-                       select u).FirstOrDefaultAsync();
+                                  where u.Type == ConversationsTypes.Personal
+                                  && u.Members.Count == 2
+                                  && u.Members.Where(t => t.Profile.ID == friendId).Any()
+                                  && u.Members.Where(t => t.Profile.ID == profile).Any()
+                                  select u).FirstOrDefaultAsync();
 
-        
+
         // Si ya existe.
         if (conversation != null)
         {
@@ -236,7 +283,7 @@ public class MembersController : ControllerBase
             {
                 Response = Responses.Success,
                 LastID = conversation.ID,
-                Message ="Se encontró."
+                Message = "Se encontró."
             };
         }
 

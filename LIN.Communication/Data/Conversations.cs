@@ -55,14 +55,14 @@ public class Conversations
     /// Obtiene una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
-    public async static Task<ReadOneResponse<MemberChatModel>> ReadOne(int id)
+    public async static Task<ReadOneResponse<MemberChatModel>> ReadOne(int id, int profileContext = 0)
     {
 
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
-        var response = await ReadOne(id, context);
+        var response = await ReadOne(id, context, profileContext);
 
         context.CloseActions(connectionKey);
 
@@ -85,6 +85,28 @@ public class Conversations
 
         // respuesta
         var response = await InsertMember(id, profile, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+
+    /// <summary>
+    /// EEliminar un miembro a una conversación.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    /// <param name="profile">Id del perfil.</param>
+    public async static Task<ResponseBase> LeaveMember(int id, int profile)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await LeaveMember(id, profile, context);
 
         context.CloseActions(connectionKey);
 
@@ -161,23 +183,23 @@ public class Conversations
         {
 
             // Consulta
-            var groups =await (from M in context.DataBase.Members
-                          where M.Profile.ID == id
-                          where M.Conversation.Visibility == ConversationVisibility.@public
-                          select new MemberChatModel
-                          {
-                              Conversation = new ConversationModel
-                              {
-                                  ID = M.Conversation.ID,
-                                  Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
-                                                                                              : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id).Profile.Alias,
-                                  Type = M.Conversation.Type,
-                                  Visibility = M.Conversation.Visibility
-                              },
-                              Rol = M.Rol
-                          }).ToListAsync();
+            var groups = await (from M in context.DataBase.Members
+                                where M.Profile.ID == id
+                                where M.Conversation.Visibility == ConversationVisibility.@public
+                                select new MemberChatModel
+                                {
+                                    Conversation = new ConversationModel
+                                    {
+                                        ID = M.Conversation.ID,
+                                        Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
+                                                                                                    : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id).Profile.Alias ?? "Yo",
+                                        Type = M.Conversation.Type,
+                                        Visibility = M.Conversation.Visibility
+                                    },
+                                    Rol = M.Rol
+                                }).ToListAsync();
 
-            return new(Responses.Success,  groups);
+            return new(Responses.Success, groups);
         }
         catch
         {
@@ -192,7 +214,7 @@ public class Conversations
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<MemberChatModel>> ReadOne(int id, Conexión context)
+    public async static Task<ReadOneResponse<MemberChatModel>> ReadOne(int id, Conexión context, int profileContext = 0)
     {
 
         // Ejecución
@@ -200,33 +222,22 @@ public class Conversations
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Members.Include(x => x.Conversation.Members)
-                                where M.ID == id
+            var groups = await (from M in context.DataBase.Members
+                                where M.Conversation.ID == id
                                 && M.Conversation.Visibility == ConversationVisibility.@public
                                 select new MemberChatModel
                                 {
                                     Conversation = new ConversationModel
                                     {
                                         ID = M.Conversation.ID,
-                                        Name = M.Conversation.Name,
+                                        Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
+                                                                       : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != profileContext).Profile.Alias ?? "Yo",
+
                                         Type = M.Conversation.Type,
-                                        Visibility = M.Conversation.Visibility,
-                                        Members = (M.Conversation.Type == ConversationsTypes.Personal)
-                                                    ? (from member in M.Conversation.Members
-                                                       select new MemberChatModel
-                                                       {
-                                                           ID = member.ID,
-                                                           Rol = member.Rol,
-                                                           Profile = new()
-                                                           {
-                                                               ID = member.Profile.ID,
-                                                               AccountID = member.Profile.AccountID,
-                                                           }
-                                                       }).ToList() : new List<MemberChatModel>()
+                                        Visibility = M.Conversation.Visibility
                                     },
                                     Rol = M.Rol
                                 }).FirstOrDefaultAsync();
-
 
             if (groups == null)
                 return new(Responses.NotRows);
@@ -312,6 +323,13 @@ public class Conversations
                 return new(Responses.Success);
             }
 
+            if (group.Type == ConversationsTypes.Personal)
+            {
+                group.Type = ConversationsTypes.Group;
+                group.Name = "Grupo";
+            }
+
+
             var profileModel = new ProfileModel()
             {
                 ID = profile
@@ -329,6 +347,35 @@ public class Conversations
             group.Members.Add(member);
 
             context.DataBase.SaveChanges();
+
+            return new(Responses.Success);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+    /// <summary>
+    /// Eliminar un miembro a una conversación.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    /// <param name="profile">Id del perfil.</param>
+    /// <param name="context">Contexto de conexión.</param>
+    public async static Task<ResponseBase> LeaveMember(int id, int profile, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Consulta.
+            var deleted = await (from M in context.DataBase.Members
+                                 where M.Profile.ID == profile
+                                 && M.Conversation.ID == id
+                                 select M).ExecuteDeleteAsync();
 
             return new(Responses.Success);
         }
