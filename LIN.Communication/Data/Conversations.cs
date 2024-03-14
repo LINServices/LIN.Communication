@@ -161,33 +161,23 @@ public class Conversations
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Members.Include(x => x.Conversation.Members)
-                                where M.Profile.ID == id
-                                && M.Conversation.Visibility == ConversationVisibility.@public
-                                select new MemberChatModel
-                                {
-                                    Conversation = new ConversationModel
-                                    {
-                                        ID = M.Conversation.ID,
-                                        Name = M.Conversation.Name,
-                                        Type = M.Conversation.Type,
-                                        Visibility = M.Conversation.Visibility,
-                                        Members = (M.Conversation.Type == ConversationsTypes.Personal)
-                                                    ? (from member in M.Conversation.Members
-                                                       select new MemberChatModel
-                                                       {
-                                                           ID = member.ID,
-                                                           Profile = new()
-                                                           {
-                                                               ID = member.Profile.ID,
-                                                               AccountID = member.Profile.AccountID,
-                                                           }
-                                                       }).ToList() : new List<MemberChatModel>()
-                                    },
-                                    Rol = M.Rol
-                                }).ToListAsync();
+            var groups =await (from M in context.DataBase.Members
+                          where M.Profile.ID == id
+                          where M.Conversation.Visibility == ConversationVisibility.@public
+                          select new MemberChatModel
+                          {
+                              Conversation = new ConversationModel
+                              {
+                                  ID = M.Conversation.ID,
+                                  Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
+                                                                                              : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id).Profile.Alias,
+                                  Type = M.Conversation.Type,
+                                  Visibility = M.Conversation.Visibility
+                              },
+                              Rol = M.Rol
+                          }).ToListAsync();
 
-            return new(Responses.Success, groups);
+            return new(Responses.Success,  groups);
         }
         catch
         {

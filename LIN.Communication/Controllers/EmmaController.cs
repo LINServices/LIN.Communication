@@ -60,9 +60,6 @@ public class EmmaController : ControllerBase
 
 
 
-
-
-
     /// <summary>
     /// Emma IA.
     /// </summary>
