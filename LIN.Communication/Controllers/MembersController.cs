@@ -1,4 +1,6 @@
-﻿namespace LIN.Communication.Controllers;
+﻿using LIN.Communication.Services.Models;
+
+namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
@@ -46,22 +48,15 @@ public class MembersController : ControllerBase
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("{id:int}/members")]
+    [LocalToken]
     public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromRoute] int id, [FromHeader] string token)
     {
 
-        // Obtiene la info del token
-        var (isValid, profileID, _, _) = Jwt.Validate(token);
-
-        // Token es invalido
-        if (!isValid)
-            return new ReadAllResponse<MemberChatModel>()
-            {
-                Message = "El token es invalido.",
-                Response = Responses.Unauthorized
-            };
+        // Información del token.
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Busca el acceso
-        var iam = await Services.Iam.Conversation.Validate(profileID, id);
+        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
 
         if (iam == IamLevels.NotAccess)
             return new ReadAllResponse<MemberChatModel>
@@ -86,22 +81,15 @@ public class MembersController : ControllerBase
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("{id:int}/members/info")]
+    [LocalToken]
     public async Task<HttpReadAllResponse<SessionModel<MemberChatModel>>> ReadAllInfo([FromRoute] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
     {
-
         // Información del token.
-        var (isValid, profile, _, _) = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Si el token es invalido.
-        if (!isValid)
-            return new()
-            {
-                Message = "Token invalido.",
-                Response = Responses.Unauthorized
-            };
 
         // Validación Iam.
-        var iam = await Services.Iam.Conversation.Validate(profile, id);
+        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam == Types.Enumerations.IamLevels.NotAccess)
@@ -158,22 +146,16 @@ public class MembersController : ControllerBase
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpGet("{id:int}/members/add")]
+    [LocalToken]
     public async Task<HttpResponseBase> AddTo([FromRoute] int id, [FromQuery] int profileId, [FromHeader] string token)
     {
 
         // Información del token.
-        var (isValid, meId, _, _) = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Invalido.
-        if (!isValid)
-            return new()
-            {
-                Message = "Token invalido",
-                Response = Responses.Unauthorized
-            };
 
         // Validación Iam.
-        var iam = await Services.Iam.Conversation.Validate(meId, id);
+        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam != IamLevels.Privileged)
@@ -202,24 +184,18 @@ public class MembersController : ControllerBase
     /// <param name="token"></param>
     /// <returns></returns>
     [HttpDelete("{id:int}/members")]
+    [LocalToken]
     public async Task<HttpResponseBase> Delete([FromRoute] int id, [FromQuery] int profileId, [FromHeader] string token)
     {
 
         // Información del token.
-        var (isValid, meId, _, _) = Jwt.Validate(token);
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Invalido.
-        if (!isValid)
-            return new()
-            {
-                Message = "Token invalido",
-                Response = Responses.Unauthorized
-            };
 
         // Validación Iam.
-        if (meId != profileId)
+        if (tokenInfo.ProfileId != profileId)
         {
-            var iam = await Services.Iam.Conversation.Validate(meId, id);
+            var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
 
             // Valida el acceso Iam.
             if (iam != IamLevels.Privileged)
@@ -252,16 +228,7 @@ public class MembersController : ControllerBase
     {
 
         // Información del token.
-        var (isValid, profile, _, _) = Jwt.Validate(token);
-
-        // Si el token es invalido.
-        if (!isValid)
-            return new()
-            {
-                Message = "Token invalido.",
-                Response = Responses.Unauthorized
-            };
-
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Contexto de conexión.
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -271,7 +238,7 @@ public class MembersController : ControllerBase
                                   where u.Type == ConversationsTypes.Personal
                                   && u.Members.Count == 2
                                   && u.Members.Where(t => t.Profile.ID == friendId).Any()
-                                  && u.Members.Where(t => t.Profile.ID == profile).Any()
+                                  && u.Members.Where(t => t.Profile.ID == tokenInfo.ProfileId).Any()
                                   select u).FirstOrDefaultAsync();
 
 
@@ -301,7 +268,7 @@ public class MembersController : ControllerBase
                          ID = 0,
                          Profile = new()
                          {
-                             ID = profile
+                             ID = tokenInfo.ProfileId
                          },
                          Rol = MemberRoles.Admin
                      },

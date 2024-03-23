@@ -1,3 +1,5 @@
+using LIN.Communication.Services.Models;
+
 namespace LIN.Communication.Controllers;
 
 
@@ -12,20 +14,12 @@ public class ConversationController : ControllerBase
     /// <param name="modelo">Modelo.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpPost("create")]
+    [LocalToken]
     public async Task<HttpCreateResponse> Create([FromBody] ConversationModel modelo, [FromHeader] string token)
     {
 
         // Información del token.
-        var (isValid, profileID, _, _) = Jwt.Validate(token);
-
-        // Valida el token.
-        if (!isValid)
-            return new()
-            {
-                Message = "El token es invalido.",
-                Response = Responses.Unauthorized
-            };
-
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Validar modelo.
         if (modelo == null || string.IsNullOrWhiteSpace(modelo.Name))
@@ -45,7 +39,7 @@ public class ConversationController : ControllerBase
         foreach (var member in modelo.Members)
         {
             member.ID = 0;
-            if (member.Profile.ID == profileID)
+            if (member.Profile.ID == tokenInfo.ProfileId)
                 continue;
 
             members.Add(member);
@@ -56,7 +50,7 @@ public class ConversationController : ControllerBase
         {
             Profile = new()
             {
-                ID = profileID
+                ID = tokenInfo.ProfileId
             },
             Rol = MemberRoles.Admin
         });
@@ -79,18 +73,15 @@ public class ConversationController : ControllerBase
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/all")]
+    [LocalToken]
     public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token, [FromHeader] string tokenAuth)
     {
 
         // Información del token.
-        var (isValid, profileID, accountId, _) = Jwt.Validate(token);
-
-        // Si el token es invalido.
-        if (!isValid)
-            return new(Responses.Unauthorized);
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario.
-        var result = await Data.Conversations.ReadAll(profileID);
+        var result = await Data.Conversations.ReadAll(tokenInfo.ProfileId);
 
         // Cuentas.
         List<int> accounts = [];
@@ -102,7 +93,7 @@ public class ConversationController : ControllerBase
 
 
         // Sesión en memoria.
-        var onHub = Mems.Sessions[profileID];
+        var onHub = Mems.Sessions[tokenInfo.ProfileId];
         if (onHub != null)
         {
             onHub.Conversations = [];
@@ -128,22 +119,14 @@ public class ConversationController : ControllerBase
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("read/one")]
+    [LocalToken]
     public async Task<HttpReadOneResponse<MemberChatModel>> ReadOne([FromQuery] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
     {
-
         // Información del token.
-        var (isValid, profileId, _, _) = Jwt.Validate(token);
-
-        // Valida el token.
-        if (!isValid)
-            return new()
-            {
-                Message = "El token es invalido.",
-                Response = Responses.Unauthorized
-            };
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Validación Iam.
-        var iam = await Services.Iam.Conversation.Validate(profileId, id);
+        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam == IamLevels.NotAccess)
@@ -154,7 +137,7 @@ public class ConversationController : ControllerBase
             };
 
         // Obtiene el usuario
-        var result = await Data.Conversations.ReadOne(id, profileId);
+        var result = await Data.Conversations.ReadOne(id, tokenInfo.ProfileId);
 
 
 
@@ -169,6 +152,53 @@ public class ConversationController : ControllerBase
         {
             AlternativeObject = x.Models,
             Model = result.Model,
+            Response = result.Response,
+
+        };
+
+    }
+
+
+
+    /// <summary>
+    /// Actualizar el nombre de un grupo.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    /// <param name="newName">Nuevo nombre.</param>
+    /// <param name="token">Token de acceso.</param>
+    [HttpPut("update/name")]
+    [LocalToken]
+    public async Task<HttpResponseBase> UpdateName([FromQuery] int id, [FromQuery] string newName, [FromHeader] string token)
+    {
+
+
+        if (string.IsNullOrWhiteSpace(newName))
+            return new()
+            {
+                Message = "El nombre no puede ser vació.",
+                Response = Responses.InvalidParam
+            };
+
+        // Información del token.
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
+
+        // Validación Iam.
+        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+
+        // Valida el acceso Iam.
+        if (iam != IamLevels.Privileged)
+            return new()
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes acceso a esta conversación."
+            };
+
+        // Obtiene el usuario
+        var result = await Data.Conversations.UpdateName(id, newName);
+
+
+        return new()
+        {
             Response = result.Response,
 
         };

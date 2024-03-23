@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using LIN.Communication.Services.Models;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -64,13 +65,13 @@ public class Jwt
     /// Valida un JSON Web token
     /// </summary>
     /// <param name="token">Token a validar</param>
-    internal static (bool isValid, int profileID, int userID, string alias) Validate(string token)
+    internal static JwtModel Validate(string token)
     {
         try
         {
 
             // Configurar la clave secreta
-            var key = System.Text. Encoding.ASCII.GetBytes(JwtKey);
+            var key = System.Text.Encoding.ASCII.GetBytes(JwtKey);
 
             // Validar el token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -101,7 +102,13 @@ public class Jwt
                 string name = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value ?? "";
 
                 // Devuelve una respuesta exitosa
-                return (true, id, account, name);
+                return new()
+                {
+                    IsAuthenticated = true,
+                    AccountId = account,
+                    Alias = name,
+                    ProfileId = id,
+                };
             }
             catch
             {
@@ -112,7 +119,7 @@ public class Jwt
         }
         catch { }
 
-        return (false, 0, 0, "");
+        return new();
 
     }
 

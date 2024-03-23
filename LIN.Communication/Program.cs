@@ -68,6 +68,7 @@ app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
     options.AllowStatefulReconnects = true;
     options.ApplicationMaxBufferSize = long.MaxValue;
 });
+
 app.UseAuthorization();
 
 app.MapControllers();

@@ -137,6 +137,24 @@ public class Conversations
 
 
 
+
+    public async static Task<ResponseBase> UpdateName(int id, string name)
+    {
+
+        // Contexto
+        (Conexión context, string connectionKey) = Conexión.GetOneConnection();
+
+        // respuesta
+        var response = await UpdateName(id, name, context);
+
+        context.CloseActions(connectionKey);
+
+        return response;
+
+    }
+
+
+
     #endregion
 
 
@@ -376,6 +394,39 @@ public class Conversations
                                  where M.Profile.ID == profile
                                  && M.Conversation.ID == id
                                  select M).ExecuteDeleteAsync();
+
+            return new(Responses.Success);
+        }
+        catch
+        {
+        }
+        return new();
+    }
+
+
+
+
+    /// <summary>
+    /// Obtiene los miembros asociadas a una conversación.
+    /// </summary>
+    /// <param name="id">Id de la conversación.</param>
+    /// <param name="context">Contexto de conexión.</param>
+    public async static Task<ResponseBase> UpdateName(int id, string name, Conexión context)
+    {
+
+        // Ejecución
+        try
+        {
+            // Consulta
+            var v = await (from M in context.DataBase.Conversaciones
+                     where M.ID == id
+                     where M.Type != ConversationsTypes.Personal
+                     select M).ExecuteUpdateAsync(setters => setters
+                     .SetProperty(b => b.Name, name));
+
+
+            if (v <= 0)
+                return new(Responses.NotRows);
 
             return new(Responses.Success);
         }

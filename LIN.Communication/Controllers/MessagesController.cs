@@ -1,4 +1,6 @@
-﻿namespace LIN.Communication.Controllers;
+﻿using LIN.Communication.Services.Models;
+
+namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
@@ -13,22 +15,16 @@ public class MessagesController : ControllerBase
     /// <param name="lastID">A partir del mensaje con Id</param>
     /// <param name="token">Token de acceso</param>
     [HttpGet("{id:int}/messages")]
+    [LocalToken]
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id, [FromHeader] int lastID, [FromHeader] string token)
     {
 
-        // Obtiene la info del token.
-        var (isValid, profileID, _, _) = Jwt.Validate(token);
+        // Información del token.
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Token es invalido.
-        if (!isValid)
-            return new ReadAllResponse<MessageModel>()
-            {
-                Message = "El token es invalido.",
-                Response = Responses.Unauthorized
-            };
 
         // Valida el acceso Iam.
-        var iam = await Services.Iam.Conversation.Validate(profileID, id);
+        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam == IamLevels.NotAccess)

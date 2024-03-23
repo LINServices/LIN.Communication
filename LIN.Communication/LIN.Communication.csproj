@@ -10,9 +10,9 @@
 
     <ItemGroup>
         <PackageReference Include="Azure.Identity" Version="1.10.4" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.2" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.3" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
 
@@ -24,6 +24,10 @@
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Emma\LIN.Types.Emma.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types\LIN.Types.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
     </ItemGroup>
 
 </Project>
