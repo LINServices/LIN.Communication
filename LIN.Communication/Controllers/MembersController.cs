@@ -224,11 +224,21 @@ public class MembersController : ControllerBase
     /// <param name="token">Token de acceso.</param>
     /// <param name="friendId">Id del otro usuario.</param>
     [HttpPost("find")]
+    [LocalToken]
     public async Task<HttpCreateResponse> Find([FromHeader] string token, [FromHeader] int friendId)
     {
 
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
+
+        // Validar parámetros.
+        if (friendId <= 0)
+            return new()
+            {
+                Message = "El 'Id' es menor o igual a 0",
+                Response = Responses.InvalidParam
+            };
+
 
         // Contexto de conexión.
         var (context, contextKey) = Conexión.GetOneConnection();
@@ -240,7 +250,6 @@ public class MembersController : ControllerBase
                                   && u.Members.Where(t => t.Profile.ID == friendId).Any()
                                   && u.Members.Where(t => t.Profile.ID == tokenInfo.ProfileId).Any()
                                   select u).FirstOrDefaultAsync();
-
 
         // Si ya existe.
         if (conversation != null)

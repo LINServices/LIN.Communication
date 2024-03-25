@@ -41,7 +41,7 @@ public class EmmaController : ControllerBase
         var ss = await result.Content.ReadAsStringAsync();
 
 
-       dynamic fin = Newtonsoft.Json.JsonConvert.DeserializeObject(ss);
+       dynamic? fin = Newtonsoft.Json.JsonConvert.DeserializeObject(ss);
 
 
         // Respuesta
