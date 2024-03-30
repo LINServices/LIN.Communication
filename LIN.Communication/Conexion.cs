@@ -205,7 +205,7 @@ public sealed class Conexión
             lock (con)
             {
                 con.SetOnUse();
-                string key = KeyGen.Generate(10, "con.");
+                string key = KeyGenerator.Generate(10, "con.");
                 con.MyKey = key;
                 return (con, key);
             }
@@ -214,7 +214,7 @@ public sealed class Conexión
         // Retorna la Conexión
         var conexión = new Conexión
         {
-            MyKey = KeyGen.Generate(10, "con.")
+            MyKey = KeyGenerator.Generate(10, "con.")
         };
         conexión.SetOnUse();
         return (conexión, conexión.MyKey);
