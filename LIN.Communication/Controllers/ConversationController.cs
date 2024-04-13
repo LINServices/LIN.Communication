@@ -13,7 +13,7 @@ public class ConversationController : ControllerBase
     /// </summary>
     /// <param name="modelo">Modelo.</param>
     /// <param name="token">Token de acceso.</param>
-    [HttpPost("create")]
+    [HttpPost]
     [LocalToken]
     public async Task<HttpCreateResponse> Create([FromBody] ConversationModel modelo, [FromHeader] string token)
     {
@@ -72,7 +72,7 @@ public class ConversationController : ControllerBase
     /// Obtiene las conversaciones asociadas a un perfil.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
-    [HttpGet("read/all")]
+    [HttpGet("all")]
     [LocalToken]
     public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token, [FromHeader] string tokenAuth)
     {
@@ -118,7 +118,7 @@ public class ConversationController : ControllerBase
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
-    [HttpGet("read/one")]
+    [HttpGet]
     [LocalToken]
     public async Task<HttpReadOneResponse<MemberChatModel>> ReadOne([FromQuery] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
     {
@@ -166,7 +166,7 @@ public class ConversationController : ControllerBase
     /// <param name="id">Id de la conversación.</param>
     /// <param name="newName">Nuevo nombre.</param>
     /// <param name="token">Token de acceso.</param>
-    [HttpPut("update/name")]
+    [HttpPatch("name")]
     [LocalToken]
     public async Task<HttpResponseBase> UpdateName([FromQuery] int id, [FromQuery] string newName, [FromHeader] string token)
     {
