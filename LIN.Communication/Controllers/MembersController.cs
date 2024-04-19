@@ -66,7 +66,7 @@ public class MembersController : ControllerBase
             };
 
         // Obtiene el usuario
-        var result = await Data.Conversations.ReadMembers(id);
+        var result = await Data.Members.ReadAll(id);
 
         // Retorna el resultado
         return result ?? new();
@@ -101,7 +101,7 @@ public class MembersController : ControllerBase
 
 
         // Obtiene los miembros.
-        var members = await Data.Conversations.ReadMembers(id);
+        var members = await Data.Members.ReadAll(id);
 
         // Obtiene los Id de las cuentas.
         var accountsId = members.Models.Select(member => member.Profile.AccountID).ToList();
@@ -166,7 +166,7 @@ public class MembersController : ControllerBase
             };
 
         // Insertar el integrante.
-        var response = await Data.Conversations.InsertMember(id, profileId);
+        var response = await Data.Members.Create(id, profileId);
 
         return new()
         {
@@ -207,7 +207,7 @@ public class MembersController : ControllerBase
         }
 
         // Insertar el integrante.
-        var response = await Data.Conversations.LeaveMember(id, profileId);
+        var response = await Data.Members.Remove(id, profileId);
 
         return new()
         {

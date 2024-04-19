@@ -137,7 +137,7 @@ public class ConversationController : ControllerBase
             };
 
         // Obtiene el usuario
-        var result = await Data.Conversations.ReadOne(id, tokenInfo.ProfileId);
+        var result = await Data.Conversations.Read(id, tokenInfo.ProfileId);
 
 
 
