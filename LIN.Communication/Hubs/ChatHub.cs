@@ -95,12 +95,15 @@ public partial class ChatHub : Hub
         if (profile == null)
             return;
 
+        // Hora actual.
+        var time = DateTime.Now;
+
         // Modelo del mensaje.
         MessageModel messageModel = new()
         {
             Contenido = message,
             Remitente = profile,
-            Time = DateTime.Now,
+            Time = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0),
             Guid = guid,
             Conversacion = new()
             {
@@ -112,9 +115,9 @@ public partial class ChatHub : Hub
         await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
 
 
-        
-            mensajes.Add(messageModel);
-       
+
+        mensajes.Add(messageModel);
+
 
         // Crea el mensaje en la BD
         await Data.Messages.Create(messageModel);
@@ -124,5 +127,5 @@ public partial class ChatHub : Hub
 
 
     public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = [];
-  
+
 }
