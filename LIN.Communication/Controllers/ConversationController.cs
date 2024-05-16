@@ -1,10 +1,11 @@
+using LIN.Communication.Services.Iam;
 using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
-public class ConversationController : ControllerBase
+public class ConversationController(IIamService Iam) : ControllerBase
 {
 
 
@@ -126,7 +127,7 @@ public class ConversationController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Validación Iam.
-        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+        var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam == IamLevels.NotAccess)
@@ -183,7 +184,7 @@ public class ConversationController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Validación Iam.
-        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+        var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam != IamLevels.Privileged)
@@ -196,11 +197,9 @@ public class ConversationController : ControllerBase
         // Obtiene el usuario
         var result = await Data.Conversations.UpdateName(id, newName);
 
-
         return new()
         {
-            Response = result.Response,
-
+            Response = result.Response
         };
 
     }

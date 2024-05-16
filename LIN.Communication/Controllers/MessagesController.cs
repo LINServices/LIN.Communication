@@ -1,10 +1,11 @@
-﻿using LIN.Communication.Services.Models;
+﻿using LIN.Communication.Services.Iam;
+using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
-public class MessagesController : ControllerBase
+public class MessagesController(IIamService Iam) : ControllerBase
 {
 
 
@@ -24,7 +25,7 @@ public class MessagesController : ControllerBase
 
 
         // Valida el acceso Iam.
-        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+        var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam == IamLevels.NotAccess)
@@ -41,7 +42,6 @@ public class MessagesController : ControllerBase
         return result ?? new();
 
     }
-
 
 
 }

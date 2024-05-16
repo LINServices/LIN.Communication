@@ -22,7 +22,7 @@ public class Jwt
     /// </summary>
     public static void Open()
     {
-        JwtKey = Configuration.GetConfiguration("jwt:key");
+        JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key");
     }
 
 

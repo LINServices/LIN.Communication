@@ -1,10 +1,11 @@
-﻿using LIN.Communication.Services.Models;
+﻿using LIN.Communication.Services.Iam;
+using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
-public class MembersController : ControllerBase
+public class MembersController(IIamService Iam) : ControllerBase
 {
 
 
@@ -56,7 +57,7 @@ public class MembersController : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Busca el acceso
-        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+        var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
         if (iam == IamLevels.NotAccess)
             return new ReadAllResponse<MemberChatModel>
@@ -89,7 +90,7 @@ public class MembersController : ControllerBase
 
 
         // Validación Iam.
-        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+        var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam == Types.Enumerations.IamLevels.NotAccess)
@@ -153,9 +154,8 @@ public class MembersController : ControllerBase
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-
         // Validación Iam.
-        var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+        var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
         // Valida el acceso Iam.
         if (iam != IamLevels.Privileged)
@@ -195,7 +195,7 @@ public class MembersController : ControllerBase
         // Validación Iam.
         if (tokenInfo.ProfileId != profileId)
         {
-            var iam = await Services.Iam.Conversation.Validate(tokenInfo.ProfileId, id);
+            var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
             // Valida el acceso Iam.
             if (iam != IamLevels.Privileged)

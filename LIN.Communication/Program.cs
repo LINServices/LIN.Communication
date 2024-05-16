@@ -1,28 +1,17 @@
+using Http.Extensions;
 using LIN.Communication.Data;
+using LIN.Communication.Services.Iam;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Create services to the container.
-builder.Services.AddControllers();
 builder.Services.AddSignalR();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddLINHttp();
 
 string sqlConnection = builder.Configuration["ConnectionStrings:release"] ?? string.Empty;
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAnyOrigin",
-        builder =>
-        {
-            builder.AllowAnyOrigin()
-                   .AllowAnyHeader()
-                   .AllowAnyMethod();
-        });
-});
-
 Conexión.SetStringConnection(sqlConnection);
-
 
 if (sqlConnection.Length > 0)
 {
@@ -33,13 +22,11 @@ if (sqlConnection.Length > 0)
     });
 }
 
+builder.Services.AddSingleton<IIamService, Conversation>();
 
 var app = builder.Build();
 
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseCors("AllowAnyOrigin");
+app.UseLINHttp();
 
 try
 {
@@ -64,7 +51,6 @@ app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
 });
 
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

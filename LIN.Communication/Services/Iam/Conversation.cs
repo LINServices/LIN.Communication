@@ -1,7 +1,7 @@
 ﻿namespace LIN.Communication.Services.Iam;
 
 
-public class Conversation
+public class Conversation : IIamService
 {
 
 
@@ -10,7 +10,7 @@ public class Conversation
     /// </summary>
     /// <param name="profile">Id del perfil.</param>
     /// <param name="conversation">Id de la conversación.</param>
-    public async static Task<IamLevels> Validate(int profile, int conversation)
+    public async Task<IamLevels> Validate(int profile, int conversation)
     {
         try
         {
