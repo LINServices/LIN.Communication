@@ -272,26 +272,26 @@ public class MembersController(IIamService Iam) : ControllerBase
             Type = ConversationsTypes.Personal,
             Visibility = ConversationVisibility.@public,
             Members = [
-                     new MemberChatModel()
-                     {
-                         ID = 0,
-                         Profile = new()
-                         {
-                             ID = tokenInfo.ProfileId
-                         },
-                         Rol = MemberRoles.Admin
-                     },
+         new MemberChatModel()
+         {
+ ID = 0,
+ Profile = new()
+ {
+     ID = tokenInfo.ProfileId
+ },
+ Rol = MemberRoles.Admin
+         },
 
-                new MemberChatModel()
-                {
-                    ID = 0,
-                    Profile = new()
-                    {
-                        ID = friendId
-                    },
-                    Rol = MemberRoles.Admin
-                }
-                 ]
+    new MemberChatModel()
+    {
+        ID = 0,
+        Profile = new()
+        {
+ID = friendId
+        },
+        Rol = MemberRoles.Admin
+    }
+     ]
         }, context);
 
         // Cierra la conexión.

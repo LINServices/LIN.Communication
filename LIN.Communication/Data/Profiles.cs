@@ -236,8 +236,8 @@ public class Profiles
         {
             // Consulta.
             var profiles = await (from P in context.DataBase.Profiles
-                                 where ids.Contains(P.AccountID)
-                                 select P).ToListAsync();
+                                  where ids.Contains(P.AccountID)
+                                  select P).ToListAsync();
 
             if (profiles == null)
                 return new(Responses.NotExistProfile);
@@ -301,8 +301,8 @@ public class Profiles
 
             // Consulta.
             var lastConnection = await (from P in context.DataBase.Profiles
-                                 where P.AccountID == id
-                                 select P.LastConnection).FirstOrDefaultAsync();
+                                        where P.AccountID == id
+                                        select P.LastConnection).FirstOrDefaultAsync();
 
             // Respuesta.
             return new(Responses.Success, lastConnection);

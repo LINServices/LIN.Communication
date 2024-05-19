@@ -114,10 +114,7 @@ public partial class ChatHub : Hub
         // Envía el mensaje en tiempo real.
         await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
 
-
-
         mensajes.Add(messageModel);
-
 
         // Crea el mensaje en la BD
         await Data.Messages.Create(messageModel);

@@ -49,7 +49,7 @@ public class MemorySession
 
         foreach (var conversation in Conversations)
             final += $$"""{ id:{{conversation.Item1}}, name:'{{conversation.Item2}}' }""";
-        
+
         return final + "Recuerda que las conversaciones son grupos, chats u cualquier otra palabra relacionada.";
     }
 

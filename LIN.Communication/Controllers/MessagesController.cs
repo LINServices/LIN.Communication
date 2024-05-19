@@ -23,7 +23,6 @@ public class MessagesController(IIamService Iam) : ControllerBase
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-
         // Valida el acceso Iam.
         var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 

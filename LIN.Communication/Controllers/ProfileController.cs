@@ -84,9 +84,9 @@ public class ProfileController : ControllerBase
             {
                 Account = authResponse.Model,
                 TokenCollection = new()
-                {
-                    { "identity", authResponse.Token}
-                },
+    {
+        { "identity", authResponse.Token}
+    },
                 Profile = profile.Model
             },
             Token = token
@@ -173,9 +173,9 @@ public class ProfileController : ControllerBase
 
         httpResponse.Model.Account = response.Model;
         httpResponse.Model.TokenCollection = new()
-                {
-                    { "identity",response.Token}
-                };
+    {
+        { "identity",response.Token}
+    };
 
 
         return httpResponse;

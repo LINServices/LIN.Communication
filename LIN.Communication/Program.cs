@@ -1,6 +1,7 @@
 using Http.Extensions;
 using LIN.Communication.Data;
 using LIN.Communication.Services.Iam;
+using LIN.Communication.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ if (sqlConnection.Length > 0)
 }
 
 builder.Services.AddSingleton<IIamService, Conversation>();
+builder.Services.AddSingleton<IIAService, IAService>();
 
 var app = builder.Build();
 
@@ -52,5 +54,6 @@ app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
 
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();

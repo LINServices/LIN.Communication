@@ -1,10 +1,11 @@
+using LIN.Communication.Services.Interfaces;
 using System.Text;
 
 namespace LIN.Communication.Controllers;
 
 
 [Route("Emma")]
-public class EmmaController : ControllerBase
+public class EmmaController(IIAService ia) : ControllerBase
 {
 
 
@@ -19,7 +20,7 @@ public class EmmaController : ControllerBase
 
 
 
-        HttpClient client = new HttpClient();
+        HttpClient client = new();
 
         client.DefaultRequestHeaders.Add("token", tokenAuth);
         client.DefaultRequestHeaders.Add("useDefaultContext", true.ToString().ToLower());
@@ -41,7 +42,7 @@ public class EmmaController : ControllerBase
         var ss = await result.Content.ReadAsStringAsync();
 
 
-       dynamic? fin = Newtonsoft.Json.JsonConvert.DeserializeObject(ss);
+        dynamic? fin = Newtonsoft.Json.JsonConvert.DeserializeObject(ss);
 
 
         // Respuesta
@@ -108,78 +109,13 @@ public class EmmaController : ControllerBase
             };
             Mems.Sessions.Add(getProf);
         }
+        
 
+        string final = ia.GetWith(getProf?.StringOfConversations() ?? string.Empty);
 
-
-
-        string final = $$""""
-
-                        Estos son los chats y conversaciones que el usuario tiene:
-
-                        {{getProf?.StringOfConversations()}}
-
-                        """";
-
-        final += includeMethods ? """
-             Estos son comandos, los cuales debes responder con el formato igual a este:
-            
-            "#Comando(Propiedades en orden separados por coma si es necesario)"
-            
-            {
-              "name": "#mensaje",
-              "description": "Enviar mensaje a un usuario o grupo",
-              "example":"#mensaje(1, '¿Hola Como estas?')",
-              "parameters": {
-                "properties": {
-                  "id": {
-                    "type": "number",
-                    "description": "Id de la conversación"
-                  },
-                  "content": {
-                    "type": "string",
-                    "description": "Contenido del mensaje"
-                  }
-                },
-                "required": [
-                  "id",
-                  "description"
-                ]
-              }
-            }
-            {
-              "name": "#select",
-              "description": "Abrir una conversación, cuando el usuario se refiera a abrir una conversación",
-              "example":"#select(0)",
-              "parameters": {
-                "properties": {
-                  "content": {
-                    "type": "number",
-                    "description": "Id de la conversación"
-                  }
-                }
-              }
-            }
-            
-            
-            {
-              "name": "#say",
-              "description": "Utiliza esta función para decirle algo al usuario como saludos o responder a preguntas.",
-              "example":"#say('Hola')",
-              "parameters": {
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "description": "contenido"
-                  }
-                }
-              }
-            }
-            
-            IMPORTANTE:
-            No en todos los casos en necesario usar comandos, solo úsalos cuando se cumpla la descripción.
-            
-            NUNCA debes inventar comandos nuevos, solo puedes usar los que ya existen.
-            """ : "\nPuedes contestar con la información de los chats del usuario, pero si te piden que hagas algo que no puedes hacer debes responder que en el contexto de la app actual no puedes ejecutar ninguna función";
+        final += includeMethods 
+                 ? ia.GetActions() 
+                 : ia.GetDefault();
 
         return new ReadOneResponse<object>()
         {
