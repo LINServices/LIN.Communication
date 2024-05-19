@@ -25,6 +25,6 @@ public class JwtModel
     /// Id del perfil.
     /// </summary>
     public int ProfileId { get; set; }
-   
+
 
 }

@@ -17,55 +17,55 @@ public partial class Members
         // Ejecución
         try
         {
-// Consulta
-var group = await (from M in context.DataBase.Conversaciones
-       where M.ID == id
-       select M).FirstOrDefaultAsync();
+            // Consulta
+            var group = await (from M in context.DataBase.Conversaciones
+                               where M.ID == id
+                               select M).FirstOrDefaultAsync();
 
-if (group == null)
-{
-    return new(Responses.NotRows);
-}
-
-
-var exist = await (from M in context.DataBase.Conversaciones
-       where M.ID == id
-       join MM in context.DataBase.Members
-       on M.ID equals MM.Conversation.ID
-       where MM.Profile.ID == profile
-       select MM).AnyAsync();
-
-if (exist)
-{
-    return new(Responses.Success);
-}
-
-if (group.Type == ConversationsTypes.Personal)
-{
-    group.Type = ConversationsTypes.Group;
-    group.Name = "Grupo";
-}
+            if (group == null)
+            {
+                return new(Responses.NotRows);
+            }
 
 
-var profileModel = new ProfileModel()
-{
-    ID = profile
-};
+            var exist = await (from M in context.DataBase.Conversaciones
+                               where M.ID == id
+                               join MM in context.DataBase.Members
+                               on M.ID equals MM.Conversation.ID
+                               where MM.Profile.ID == profile
+                               select MM).AnyAsync();
 
-context.DataBase.Attach(profileModel);
+            if (exist)
+            {
+                return new(Responses.Success);
+            }
 
-var member = new MemberChatModel()
-{
-    Conversation = group,
-    Profile = profileModel,
-    Rol = Types.Communication.Enumerations.MemberRoles.None
-};
+            if (group.Type == ConversationsTypes.Personal)
+            {
+                group.Type = ConversationsTypes.Group;
+                group.Name = "Grupo";
+            }
 
-group.Members.Add(member);
 
-context.DataBase.SaveChanges();
+            var profileModel = new ProfileModel()
+            {
+                ID = profile
+            };
 
-return new(Responses.Success);
+            context.DataBase.Attach(profileModel);
+
+            var member = new MemberChatModel()
+            {
+                Conversation = group,
+                Profile = profileModel,
+                Rol = Types.Communication.Enumerations.MemberRoles.None
+            };
+
+            group.Members.Add(member);
+
+            context.DataBase.SaveChanges();
+
+            return new(Responses.Success);
         }
         catch
         {
@@ -87,21 +87,21 @@ return new(Responses.Success);
         try
         {
 
-// Consulta
-var groups = await (from M in context.DataBase.Members
-        where M.Conversation.ID == id
-        select new MemberChatModel
-        {
-Profile = new()
-{
-    Alias = M.Profile.Alias,
-    ID = M.Profile.ID,
-    AccountID = M.Profile.AccountID
-},
-Rol = M.Rol,
-        }).ToListAsync();
+            // Consulta
+            var groups = await (from M in context.DataBase.Members
+                                where M.Conversation.ID == id
+                                select new MemberChatModel
+                                {
+                                    Profile = new()
+                                    {
+                                        Alias = M.Profile.Alias,
+                                        ID = M.Profile.ID,
+                                        AccountID = M.Profile.AccountID
+                                    },
+                                    Rol = M.Rol,
+                                }).ToListAsync();
 
-return new(Responses.Success, groups);
+            return new(Responses.Success, groups);
         }
         catch
         {
@@ -124,13 +124,13 @@ return new(Responses.Success, groups);
         try
         {
 
-// Consulta.
-var deleted = await (from M in context.DataBase.Members
-         where M.Profile.ID == profile
-         && M.Conversation.ID == id
-         select M).ExecuteDeleteAsync();
+            // Consulta.
+            var deleted = await (from M in context.DataBase.Members
+                                 where M.Profile.ID == profile
+                                 && M.Conversation.ID == id
+                                 select M).ExecuteDeleteAsync();
 
-return new(Responses.Success);
+            return new(Responses.Success);
         }
         catch
         {

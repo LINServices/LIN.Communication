@@ -109,12 +109,12 @@ public class EmmaController(IIAService ia) : ControllerBase
             };
             Mems.Sessions.Add(getProf);
         }
-        
+
 
         string final = ia.GetWith(getProf?.StringOfConversations() ?? string.Empty);
 
-        final += includeMethods 
-                 ? ia.GetActions() 
+        final += includeMethods
+                 ? ia.GetActions()
                  : ia.GetDefault();
 
         return new ReadOneResponse<object>()

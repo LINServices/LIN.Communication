@@ -19,12 +19,12 @@ public partial class Conversations
         try
         {
 
-foreach (var user in data.Members)
-    context.DataBase.Attach(user.Profile);
+            foreach (var user in data.Members)
+                context.DataBase.Attach(user.Profile);
 
-var res = context.DataBase.Conversaciones.Add(data);
-await context.DataBase.SaveChangesAsync();
-return new(Responses.Success, data.ID);
+            var res = context.DataBase.Conversaciones.Add(data);
+            await context.DataBase.SaveChangesAsync();
+            return new(Responses.Success, data.ID);
         }
         catch (Exception)
         {
@@ -46,24 +46,24 @@ return new(Responses.Success, data.ID);
         try
         {
 
-// Consulta
-var groups = await (from M in context.DataBase.Members
-        where M.Profile.ID == id
-        where M.Conversation.Visibility == ConversationVisibility.@public
-        select new MemberChatModel
-        {
-Conversation = new ConversationModel
-{
-    ID = M.Conversation.ID,
-    Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
-    : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id)!.Profile.Alias ?? "Yo",
-    Type = M.Conversation.Type,
-    Visibility = M.Conversation.Visibility
-},
-Rol = M.Rol
-        }).ToListAsync();
+            // Consulta
+            var groups = await (from M in context.DataBase.Members
+                                where M.Profile.ID == id
+                                where M.Conversation.Visibility == ConversationVisibility.@public
+                                select new MemberChatModel
+                                {
+                                    Conversation = new ConversationModel
+                                    {
+                                        ID = M.Conversation.ID,
+                                        Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
+                            : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id)!.Profile.Alias ?? "Yo",
+                                        Type = M.Conversation.Type,
+                                        Visibility = M.Conversation.Visibility
+                                    },
+                                    Rol = M.Rol
+                                }).ToListAsync();
 
-return new(Responses.Success, groups);
+            return new(Responses.Success, groups);
         }
         catch
         {
@@ -85,28 +85,28 @@ return new(Responses.Success, groups);
         try
         {
 
-// Consulta
-var groups = await (from M in context.DataBase.Members
-        where M.Conversation.ID == id
-        && M.Conversation.Visibility == ConversationVisibility.@public
-        select new MemberChatModel
-        {
-Conversation = new ConversationModel
-{
-    ID = M.Conversation.ID,
-    Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
-           : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != profileContext)!.Profile.Alias ?? "Yo",
+            // Consulta
+            var groups = await (from M in context.DataBase.Members
+                                where M.Conversation.ID == id
+                                && M.Conversation.Visibility == ConversationVisibility.@public
+                                select new MemberChatModel
+                                {
+                                    Conversation = new ConversationModel
+                                    {
+                                        ID = M.Conversation.ID,
+                                        Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
+                                   : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != profileContext)!.Profile.Alias ?? "Yo",
 
-    Type = M.Conversation.Type,
-    Visibility = M.Conversation.Visibility
-},
-Rol = M.Rol
-        }).FirstOrDefaultAsync();
+                                        Type = M.Conversation.Type,
+                                        Visibility = M.Conversation.Visibility
+                                    },
+                                    Rol = M.Rol
+                                }).FirstOrDefaultAsync();
 
-if (groups == null)
-    return new(Responses.NotRows);
+            if (groups == null)
+                return new(Responses.NotRows);
 
-return new(Responses.Success, groups);
+            return new(Responses.Success, groups);
         }
         catch
         {
@@ -128,18 +128,18 @@ return new(Responses.Success, groups);
         // Ejecución
         try
         {
-// Consulta
-var v = await (from M in context.DataBase.Conversaciones
-   where M.ID == id
-   where M.Type != ConversationsTypes.Personal
-   select M).ExecuteUpdateAsync(setters => setters
-   .SetProperty(b => b.Name, name));
+            // Consulta
+            var v = await (from M in context.DataBase.Conversaciones
+                           where M.ID == id
+                           where M.Type != ConversationsTypes.Personal
+                           select M).ExecuteUpdateAsync(setters => setters
+                           .SetProperty(b => b.Name, name));
 
 
-if (v <= 0)
-    return new(Responses.NotRows);
+            if (v <= 0)
+                return new(Responses.NotRows);
 
-return new(Responses.Success);
+            return new(Responses.Success);
         }
         catch
         {

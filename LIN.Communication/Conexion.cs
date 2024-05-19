@@ -47,17 +47,17 @@ public sealed class Conexión
 
         get
         {
-lock (this)
-{
-    if (!OnUse)
-    {
-        OnUse = true;
-        return false;
-    }
+            lock (this)
+            {
+                if (!OnUse)
+                {
+                    OnUse = true;
+                    return false;
+                }
 
-    return true;
+                return true;
 
-}
+            }
 
         }
 
@@ -88,7 +88,7 @@ lock (this)
     public Data.Context DataBase { get; private set; }
 
 
-  
+
 
     /// <summary>
     /// Nueva Conexión
@@ -105,7 +105,7 @@ lock (this)
         ConnectionNumber = _counter;
 
         if (CacheConnections.Count <= _cantidad)
-CacheConnections.Add(this);
+            CacheConnections.Add(this);
 
     }
 
@@ -129,7 +129,7 @@ CacheConnections.Add(this);
     {
         lock (this)
         {
-OnUse = true;
+            OnUse = true;
         }
 
     }
@@ -142,12 +142,12 @@ OnUse = true;
     {
         lock (this)
         {
-if (MyKey != key)
-    return;
+            if (MyKey != key)
+                return;
 
-DataBase.ChangeTracker.Clear();
-MyKey = string.Empty;
-OnUse = false;
+            DataBase.ChangeTracker.Clear();
+            MyKey = string.Empty;
+            OnUse = false;
         }
     }
 
@@ -170,10 +170,10 @@ OnUse = false;
 
         await Task.Run(() =>
           {
-  for (var i = 0; i < _cantidad; i++)
-  {
-      _ = new Conexión();
-  }
+              for (var i = 0; i < _cantidad; i++)
+              {
+                  _ = new Conexión();
+              }
           });
 
     }
@@ -202,19 +202,19 @@ OnUse = false;
 
         if (con != null && con.MyKey == string.Empty)
         {
-lock (con)
-{
-    con.SetOnUse();
-    string key = KeyGenerator.Generate(10, "con.");
-    con.MyKey = key;
-    return (con, key);
-}
+            lock (con)
+            {
+                con.SetOnUse();
+                string key = KeyGenerator.Generate(10, "con.");
+                con.MyKey = key;
+                return (con, key);
+            }
         }
 
         // Retorna la Conexión
         var conexión = new Conexión
         {
-MyKey = KeyGenerator.Generate(10, "con.")
+            MyKey = KeyGenerator.Generate(10, "con.")
         };
         conexión.SetOnUse();
         return (conexión, conexión.MyKey);
