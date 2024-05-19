@@ -18,8 +18,6 @@ public class EmmaController(IIAService ia) : ControllerBase
     public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string tokenAuth, [FromBody] string consult)
     {
 
-
-
         HttpClient client = new();
 
         client.DefaultRequestHeaders.Add("token", tokenAuth);

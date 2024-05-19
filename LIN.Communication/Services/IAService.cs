@@ -15,7 +15,7 @@ public class IAService : Services.Interfaces.IIAService
     {
 
         if (string.IsNullOrWhiteSpace(Data))
-            Data = File.ReadAllText("./Actions.ia");
+            Data = File.ReadAllText("wwwroot/Actions.ia");
 
         return Data ?? string.Empty;
 
@@ -30,7 +30,7 @@ public class IAService : Services.Interfaces.IIAService
     {
 
         if (string.IsNullOrWhiteSpace(Data))
-            Default = File.ReadAllText("./Default.ia");
+            Default = File.ReadAllText("wwwroot/Default.ia");
 
         return Default ?? string.Empty;
 
@@ -47,7 +47,7 @@ public class IAService : Services.Interfaces.IIAService
     {
 
         if (string.IsNullOrWhiteSpace(Data))
-            Conversations = File.ReadAllText("./Conversations.ia");
+            Conversations = File.ReadAllText("wwwroot/Conversations.ia");
 
         return Conversations.Replace("[DATA]", data) ?? string.Empty;
 
