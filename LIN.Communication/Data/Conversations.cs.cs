@@ -10,7 +10,7 @@ public partial class Conversations
     /// </summary>
     /// <param name="data">Modelo</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<CreateResponse> Create(ConversationModel data, Conexión context)
+    public async Task<CreateResponse> Create(ConversationModel data, Conexión context)
     {
         // Id
         data.ID = 0;
@@ -39,7 +39,7 @@ public partial class Conversations
     /// </summary>
     /// <param name="id">Id del perfil.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
+    public async Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
     {
 
         // Ejecución
@@ -78,7 +78,7 @@ public partial class Conversations
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<MemberChatModel>> Read(int id, Conexión context, int profileContext = 0)
+    public async Task<ReadOneResponse<MemberChatModel>> Read(int id, Conexión context, int profileContext = 0)
     {
 
         // Ejecución
@@ -122,7 +122,7 @@ public partial class Conversations
     /// <param name="id">Id de la conversación.</param>
     /// <param name="name">Nuevo nombre de la conversación.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ResponseBase> UpdateName(int id, string name, Conexión context)
+    public async Task<ResponseBase> UpdateName(int id, string name, Conexión context)
     {
 
         // Ejecución

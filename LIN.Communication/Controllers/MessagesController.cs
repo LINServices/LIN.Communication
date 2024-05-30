@@ -90,7 +90,7 @@ public class MessagesController(IIamService Iam, IHubContext<ChatHub> hub) : Con
             Contenido = message,
             Remitente = new()
             {
-                AccountID = tokenInfo.AccountId,
+                IdentityId = tokenInfo.IdentityId,
                 Alias = tokenInfo.Alias,
                 ID = tokenInfo.ProfileId
             },

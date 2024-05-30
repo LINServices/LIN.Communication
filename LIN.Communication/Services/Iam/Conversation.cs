@@ -38,7 +38,7 @@ public class Conversation : IIamService
             // Visualizador.
             return IamLevels.Visualizer;
         }
-        catch
+        catch (Exception)
         {
         }
         return IamLevels.NotAccess;

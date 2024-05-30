@@ -45,7 +45,7 @@ public class Jwt
         var claims = new[]
         {
 new Claim(ClaimTypes.PrimarySid, user.ID.ToString()),
-new Claim(ClaimTypes.UserData, user.AccountID.ToString()),
+new Claim(ClaimTypes.UserData, user.IdentityId.ToString()),
 new Claim(ClaimTypes.Name, user.Alias)
         };
 
@@ -96,7 +96,7 @@ new Claim(ClaimTypes.Name, user.Alias)
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.PrimarySid)?.Value, out int id);
 
                 // 
-                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value, out int account);
+                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value, out int identity);
 
 
                 string name = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value ?? "";
@@ -105,7 +105,7 @@ new Claim(ClaimTypes.Name, user.Alias)
                 return new()
                 {
                     IsAuthenticated = true,
-                    AccountId = account,
+                    IdentityId = identity,
                     Alias = name,
                     ProfileId = id,
                 };

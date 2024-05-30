@@ -18,7 +18,7 @@ public class JwtModel
     /// <summary>
     /// Id de la cuenta.
     /// </summary>
-    public int AccountId { get; set; }
+    public int IdentityId { get; set; }
 
 
     /// <summary>

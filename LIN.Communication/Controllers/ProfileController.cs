@@ -34,12 +34,13 @@ public class ProfileController : ControllerBase
         }
 
         // Obtiene el perfil
-        var profile = await Data.Profiles.ReadByAccount(authResponse.Model.Id);
+        var profile = await Data.Profiles.ReadByIdentity(authResponse.Model.IdentityId);
 
         switch (profile.Response)
         {
             case Responses.Success:
                 break;
+
             case Responses.NotExistProfile:
                 {
                     var res = await Data.Profiles.Create(new()
@@ -47,7 +48,7 @@ public class ProfileController : ControllerBase
                         Account = authResponse.Model,
                         Profile = new()
                         {
-                            AccountID = authResponse.Model.Id,
+                            IdentityId = authResponse.Model.IdentityId,
                             Alias = authResponse.Model.Name
                         }
                     });
@@ -111,7 +112,7 @@ public class ProfileController : ControllerBase
             return new(response.Response);
 
 
-        var profile = await Data.Profiles.ReadByAccount(response.Model.Id);
+        var profile = await Data.Profiles.ReadByIdentity(response.Model.Id);
 
 
         var httpResponse = new ReadOneResponse<AuthModel<ProfileModel>>()
@@ -135,7 +136,7 @@ public class ProfileController : ControllerBase
                         Account = response.Model,
                         Profile = new()
                         {
-                            AccountID = response.Model.Id,
+                            IdentityId = response.Model.IdentityId,
                             Alias = response.Model.Name
                         }
                     });
@@ -205,14 +206,14 @@ public class ProfileController : ControllerBase
             };
 
 
-        var mappedIds = accounts.Models.Select(T => T.Id).ToList();
+        var mappedIds = accounts.Models.Select(T => T.IdentityId).ToList();
 
-        var profiles = await Data.Profiles.ReadByAccounts(mappedIds);
+        var profiles = await Data.Profiles.ReadByIdentities(mappedIds);
 
 
         var final = from P in profiles.Models
                     join A in accounts.Models
-                    on P.AccountID equals A.Id
+                    on P.IdentityId equals A.IdentityId
                     select new LIN.Types.Cloud.Identity.Abstracts.SessionModel<ProfileModel>
                     {
                         Account = A,

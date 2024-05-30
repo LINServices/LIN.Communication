@@ -5,7 +5,7 @@ namespace LIN.Communication.Controllers;
 
 
 [Route("Emma")]
-public class EmmaController(IIAService ia) : ControllerBase
+public class EmmaController(IIAService ia, Data.IConversations conversationData) : ControllerBase
 {
 
 
@@ -80,7 +80,7 @@ public class EmmaController(IIAService ia) : ControllerBase
         }
 
         // 
-        var profile = await Data.Profiles.ReadByAccount(response.Model.Id);
+        var profile = await Data.Profiles.ReadByIdentity(response.Model.Id);
 
 
         if (profile.Response != Responses.Success)
@@ -97,7 +97,7 @@ public class EmmaController(IIAService ia) : ControllerBase
         if (getProf == null)
         {
 
-            var convs = (await Data.Conversations.ReadAll(profile.Model.ID))?.Models.Select(t =>
+            var convs = (await conversationData.ReadAll(profile.Model.ID))?.Models.Select(t =>
             (t.Conversation.ID, t.Conversation.Name));
 
             getProf = new MemorySession()

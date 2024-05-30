@@ -5,7 +5,7 @@ namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
-public class ConversationController(IIamService Iam) : ControllerBase
+public class ConversationController(IIamService Iam, Data.IConversations conversationData) : ControllerBase
 {
 
 
@@ -60,7 +60,7 @@ public class ConversationController(IIamService Iam) : ControllerBase
         modelo.Members = members;
 
         // Obtiene el resultado
-        var response = await Data.Conversations.Create(modelo);
+        var response = await conversationData.Create(modelo);
 
         // Retorna el resultado
         return response ?? new();
@@ -82,15 +82,15 @@ public class ConversationController(IIamService Iam) : ControllerBase
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Obtiene el usuario.
-        var result = await Data.Conversations.ReadAll(tokenInfo.ProfileId);
+        var result = await conversationData.ReadAll(tokenInfo.ProfileId);
 
         // Cuentas.
         List<int> accounts = [];
 
         foreach (var account in result.Models)
-            accounts.AddRange(account.Conversation.Members.Select(t => t.Profile.AccountID));
+            accounts.AddRange(account.Conversation.Members.Select(t => t.Profile.IdentityId));
 
-        var x = await LIN.Access.Auth.Controllers.Account.Read(accounts, tokenAuth);
+        var x = await LIN.Access.Auth.Controllers.Account.ReadByIdentity(accounts, tokenAuth);
 
 
         // Sesión en memoria.
@@ -138,15 +138,13 @@ public class ConversationController(IIamService Iam) : ControllerBase
             };
 
         // Obtiene el usuario
-        var result = await Data.Conversations.Read(id, tokenInfo.ProfileId);
-
-
+        var result = await conversationData.Read(id, tokenInfo.ProfileId);
 
         // Cuentas.
-        List<int> accounts = result.Model.Conversation?.Members?.Select(t => t.Profile.AccountID).ToList() ?? [];
+        List<int> accounts = result.Model.Conversation?.Members?.Select(t => t.Profile.IdentityId).ToList() ?? [];
 
 
-        var x = await LIN.Access.Auth.Controllers.Account.Read(accounts, tokenAuth);
+        var x = await LIN.Access.Auth.Controllers.Account.ReadByIdentity(accounts, tokenAuth);
 
 
         return new ReadOneResponse<MemberChatModel>()
@@ -195,7 +193,7 @@ public class ConversationController(IIamService Iam) : ControllerBase
             };
 
         // Obtiene el usuario
-        var result = await Data.Conversations.UpdateName(id, newName);
+        var result = await conversationData.UpdateName(id, newName);
 
         return new()
         {

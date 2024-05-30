@@ -5,7 +5,7 @@ namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
-public class MembersController(IIamService Iam) : ControllerBase
+public class MembersController(IIamService Iam, Data.IConversations conversationData) : ControllerBase
 {
 
 
@@ -88,7 +88,6 @@ public class MembersController(IIamService Iam) : ControllerBase
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-
         // Validación Iam.
         var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
@@ -105,15 +104,15 @@ public class MembersController(IIamService Iam) : ControllerBase
         var members = await Data.Members.ReadAll(id);
 
         // Obtiene los Id de las cuentas.
-        var accountsId = members.Models.Select(member => member.Profile.AccountID).ToList();
+        var accountsId = members.Models.Select(member => member.Profile.IdentityId).ToList();
 
         // Información de las cuentas.
-        var accounts = await Access.Auth.Controllers.Account.Read(accountsId, tokenAuth);
+        var accounts = await Access.Auth.Controllers.Account.ReadByIdentity(accountsId, tokenAuth);
 
         // Armar los modelos.
         var response = (from member in members.Models
                         join account in accounts.Models
-                        on member.Profile.AccountID equals account.Id
+                        on member.Profile.IdentityId equals account.IdentityId
                         select new SessionModel<MemberChatModel>
                         {
                             Account = account,
@@ -265,7 +264,7 @@ public class MembersController(IIamService Iam) : ControllerBase
 
 
         // Crear el chat
-        var response = await Data.Conversations.Create(new()
+        var response = await conversationData.Create(new()
         {
             ID = 0,
             Name = "Chat Personal",
@@ -274,24 +273,24 @@ public class MembersController(IIamService Iam) : ControllerBase
             Members = [
          new MemberChatModel()
          {
- ID = 0,
- Profile = new()
- {
-     ID = tokenInfo.ProfileId
- },
- Rol = MemberRoles.Admin
-         },
+             ID = 0,
+             Profile = new()
+             {
+                 ID = tokenInfo.ProfileId
+             },
+             Rol = MemberRoles.Admin
+                     },
 
-    new MemberChatModel()
-    {
-        ID = 0,
-        Profile = new()
-        {
-ID = friendId
-        },
-        Rol = MemberRoles.Admin
-    }
-     ]
+                new MemberChatModel()
+                {
+                    ID = 0,
+                    Profile = new()
+                    {
+            ID = friendId
+                    },
+                    Rol = MemberRoles.Admin
+                }
+                 ]
         }, context);
 
         // Cierra la conexión.

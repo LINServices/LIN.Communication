@@ -55,14 +55,14 @@ public class Profiles
     /// Obtiene un perfil por medio del Id de su cuenta.
     /// </summary>
     /// <param name="id">Id de la cuenta</param>
-    public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id)
+    public async static Task<ReadOneResponse<ProfileModel>> ReadByIdentity(int id)
     {
 
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
-        var response = await ReadByAccount(id, context);
+        var response = await ReadByIdentity(id, context);
 
         context.CloseActions(connectionKey);
 
@@ -76,14 +76,14 @@ public class Profiles
     /// Obtiene una lista de usuarios según los Ids de las cuentas.
     /// </summary>
     /// <param name="ids">Ids de las cuentas</param>
-    public async static Task<ReadAllResponse<ProfileModel>> ReadByAccounts(IEnumerable<int> ids)
+    public async static Task<ReadAllResponse<ProfileModel>> ReadByIdentities(IEnumerable<int> ids)
     {
 
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
-        var response = await ReadByAccounts(ids, context);
+        var response = await ReadByIdentities(ids, context);
 
         context.CloseActions(connectionKey);
 
@@ -198,7 +198,7 @@ public class Profiles
     /// </summary>
     /// <param name="id">Id de la cuenta</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<ProfileModel>> ReadByAccount(int id, Conexión context)
+    public async static Task<ReadOneResponse<ProfileModel>> ReadByIdentity(int id, Conexión context)
     {
 
         // Ejecución
@@ -207,7 +207,7 @@ public class Profiles
 
             // Consulta.
             var profile = await (from P in context.DataBase.Profiles
-                                 where P.AccountID == id
+                                 where P.IdentityId == id
                                  select P).FirstOrDefaultAsync();
 
             if (profile == null)
@@ -228,7 +228,7 @@ public class Profiles
     /// </summary>
     /// <param name="ids">Ids de las cuentas</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadAllResponse<ProfileModel>> ReadByAccounts(IEnumerable<int> ids, Conexión context)
+    public async static Task<ReadAllResponse<ProfileModel>> ReadByIdentities(IEnumerable<int> ids, Conexión context)
     {
 
         // Ejecución
@@ -236,7 +236,7 @@ public class Profiles
         {
             // Consulta.
             var profiles = await (from P in context.DataBase.Profiles
-                                  where ids.Contains(P.AccountID)
+                                  where ids.Contains(P.IdentityId)
                                   select P).ToListAsync();
 
             if (profiles == null)
@@ -268,7 +268,7 @@ public class Profiles
 
             // Consulta.
             var profile = await (from P in context.DataBase.Profiles
-                                 where P.AccountID == id
+                                 where P.IdentityId == id
                                  select P).FirstOrDefaultAsync();
 
             if (profile == null)
@@ -301,7 +301,7 @@ public class Profiles
 
             // Consulta.
             var lastConnection = await (from P in context.DataBase.Profiles
-                                        where P.AccountID == id
+                                        where P.IdentityId == id
                                         select P.LastConnection).FirstOrDefaultAsync();
 
             // Respuesta.

@@ -96,7 +96,7 @@ public partial class Members
                                     {
                                         Alias = M.Profile.Alias,
                                         ID = M.Profile.ID,
-                                        AccountID = M.Profile.AccountID
+                                        IdentityId = M.Profile.IdentityId
                                     },
                                     Rol = M.Rol,
                                 }).ToListAsync();

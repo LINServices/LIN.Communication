@@ -9,13 +9,14 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Azure.Identity" Version="1.11.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.4" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.4" />
+        <PackageReference Include="Azure.Identity" Version="1.11.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.5" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\AccesoAPI\LIN.Access.Auth\LIN.Access.Auth.csproj" />
+        <ProjectReference Include="..\..\..\AccesoAPI\LIN.Cache.Service\LIN.Cache.Service.csproj" />
         <ProjectReference Include="..\..\..\Tipos\Http\Http.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj" />
