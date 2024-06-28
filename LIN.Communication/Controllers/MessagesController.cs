@@ -79,7 +79,6 @@ public class MessagesController(IIamService Iam, IHubContext<ChatHub> hub) : Con
                 Message = "No tienes acceso a esta conversación."
             };
 
-
         // Hora actual.
         var time = DateTime.Now;
 

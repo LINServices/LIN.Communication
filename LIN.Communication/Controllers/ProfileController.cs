@@ -85,9 +85,9 @@ public class ProfileController : ControllerBase
             {
                 Account = authResponse.Model,
                 TokenCollection = new()
-    {
-        { "identity", authResponse.Token}
-    },
+                {
+                    { "identity", authResponse.Token}
+                },
                 Profile = profile.Model
             },
             Token = token
