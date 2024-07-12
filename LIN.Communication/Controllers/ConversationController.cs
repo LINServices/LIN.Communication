@@ -84,15 +84,6 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
         // Obtiene el usuario.
         var result = await conversationData.ReadAll(tokenInfo.ProfileId);
 
-        // Cuentas.
-        List<int> accounts = [];
-
-        foreach (var account in result.Models)
-            accounts.AddRange(account.Conversation.Members.Select(t => t.Profile.IdentityId));
-
-        var x = await LIN.Access.Auth.Controllers.Account.ReadByIdentity(accounts, tokenAuth);
-
-
         // Sesión en memoria.
         var onHub = Mems.Sessions[tokenInfo.ProfileId];
         if (onHub != null)
@@ -106,7 +97,6 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
         return new ReadAllResponse<MemberChatModel>
         {
             Models = result.Models,
-            AlternativeObject = x.Models,
             Response = result.Response,
         };
 

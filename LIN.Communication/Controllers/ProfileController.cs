@@ -16,8 +16,8 @@ public class ProfileController : ControllerBase
     public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string app)
     {
 
-        // Comprobación
-        if (!user.Any() || !password.Any())
+        // Validación de datos.
+        if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
             return new(Responses.InvalidParam);
 
         // Respuesta de autenticación

@@ -34,7 +34,7 @@ public class EmmaController(IIAService ia, Data.IConversations conversationData)
 
         StringContent stringContent = new(Newtonsoft.Json.JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
-        var result = await client.PostAsync("http://api.emma.linapps.co/emma", stringContent);
+        var result = await client.PostAsync("http://api.emma.linplatform.com/emma", stringContent);
 
 
         var ss = await result.Content.ReadAsStringAsync();

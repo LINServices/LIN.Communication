@@ -56,7 +56,7 @@ public partial class Conversations
                                     {
                                         ID = M.Conversation.ID,
                                         Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
-                            : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id)!.Profile.Alias ?? "Yo",
+                                               : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id)!.Profile.Alias ?? "Yo",
                                         Type = M.Conversation.Type,
                                         Visibility = M.Conversation.Visibility
                                     },
