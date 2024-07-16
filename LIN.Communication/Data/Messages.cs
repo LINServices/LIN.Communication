@@ -13,7 +13,7 @@ public class Messages
     /// Crea un nuevo mensaje
     /// </summary>
     /// <param name="data">Modelo del mensaje</param>
-    public async static Task<CreateResponse> Create(MessageModel data)
+    public static async Task<CreateResponse> Create(MessageModel data)
     {
 
         // Contexto
@@ -36,7 +36,7 @@ public class Messages
     /// </summary>
     /// <param name="id">Id de la conversación</param>
     /// <param name="lastID">Id mínimo para obtener</param>
-    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id, int lastID)
+    public static async Task<ReadAllResponse<MessageModel>> ReadAll(int id, int lastID)
     {
 
         // Contexto
@@ -63,7 +63,7 @@ public class Messages
     /// </summary>
     /// <param name="data">Modelo del mensaje</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<CreateResponse> Create(MessageModel data, Conexión context)
+    public static async Task<CreateResponse> Create(MessageModel data, Conexión context)
     {
         // Id
         data.ID = 0;
@@ -93,7 +93,7 @@ public class Messages
     /// <param name="id">Id de la conversación</param>
     /// <param name="lastID">Id mínimo para obtener</param>
     /// <param name="context">Contexto de conexión</param>
-    public async static Task<ReadAllResponse<MessageModel>> ReadAll(int id, int lastID, Conexión context)
+    public static async Task<ReadAllResponse<MessageModel>> ReadAll(int id, int lastID, Conexión context)
     {
 
         // Ejecución

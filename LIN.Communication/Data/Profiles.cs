@@ -13,7 +13,7 @@ public class Profiles
     /// Crea un perfil.
     /// </summary>
     /// <param name="data">Modelo.</param>
-    public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data)
+    public static async Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data)
     {
 
         // Contexto de conexión.
@@ -34,7 +34,7 @@ public class Profiles
     /// Obtiene un perfil.
     /// </summary>
     /// <param name="id">Id del perfil</param>
-    public async static Task<ReadOneResponse<ProfileModel>> Read(int id)
+    public static async Task<ReadOneResponse<ProfileModel>> Read(int id)
     {
 
         // Contexto
@@ -55,7 +55,7 @@ public class Profiles
     /// Obtiene un perfil por medio del Id de su cuenta.
     /// </summary>
     /// <param name="id">Id de la cuenta</param>
-    public async static Task<ReadOneResponse<ProfileModel>> ReadByIdentity(int id)
+    public static async Task<ReadOneResponse<ProfileModel>> ReadByIdentity(int id)
     {
 
         // Contexto
@@ -76,7 +76,7 @@ public class Profiles
     /// Obtiene una lista de usuarios según los Ids de las cuentas.
     /// </summary>
     /// <param name="ids">Ids de las cuentas</param>
-    public async static Task<ReadAllResponse<ProfileModel>> ReadByIdentities(IEnumerable<int> ids)
+    public static async Task<ReadAllResponse<ProfileModel>> ReadByIdentities(IEnumerable<int> ids)
     {
 
         // Contexto
@@ -97,7 +97,7 @@ public class Profiles
     /// Obtener la ultima conexión.
     /// </summary>
     /// <param name="id">Id del perfil.</param>
-    public async static Task<ReadOneResponse<DateTime>> GetLastConnection(int id)
+    public static async Task<ReadOneResponse<DateTime>> GetLastConnection(int id)
     {
 
         // Contexto
@@ -119,7 +119,7 @@ public class Profiles
     /// </summary>
     /// <param name="id">Id del perfil.</param>
     /// <param name="time">Hora de conexión</param>
-    public async static Task<ResponseBase> SetLastConnection(int id, DateTime time)
+    public static async Task<ResponseBase> SetLastConnection(int id, DateTime time)
     {
 
         // Contexto
@@ -145,7 +145,7 @@ public class Profiles
     /// </summary>
     /// <param name="data">Modelo.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data, Conexión context)
+    public static async Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data, Conexión context)
     {
         // Id
         data.Profile.ID = 0;
@@ -171,7 +171,7 @@ public class Profiles
     /// </summary>
     /// <param name="id">Id del perfil</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)
+    public static async Task<ReadOneResponse<ProfileModel>> Read(int id, Conexión context)
     {
 
         // Ejecución
@@ -198,7 +198,7 @@ public class Profiles
     /// </summary>
     /// <param name="id">Id de la cuenta</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<ProfileModel>> ReadByIdentity(int id, Conexión context)
+    public static async Task<ReadOneResponse<ProfileModel>> ReadByIdentity(int id, Conexión context)
     {
 
         // Ejecución
@@ -228,7 +228,7 @@ public class Profiles
     /// </summary>
     /// <param name="ids">Ids de las cuentas</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadAllResponse<ProfileModel>> ReadByIdentities(IEnumerable<int> ids, Conexión context)
+    public static async Task<ReadAllResponse<ProfileModel>> ReadByIdentities(IEnumerable<int> ids, Conexión context)
     {
 
         // Ejecución
@@ -258,7 +258,7 @@ public class Profiles
     /// <param name="id">Id del perfil.</param>
     /// <param name="time">Hora de conexión</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ResponseBase> SetLastConnection(int id, DateTime time, Conexión context)
+    public static async Task<ResponseBase> SetLastConnection(int id, DateTime time, Conexión context)
     {
 
 
@@ -292,7 +292,7 @@ public class Profiles
     /// </summary>
     /// <param name="id">Id del perfil.</param>
     /// <param name="context">Contexto de conexión.</param>
-    public async static Task<ReadOneResponse<DateTime>> GetLastConnection(int id, Conexión context)
+    public static async Task<ReadOneResponse<DateTime>> GetLastConnection(int id, Conexión context)
     {
 
         // Ejecución

@@ -10,7 +10,7 @@ public partial class Members
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="profile">Id del perfil.</param>
-    public async static Task<ResponseBase> Create(int id, int profile)
+    public static async Task<ResponseBase> Create(int id, int profile)
     {
 
         // Contexto
@@ -31,7 +31,7 @@ public partial class Members
     /// Obtiene los miembros asociadas a una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
-    public async static Task<ReadAllResponse<MemberChatModel>> ReadAll(int id)
+    public static async Task<ReadAllResponse<MemberChatModel>> ReadAll(int id)
     {
 
         // Contexto
@@ -53,7 +53,7 @@ public partial class Members
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="profile">Id del perfil.</param>
-    public async static Task<ResponseBase> Remove(int id, int profile)
+    public static async Task<ResponseBase> Remove(int id, int profile)
     {
 
         // Contexto

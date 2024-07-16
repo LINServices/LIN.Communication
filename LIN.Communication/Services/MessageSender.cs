@@ -9,20 +9,19 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub) : I
 {
 
 
-
     /// <summary>
     /// Enviar mensaje.
     /// </summary>
     /// <param name="message">Modelo del mensaje.</param>
     /// <param name="guid">New guid.</param>
-    /// <param name="remitente">Remitente.</param>
-    public async Task<ResponseBase> Send(MessageModel message, string guid, JwtModel remitente)
+    /// <param name="sender">Remitente.</param>
+    public async Task<ResponseBase> Send(MessageModel message, string guid, JwtModel sender)
     {
         return await Send(message, guid, new ProfileModel()
         {
-            ID = remitente.ProfileId,
-            Alias = remitente.Alias,
-            IdentityId = remitente.IdentityId,
+            ID = sender.ProfileId,
+            Alias = sender.Alias,
+            IdentityId = sender.IdentityId,
         });
     }
 
@@ -33,8 +32,8 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub) : I
     /// </summary>
     /// <param name="message">Modelo.</param>
     /// <param name="guid">Guid.</param>
-    /// <param name="auth">Autenticación.</param>
-    public async Task<ResponseBase> Send(MessageModel message, string guid, ProfileModel remitente)
+    /// <param name="sender">Autenticación.</param>
+    public async Task<ResponseBase> Send(MessageModel message, string guid, ProfileModel sender)
     {
 
         // Validar modelo.
@@ -46,7 +45,7 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub) : I
             };
 
         // Iam.
-        IamLevels iam = await IamService.Validate(remitente.ID, message.Conversacion.ID);
+        IamLevels iam = await IamService.Validate(sender.ID, message.Conversacion.ID);
 
         // Not access.
         if (iam == IamLevels.NotAccess)
@@ -65,9 +64,9 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub) : I
             Contenido = message.Contenido,
             Remitente = new()
             {
-                IdentityId = remitente.IdentityId,
-                Alias = remitente.Alias,
-                ID = remitente.ID
+                IdentityId = sender.IdentityId,
+                Alias = sender.Alias,
+                ID = sender.ID
             },
             Time = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0),
             Guid = guid,
@@ -90,5 +89,6 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub) : I
         };
 
     }
+
 
 }

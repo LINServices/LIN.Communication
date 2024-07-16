@@ -1,5 +1,4 @@
-﻿using LIN.Communication.Hubs;
-using LIN.Communication.Services.Iam;
+﻿using LIN.Communication.Services.Iam;
 using LIN.Communication.Services.Interfaces;
 using LIN.Communication.Services.Models;
 
