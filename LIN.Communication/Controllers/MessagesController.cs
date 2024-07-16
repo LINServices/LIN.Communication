@@ -1,12 +1,13 @@
 ﻿using LIN.Communication.Hubs;
 using LIN.Communication.Services.Iam;
+using LIN.Communication.Services.Interfaces;
 using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Controllers;
 
 
 [Route("conversations")]
-public class MessagesController(IIamService Iam, IHubContext<ChatHub> hub) : ControllerBase
+public class MessagesController(IMessageSender messageSender, IIamService Iam) : ControllerBase
 {
 
 
@@ -68,17 +69,6 @@ public class MessagesController(IIamService Iam, IHubContext<ChatHub> hub) : Con
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Valida el acceso Iam.
-        var iam = await Iam.Validate(tokenInfo.ProfileId, id);
-
-        // Valida el acceso Iam.
-        if (iam == IamLevels.NotAccess)
-            return new()
-            {
-                Response = Responses.Unauthorized,
-                Message = "No tienes acceso a esta conversación."
-            };
-
         // Hora actual.
         var time = DateTime.Now;
 
@@ -100,11 +90,8 @@ public class MessagesController(IIamService Iam, IHubContext<ChatHub> hub) : Con
             }
         };
 
-        // Envía el mensaje en tiempo real.
-        await hub.Clients.Group(id.ToString()).SendAsync($"sendMessage", messageModel);
-
-        // Crea el mensaje en la BD
-        await Data.Messages.Create(messageModel);
+        // Enviar mensaje.
+        await messageSender.Send(messageModel, guid, tokenInfo);
 
         // Retorna el resultado.
         return new()

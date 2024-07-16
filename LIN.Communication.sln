@@ -17,8 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types.Emma", "..\..\Tip
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LIN.Types.Cloud.Identity", "..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj", "{5E4A1468-810D-4869-92BD-BF0C0A913634}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LIN.Cache.Service", "..\..\AccesoAPI\LIN.Cache.Service\LIN.Cache.Service.csproj", "{02041FF4-FF80-449A-B34B-6734C86FBCFF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,14 +81,6 @@ Global
 		{5E4A1468-810D-4869-92BD-BF0C0A913634}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5E4A1468-810D-4869-92BD-BF0C0A913634}.Release|x86.ActiveCfg = Release|Any CPU
 		{5E4A1468-810D-4869-92BD-BF0C0A913634}.Release|x86.Build.0 = Release|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Debug|x86.Build.0 = Debug|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Release|x86.ActiveCfg = Release|Any CPU
-		{02041FF4-FF80-449A-B34B-6734C86FBCFF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

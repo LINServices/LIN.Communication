@@ -1,9 +1,7 @@
-﻿using LIN.Cache.Service.Interfaces;
-
-namespace LIN.Communication.Data;
+﻿namespace LIN.Communication.Data;
 
 
-public partial class Conversations(IRedisService redisService) : IConversations
+public partial class Conversations : IConversations
 {
 
 
@@ -55,31 +53,11 @@ public partial class Conversations(IRedisService redisService) : IConversations
     /// <param name="id">Id de la conversación.</param>
     public async Task<ReadOneResponse<MemberChatModel>> Read(int id, int profileContext = 0, bool useCache = false)
     {
-
-        // Si usar cache.
-        if (useCache)
-        {
-            // Obtener del cache.
-            MemberChatModel conversation = await redisService.GetObjectAsync<MemberChatModel>($"c{id}");
-
-            // Si existe en el cache.
-            if (conversation != null)
-                return new()
-                {
-                    Model = conversation,
-                    Response = Responses.Success,
-                };
-        }
-
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 
         // respuesta
         var response = await Read(id, context, profileContext);
-
-        // Establecer cache.
-        if (response.Response == Responses.Success)
-            await redisService.SetObjectAsync($"c{id}", response.Model);
 
         context.CloseActions(connectionKey);
 
@@ -96,10 +74,6 @@ public partial class Conversations(IRedisService redisService) : IConversations
     /// <param name="name">Nuevo nombre.</param>
     public async Task<ResponseBase> UpdateName(int id, string name)
     {
-
-        // Eliminar del cache.
-        _ = redisService.DeleteObjectAsync($"c{id}");
-
         // Contexto
         (Conexión context, string connectionKey) = Conexión.GetOneConnection();
 

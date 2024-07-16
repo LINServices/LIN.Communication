@@ -1,5 +1,4 @@
 using Http.Extensions;
-using LIN.Cache.Service.Extensions;
 using LIN.Communication.Data;
 using LIN.Communication.Services.Iam;
 using LIN.Communication.Services.Interfaces;
@@ -10,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 
 builder.Services.AddLINHttp();
-builder.Services.AddCache(builder.Configuration["ConnectionStrings:redis"] ?? string.Empty);
+builder.Services.AddLocalServices();
 
 string sqlConnection = builder.Configuration["ConnectionStrings:release"] ?? string.Empty;
 

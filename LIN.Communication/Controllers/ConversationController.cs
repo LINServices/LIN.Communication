@@ -75,7 +75,7 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
     /// <param name="token">Token de acceso.</param>
     [HttpGet("all")]
     [LocalToken]
-    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token, [FromHeader] string tokenAuth)
+    public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token)
     {
 
         // Información del token.

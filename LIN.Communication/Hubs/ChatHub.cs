@@ -1,7 +1,9 @@
-﻿namespace LIN.Communication.Hubs;
+﻿using LIN.Communication.Services.Interfaces;
+
+namespace LIN.Communication.Hubs;
 
 
-public partial class ChatHub : Hub
+public partial class ChatHub(IMessageSender messageSender) : Hub
 {
 
 
@@ -79,15 +81,6 @@ public partial class ChatHub : Hub
         // Data
         var data = Mems.Sessions[me];
 
-        var conversationOnMemory = Conversations.Where(T => T.Key == groupName).FirstOrDefault().Value;
-
-        List<MessageModel>? mensajes = conversationOnMemory;
-        if (mensajes == null)
-        {
-            mensajes = [];
-            Conversations.Add(groupName, mensajes);
-        }
-
         // Obtiene el perfil.
         ProfileModel? profile = data?.Profile;
 
@@ -111,13 +104,7 @@ public partial class ChatHub : Hub
             }
         };
 
-        // Envía el mensaje en tiempo real.
-        await Clients.Group(groupName.ToString()).SendAsync($"sendMessage", messageModel);
-
-        mensajes.Add(messageModel);
-
-        // Crea el mensaje en la BD
-        await Data.Messages.Create(messageModel);
+        await messageSender.Send(messageModel, guid, profile);
 
     }
 
