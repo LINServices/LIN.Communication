@@ -1,9 +1,9 @@
-﻿namespace LIN.Communication.Services.Iam;
+﻿using LIN.Communication.Persistence;
 
+namespace LIN.Communication.Services.Iam;
 
-public class Conversation : IIamService
+public class Conversation (Context context) : IIamService
 {
-
 
     /// <summary>
     /// Validar el acceso.
@@ -14,18 +14,11 @@ public class Conversation : IIamService
     {
         try
         {
-
-            // Contexto de conexión a la bd.
-            var (context, contextKey) = Conexión.GetOneConnection();
-
             // Consulta.
-            var have = await (from member in context.DataBase.Members
+            var have = await (from member in context.Members
                               where member.Profile.ID == profile
                               && member.Conversation.ID == conversation
                               select member).FirstOrDefaultAsync();
-
-            // Cerrar la conexión.
-            context.CloseActions(contextKey);
 
             // No existe.
             if (have == null)
@@ -43,6 +36,5 @@ public class Conversation : IIamService
         }
         return IamLevels.NotAccess;
     }
-
 
 }

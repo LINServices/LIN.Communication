@@ -9,7 +9,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +18,7 @@
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types.Emma\LIN.Types.Emma.csproj" />
         <ProjectReference Include="..\..\..\Tipos\LIN.Types\LIN.Types.csproj" />
+        <ProjectReference Include="..\LIN.Communication.Persistence\LIN.Communication.Persistence.csproj" />
     </ItemGroup>
 
 </Project>

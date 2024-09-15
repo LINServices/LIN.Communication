@@ -1,16 +1,13 @@
-﻿namespace LIN.Communication.Data;
+﻿namespace LIN.Communication.Persistence.Data;
 
-
-public partial class Conversations
+public partial class Conversations(Context context)
 {
-
 
     /// <summary>
     /// Crea una conversación (Grupo).
     /// </summary>
     /// <param name="data">Modelo</param>
-    /// <param name="context">Contexto de conexión.</param>
-    public async Task<CreateResponse> Create(ConversationModel data, Conexión context)
+    public async Task<CreateResponse> Create(ConversationModel data)
     {
         // Id
         data.ID = 0;
@@ -18,12 +15,11 @@ public partial class Conversations
         // Ejecución
         try
         {
-
             foreach (var user in data.Members)
-                context.DataBase.Attach(user.Profile);
+                context.Attach(user.Profile);
 
-            var res = context.DataBase.Conversaciones.Add(data);
-            await context.DataBase.SaveChangesAsync();
+            var res = context.Conversaciones.Add(data);
+            await context.SaveChangesAsync();
             return new(Responses.Success, data.ID);
         }
         catch (Exception)
@@ -33,13 +29,11 @@ public partial class Conversations
     }
 
 
-
     /// <summary>
     /// Obtiene las conversaciones asociadas a un perfil.
     /// </summary>
     /// <param name="id">Id del perfil.</param>
-    /// <param name="context">Contexto de conexión.</param>
-    public async Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
+    public async Task<ReadAllResponse<MemberChatModel>> ReadAll(int id)
     {
 
         // Ejecución
@@ -47,7 +41,7 @@ public partial class Conversations
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Members
+            var groups = await (from M in context.Members
                                 where M.Profile.ID == id
                                 where M.Conversation.Visibility == ConversationVisibility.@public
                                 select new MemberChatModel
@@ -55,7 +49,7 @@ public partial class Conversations
                                     Conversation = new ConversationModel
                                     {
                                         ID = M.Conversation.ID,
-                                        Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
+                                        Name = M.Conversation.Type != ConversationsTypes.Personal ? M.Conversation.Name
                                                : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id)!.Profile.Alias ?? "Yo",
                                         Type = M.Conversation.Type,
                                         Visibility = M.Conversation.Visibility
@@ -65,20 +59,18 @@ public partial class Conversations
 
             return new(Responses.Success, groups);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
     }
 
 
-
     /// <summary>
     /// Obtiene una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
-    /// <param name="context">Contexto de conexión.</param>
-    public async Task<ReadOneResponse<MemberChatModel>> Read(int id, Conexión context, int profileContext = 0)
+    public async Task<ReadOneResponse<MemberChatModel>> Read(int id, int profileContext = 0)
     {
 
         // Ejecución
@@ -86,7 +78,7 @@ public partial class Conversations
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Members
+            var groups = await (from M in context.Members
                                 where M.Conversation.ID == id
                                 && M.Conversation.Visibility == ConversationVisibility.@public
                                 select new MemberChatModel
@@ -94,7 +86,7 @@ public partial class Conversations
                                     Conversation = new ConversationModel
                                     {
                                         ID = M.Conversation.ID,
-                                        Name = (M.Conversation.Type != ConversationsTypes.Personal) ? M.Conversation.Name
+                                        Name = M.Conversation.Type != ConversationsTypes.Personal ? M.Conversation.Name
                                    : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != profileContext)!.Profile.Alias ?? "Yo",
 
                                         Type = M.Conversation.Type,
@@ -108,12 +100,11 @@ public partial class Conversations
 
             return new(Responses.Success, groups);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
     }
-
 
 
     /// <summary>
@@ -121,15 +112,14 @@ public partial class Conversations
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="name">Nuevo nombre de la conversación.</param>
-    /// <param name="context">Contexto de conexión.</param>
-    public async Task<ResponseBase> UpdateName(int id, string name, Conexión context)
+    public async Task<ResponseBase> UpdateName(int id, string name)
     {
 
         // Ejecución
         try
         {
             // Consulta
-            var v = await (from M in context.DataBase.Conversaciones
+            var v = await (from M in context.Conversaciones
                            where M.ID == id
                            where M.Type != ConversationsTypes.Personal
                            select M).ExecuteUpdateAsync(setters => setters
@@ -141,11 +131,28 @@ public partial class Conversations
 
             return new(Responses.Success);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
     }
 
+
+    /// <summary>
+    /// Encontrar una organización.
+    /// </summary>
+    /// <param name="friendId">Id del amigo.</param>
+    /// <param name="profileId">Id propio.</param>
+    public async Task<ReadOneResponse<ConversationModel>> Find(int friendId, int profileId)
+    {
+        var conversation = await (from u in context.Conversaciones
+                                  where u.Type == ConversationsTypes.Personal
+                                  && u.Members.Count == 2
+                                  && u.Members.Where(t => t.Profile.ID == friendId).Any()
+                                  && u.Members.Where(t => t.Profile.ID == profileId).Any()
+                                  select u).FirstOrDefaultAsync();
+
+        return new(conversation!);
+    }
 
 }

@@ -2,10 +2,8 @@
 
 namespace LIN.Communication.Hubs;
 
-
-public partial class ChatHub(IMessageSender messageSender) : Hub
+public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Profiles profilesData) : Hub
 {
-
 
     /// <summary>
     /// Carga una sesión.
@@ -42,7 +40,6 @@ public partial class ChatHub(IMessageSender messageSender) : Hub
     }
 
 
-
     /// <summary>
     /// Une una conexión a un grupo de tiempo real.
     /// </summary>
@@ -53,7 +50,6 @@ public partial class ChatHub(IMessageSender messageSender) : Hub
     }
 
 
-
     /// <summary>
     /// Elimina un usuario de un grupo.
     /// </summary>
@@ -62,7 +58,6 @@ public partial class ChatHub(IMessageSender messageSender) : Hub
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
     }
-
 
 
     /// <summary>
@@ -107,8 +102,6 @@ public partial class ChatHub(IMessageSender messageSender) : Hub
         await messageSender.Send(messageModel, guid, profile);
 
     }
-
-
 
     public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = [];
 

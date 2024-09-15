@@ -1,4 +1,4 @@
-﻿namespace LIN.Communication.Data;
+﻿namespace LIN.Communication.Persistence;
 
 
 /// <summary>

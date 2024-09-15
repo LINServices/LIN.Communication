@@ -1,24 +1,21 @@
-﻿namespace LIN.Communication.Data;
+﻿namespace LIN.Communication.Persistence.Data;
 
-
-public partial class Members
+public partial class Members(Context context)
 {
-
 
     /// <summary>
     /// Insertar un miembro a una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="profile">Id del perfil.</param>
-    /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ResponseBase> Create(int id, int profile, Conexión context)
+    public async Task<ResponseBase> Create(int id, int profile)
     {
 
         // Ejecución
         try
         {
             // Consulta
-            var group = await (from M in context.DataBase.Conversaciones
+            var group = await (from M in context.Conversaciones
                                where M.ID == id
                                select M).FirstOrDefaultAsync();
 
@@ -28,9 +25,9 @@ public partial class Members
             }
 
 
-            var exist = await (from M in context.DataBase.Conversaciones
+            var exist = await (from M in context.Conversaciones
                                where M.ID == id
-                               join MM in context.DataBase.Members
+                               join MM in context.Members
                                on M.ID equals MM.Conversation.ID
                                where MM.Profile.ID == profile
                                select MM).AnyAsync();
@@ -52,18 +49,18 @@ public partial class Members
                 ID = profile
             };
 
-            context.DataBase.Attach(profileModel);
+            context.Attach(profileModel);
 
             var member = new MemberChatModel()
             {
                 Conversation = group,
                 Profile = profileModel,
-                Rol = Types.Communication.Enumerations.MemberRoles.None
+                Rol = MemberRoles.None
             };
 
             group.Members.Add(member);
 
-            context.DataBase.SaveChanges();
+            context.SaveChanges();
 
             return new(Responses.Success);
         }
@@ -74,13 +71,11 @@ public partial class Members
     }
 
 
-
     /// <summary>
     /// Obtiene los miembros asociadas a una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
-    /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ReadAllResponse<MemberChatModel>> ReadAll(int id, Conexión context)
+    public async Task<ReadAllResponse<MemberChatModel>> ReadAll(int id)
     {
 
         // Ejecución
@@ -88,7 +83,7 @@ public partial class Members
         {
 
             // Consulta
-            var groups = await (from M in context.DataBase.Members
+            var groups = await (from M in context.Members
                                 where M.Conversation.ID == id
                                 select new MemberChatModel
                                 {
@@ -110,14 +105,12 @@ public partial class Members
     }
 
 
-
     /// <summary>
     /// Eliminar un miembro a una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="profile">Id del perfil.</param>
-    /// <param name="context">Contexto de conexión.</param>
-    public static async Task<ResponseBase> Remove(int id, int profile, Conexión context)
+    public async Task<ResponseBase> Remove(int id, int profile)
     {
 
         // Ejecución
@@ -125,7 +118,7 @@ public partial class Members
         {
 
             // Consulta.
-            var deleted = await (from M in context.DataBase.Members
+            var deleted = await (from M in context.Members
                                  where M.Profile.ID == profile
                                  && M.Conversation.ID == id
                                  select M).ExecuteDeleteAsync();
@@ -137,6 +130,5 @@ public partial class Members
         }
         return new();
     }
-
 
 }

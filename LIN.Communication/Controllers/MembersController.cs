@@ -3,11 +3,9 @@ using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Controllers;
 
-
 [Route("conversations")]
-public class MembersController(IIamService Iam, Data.IConversations conversationData) : ControllerBase
+public class MembersController(IIamService Iam, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData, Persistence.Data.Members membersData) : ControllerBase
 {
-
 
     /// <summary>
     /// Validación si un usuario esta online.
@@ -35,12 +33,11 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
             {
                 ID = id,
                 IsOnline = profile?.Devices.Count != 0,
-                LastTime = profile?.LastTime ?? (await Data.Profiles.GetLastConnection(id)).Model,
+                LastTime = profile?.LastTime ?? (await profilesData.GetLastConnection(id)).Model,
             }
         };
 
     }
-
 
 
     /// <summary>
@@ -67,13 +64,12 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
             };
 
         // Obtiene el usuario
-        var result = await Data.Members.ReadAll(id);
+        var result = await membersData.ReadAll(id);
 
         // Retorna el resultado
         return result ?? new();
 
     }
-
 
 
     /// <summary>
@@ -101,7 +97,7 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
 
 
         // Obtiene los miembros.
-        var members = await Data.Members.ReadAll(id);
+        var members = await membersData.ReadAll(id);
 
         // Obtiene los Id de las cuentas.
         var accountsId = members.Models.Select(member => member.Profile.IdentityId).ToList();
@@ -138,7 +134,6 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
     }
 
 
-
     /// <summary>
     /// Agrega un miembro a una conversación.
     /// </summary>
@@ -165,7 +160,7 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
             };
 
         // Insertar el integrante.
-        var response = await Data.Members.Create(id, profileId);
+        var response = await membersData.Create(id, profileId);
 
         return new()
         {
@@ -173,7 +168,6 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
             Response = response.Response
         };
     }
-
 
 
     /// <summary>
@@ -206,7 +200,7 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
         }
 
         // Insertar el integrante.
-        var response = await Data.Members.Remove(id, profileId);
+        var response = await membersData.Remove(id, profileId);
 
         return new()
         {
@@ -214,7 +208,6 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
             Response = response.Response
         };
     }
-
 
 
     /// <summary>
@@ -238,26 +231,16 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
                 Response = Responses.InvalidParam
             };
 
-
-        // Contexto de conexión.
-        var (context, contextKey) = Conexión.GetOneConnection();
-
         // Consulta.
-        var conversation = await (from u in context.DataBase.Conversaciones
-                                  where u.Type == ConversationsTypes.Personal
-                                  && u.Members.Count == 2
-                                  && u.Members.Where(t => t.Profile.ID == friendId).Any()
-                                  && u.Members.Where(t => t.Profile.ID == tokenInfo.ProfileId).Any()
-                                  select u).FirstOrDefaultAsync();
+        var conversation = await conversationData.Find(friendId, tokenInfo.ProfileId); 
 
         // Si ya existe.
-        if (conversation != null)
+        if (conversation.Model != null)
         {
-            context.CloseActions(contextKey);
             return new CreateResponse()
             {
                 Response = Responses.Success,
-                LastID = conversation.ID,
+                LastID = conversation.Model.ID,
                 Message = "Se encontró."
             };
         }
@@ -291,16 +274,11 @@ public class MembersController(IIamService Iam, Data.IConversations conversation
                     Rol = MemberRoles.Admin
                 }
                  ]
-        }, context);
-
-        // Cierra la conexión.
-        context.CloseActions(contextKey);
+        });
 
         // Retorna el resultado
         return response;
 
     }
-
-
 
 }

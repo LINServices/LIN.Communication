@@ -3,11 +3,10 @@ using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Controllers;
 
-
+[LocalToken]
 [Route("conversations")]
-public class ConversationController(IIamService Iam, Data.IConversations conversationData) : ControllerBase
+public class ConversationController(IIamService Iam, Persistence.Data.Conversations conversationData) : ControllerBase
 {
-
 
     /// <summary>
     /// Crear nueva conversación.
@@ -15,7 +14,6 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
     /// <param name="modelo">Modelo.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpPost]
-    [LocalToken]
     public async Task<HttpCreateResponse> Create([FromBody] ConversationModel modelo, [FromHeader] string token)
     {
 
@@ -68,13 +66,11 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
     }
 
 
-
     /// <summary>
     /// Obtiene las conversaciones asociadas a un perfil.
     /// </summary>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("all")]
-    [LocalToken]
     public async Task<HttpReadAllResponse<MemberChatModel>> ReadAll([FromHeader] string token)
     {
 
@@ -103,14 +99,12 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
     }
 
 
-
     /// <summary>
     /// Obtiene una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet]
-    [LocalToken]
     public async Task<HttpReadOneResponse<MemberChatModel>> ReadOne([FromQuery] int id, [FromHeader] string token, [FromHeader] string tokenAuth)
     {
         // Información del token.
@@ -148,7 +142,6 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
     }
 
 
-
     /// <summary>
     /// Actualizar el nombre de un grupo.
     /// </summary>
@@ -156,7 +149,6 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
     /// <param name="newName">Nuevo nombre.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpPatch("name")]
-    [LocalToken]
     public async Task<HttpResponseBase> UpdateName([FromQuery] int id, [FromQuery] string newName, [FromHeader] string token)
     {
 
@@ -191,7 +183,5 @@ public class ConversationController(IIamService Iam, Data.IConversations convers
         };
 
     }
-
-
 
 }

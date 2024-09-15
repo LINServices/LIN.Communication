@@ -3,11 +3,9 @@ using System.Text;
 
 namespace LIN.Communication.Controllers;
 
-
 [Route("Emma")]
-public class EmmaController(IIAService ia, Data.IConversations conversationData) : ControllerBase
+public class EmmaController(IIAService ia, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData) : ControllerBase
 {
-
 
     /// <summary>
     /// Consulta para LIN Allo Emma.
@@ -57,7 +55,6 @@ public class EmmaController(IIAService ia, Data.IConversations conversationData)
     }
 
 
-
     /// <summary>
     /// Emma IA.
     /// </summary>
@@ -80,7 +77,7 @@ public class EmmaController(IIAService ia, Data.IConversations conversationData)
         }
 
         // 
-        var profile = await Data.Profiles.ReadByIdentity(response.Model.Id);
+        var profile = await profilesData.ReadByIdentity(response.Model.Id);
 
 
         if (profile.Response != Responses.Success)
@@ -122,7 +119,5 @@ public class EmmaController(IIAService ia, Data.IConversations conversationData)
         };
 
     }
-
-
 
 }

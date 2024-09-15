@@ -4,11 +4,9 @@ using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Controllers;
 
-
 [Route("conversations")]
-public class MessagesController(IMessageSender messageSender, IIamService Iam) : ControllerBase
+public class MessagesController(IMessageSender messageSender, IIamService Iam, Persistence.Data.Messages messagesData) : ControllerBase
 {
-
 
     /// <summary>
     /// Obtiene la lista de mensajes asociados a una conversación.
@@ -36,13 +34,12 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam) :
             };
 
         // Obtiene el usuario.
-        var result = await Data.Messages.ReadAll(id, lastID);
+        var result = await messagesData.ReadAll(id, lastID);
 
         // Retorna el resultado.
         return result ?? new();
 
     }
-
 
 
     /// <summary>
@@ -99,6 +96,5 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam) :
         };
 
     }
-
 
 }

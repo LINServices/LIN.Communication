@@ -2,7 +2,7 @@ namespace LIN.Communication.Controllers;
 
 
 [Route("profile")]
-public class ProfileController : ControllerBase
+public class ProfileController (Persistence.Data.Profiles profilesData) : ControllerBase
 {
 
 
@@ -34,7 +34,7 @@ public class ProfileController : ControllerBase
         }
 
         // Obtiene el perfil
-        var profile = await Data.Profiles.ReadByIdentity(authResponse.Model.IdentityId);
+        var profile = await profilesData.ReadByIdentity(authResponse.Model.IdentityId);
 
         switch (profile.Response)
         {
@@ -43,7 +43,7 @@ public class ProfileController : ControllerBase
 
             case Responses.NotExistProfile:
                 {
-                    var res = await Data.Profiles.Create(new()
+                    var res = await profilesData.Create(new()
                     {
                         Account = authResponse.Model,
                         Profile = new()
@@ -112,7 +112,7 @@ public class ProfileController : ControllerBase
             return new(response.Response);
 
 
-        var profile = await Data.Profiles.ReadByIdentity(response.Model.Id);
+        var profile = await profilesData.ReadByIdentity(response.Model.Id);
 
 
         var httpResponse = new ReadOneResponse<AuthModel<ProfileModel>>()
@@ -131,7 +131,7 @@ public class ProfileController : ControllerBase
 
             case Responses.NotExistProfile:
                 {
-                    var res = await Data.Profiles.Create(new()
+                    var res = await profilesData.Create(new()
                     {
                         Account = response.Model,
                         Profile = new()
@@ -184,7 +184,6 @@ public class ProfileController : ControllerBase
     }
 
 
-
     /// <summary>
     /// Buscar perfiles.
     /// </summary>
@@ -208,7 +207,7 @@ public class ProfileController : ControllerBase
 
         var mappedIds = accounts.Models.Select(T => T.IdentityId).ToList();
 
-        var profiles = await Data.Profiles.ReadByIdentities(mappedIds);
+        var profiles = await profilesData.ReadByIdentities(mappedIds);
 
 
         var final = from P in profiles.Models
@@ -228,7 +227,5 @@ public class ProfileController : ControllerBase
         };
 
     }
-
-
 
 }

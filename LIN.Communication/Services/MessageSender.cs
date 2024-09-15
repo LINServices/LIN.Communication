@@ -5,7 +5,7 @@ using LIN.Communication.Services.Models;
 namespace LIN.Communication.Services;
 
 
-public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub) : Interfaces.IMessageSender
+public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Persistence.Data.Messages messagesData) : Interfaces.IMessageSender
 {
 
 
@@ -80,7 +80,7 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub) : I
         await hub.Clients.Group(message.Conversacion.ID.ToString()).SendAsync($"sendMessage", messageModel);
 
         // Crea el mensaje en la BD
-        await Data.Messages.Create(messageModel);
+        await messagesData.Create(messageModel);
 
         // Retorna el resultado.
         return new()

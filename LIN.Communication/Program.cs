@@ -1,61 +1,33 @@
 using Http.Extensions;
-using LIN.Communication.Data;
-using LIN.Communication.Services.Iam;
-using LIN.Communication.Services.Interfaces;
+using LIN.Access.Auth;
+using LIN.Communication.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Create services to the container.
 builder.Services.AddSignalR();
-
 builder.Services.AddLINHttp();
 builder.Services.AddLocalServices();
 
-string sqlConnection = builder.Configuration["ConnectionStrings:release"] ?? string.Empty;
+// Persistencia.
+builder.Services.AddPersistence(builder.Configuration);
 
-Conexión.SetStringConnection(sqlConnection);
-
-if (sqlConnection.Length > 0)
-{
-    // SQL Server
-    builder.Services.AddDbContext<Context>(options =>
-    {
-        options.UseSqlServer(sqlConnection);
-    });
-}
-
-builder.Services.AddSingleton<IIamService, Conversation>();
-builder.Services.AddSingleton<IIAService, IAService>();
-builder.Services.AddSingleton<IConversations, Conversations>();
-
+// App.
 var app = builder.Build();
 
 app.UseLINHttp();
-
-try
-{
-    // Si la base de datos no existe
-    using var scope = app.Services.CreateScope();
-    var dataContext = scope.ServiceProvider.GetRequiredService<Context>();
-    var res = dataContext.Database.EnsureCreated();
-}
-catch
-{ }
+app.UsePersistence();
+app.UseAuthentication(builder.Configuration["services:auth"]);
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
 Jwt.Open();
-
-LIN.Access.Auth.Build.Init();
-
-app.UseHttpsRedirection();
 
 app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
 {
     options.AllowStatefulReconnects = true;
     options.ApplicationMaxBufferSize = long.MaxValue;
 });
-
-app.UseAuthorization();
-app.MapControllers();
-
 
 app.Run();
