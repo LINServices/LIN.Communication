@@ -139,7 +139,7 @@ public partial class Conversations(Context context)
 
 
     /// <summary>
-    /// Encontrar una organización.
+    /// Encontrar una conversación.
     /// </summary>
     /// <param name="friendId">Id del amigo.</param>
     /// <param name="profileId">Id propio.</param>

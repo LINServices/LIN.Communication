@@ -30,4 +30,19 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     /// </summary>
     public DbSet<MessageModel> Mensajes { get; set; }
 
+
+    /// <summary>
+    /// Al crear.
+    /// </summary>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Tablas.
+        modelBuilder.Entity<ProfileModel>().ToTable("Profiles");
+        modelBuilder.Entity<ConversationModel>().ToTable("Conversations");
+        modelBuilder.Entity<MemberChatModel>().ToTable("Members");
+        modelBuilder.Entity<MessageModel>().ToTable("Messages");
+
+        base.OnModelCreating(modelBuilder);
+    }
+
 }

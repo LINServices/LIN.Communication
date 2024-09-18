@@ -96,7 +96,6 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     }
 
 
-
     /// <summary>
     /// Iniciar sesión con token.
     /// </summary>
@@ -204,16 +203,17 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
                 Message = "No tienes acceso a LIN Identity"
             };
 
-
+        // Obtener id de las cuentas.
         var mappedIds = accounts.Models.Select(T => T.IdentityId).ToList();
 
+        // Obtener perfiles.
         var profiles = await profilesData.ReadByIdentities(mappedIds);
 
-
+        // Armar el resultado.
         var final = from P in profiles.Models
                     join A in accounts.Models
                     on P.IdentityId equals A.IdentityId
-                    select new LIN.Types.Cloud.Identity.Abstracts.SessionModel<ProfileModel>
+                    select new SessionModel<ProfileModel>
                     {
                         Account = A,
                         Profile = P
