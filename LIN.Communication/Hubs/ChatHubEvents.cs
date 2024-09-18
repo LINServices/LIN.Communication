@@ -29,7 +29,7 @@ public partial class ChatHub : Hub
             await profilesData.SetLastConnection(session.Profile.ID, DateTime.Now);
 
         }
-        catch
+        catch (Exception)
         {
         }
     }

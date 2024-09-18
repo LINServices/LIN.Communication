@@ -2,7 +2,7 @@ namespace LIN.Communication.Controllers;
 
 
 [Route("profile")]
-public class ProfileController (Persistence.Data.Profiles profilesData) : ControllerBase
+public class ProfileController(Persistence.Data.Profiles profilesData) : ControllerBase
 {
 
 

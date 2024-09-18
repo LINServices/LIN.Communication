@@ -26,5 +26,4 @@ public class JwtModel
     /// </summary>
     public int ProfileId { get; set; }
 
-
 }

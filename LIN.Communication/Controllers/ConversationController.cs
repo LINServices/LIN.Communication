@@ -152,7 +152,6 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
     public async Task<HttpResponseBase> UpdateName([FromQuery] int id, [FromQuery] string newName, [FromHeader] string token)
     {
 
-
         if (string.IsNullOrWhiteSpace(newName))
             return new()
             {

@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 builder.Services.AddLINHttp();
 builder.Services.AddLocalServices();
+builder.Services.AddAuthenticationService(builder.Configuration["services:auth"]);
 
 // Persistencia.
 builder.Services.AddPersistence(builder.Configuration);
@@ -17,7 +18,6 @@ var app = builder.Build();
 
 app.UseLINHttp();
 app.UsePersistence();
-app.UseAuthentication(builder.Configuration["services:auth"]);
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();

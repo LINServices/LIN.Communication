@@ -3,7 +3,6 @@ using LIN.Communication.Services.Interfaces;
 
 namespace LIN.Communication.Services;
 
-
 public static class Extensions
 {
 
@@ -17,6 +16,5 @@ public static class Extensions
         services.AddScoped<IMessageSender, MessageSender>();
         return services;
     }
-
 
 }

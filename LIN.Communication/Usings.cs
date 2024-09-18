@@ -1,8 +1,6 @@
 ﻿// Framework.
-global using Global.Utilities;
 // Otros tipos.
 global using Http.ResponsesList;
-global using LIN.Communication;
 global using LIN.Communication.Memory;
 global using LIN.Communication.Services;
 global using LIN.Types.Cloud.Identity.Abstracts;

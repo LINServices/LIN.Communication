@@ -2,7 +2,7 @@
 
 namespace LIN.Communication.Services.Iam;
 
-public class Conversation (Context context) : IIamService
+public class Conversation(Context context) : IIamService
 {
 
     /// <summary>

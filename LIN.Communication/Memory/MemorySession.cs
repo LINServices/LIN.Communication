@@ -1,6 +1,5 @@
 ﻿namespace LIN.Communication.Memory;
 
-
 public class MemorySession
 {
 

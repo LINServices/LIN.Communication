@@ -232,7 +232,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             };
 
         // Consulta.
-        var conversation = await conversationData.Find(friendId, tokenInfo.ProfileId); 
+        var conversation = await conversationData.Find(friendId, tokenInfo.ProfileId);
 
         // Si ya existe.
         if (conversation.Model != null)
