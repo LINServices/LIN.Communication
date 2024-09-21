@@ -4,10 +4,8 @@ using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Services;
 
-
 public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Persistence.Data.Messages messagesData) : Interfaces.IMessageSender
 {
-
 
     /// <summary>
     /// Enviar mensaje.
@@ -26,9 +24,8 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
     }
 
 
-
     /// <summary>
-    /// Enviar mensaje
+    /// Enviar mensaje.
     /// </summary>
     /// <param name="message">Modelo.</param>
     /// <param name="guid">Guid.</param>
@@ -89,6 +86,5 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
         };
 
     }
-
 
 }

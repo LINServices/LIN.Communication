@@ -245,7 +245,6 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             };
         }
 
-
         // Crear el chat
         var response = await conversationData.Create(new()
         {
@@ -254,26 +253,25 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             Type = ConversationsTypes.Personal,
             Visibility = ConversationVisibility.@public,
             Members = [
-         new MemberChatModel()
-         {
-             ID = 0,
-             Profile = new()
-             {
-                 ID = tokenInfo.ProfileId
-             },
-             Rol = MemberRoles.Admin
+                 new MemberChatModel()
+                 {
+                     ID = 0,
+                     Profile = new()
+                     {
+                         ID = tokenInfo.ProfileId
                      },
-
-                new MemberChatModel()
-                {
-                    ID = 0,
-                    Profile = new()
-                    {
-            ID = friendId
-                    },
-                    Rol = MemberRoles.Admin
-                }
-                 ]
+                     Rol = MemberRoles.Admin
+                 },
+                 new MemberChatModel()
+                 {
+                     ID = 0,
+                     Profile = new()
+                     {
+                        ID = friendId
+                     },
+                     Rol = MemberRoles.Admin
+                 }
+            ]
         });
 
         // Retorna el resultado

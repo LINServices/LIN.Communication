@@ -1,5 +1,4 @@
-﻿// Framework.
-// Otros tipos.
+﻿// Otros tipos.
 global using Http.ResponsesList;
 global using LIN.Communication.Memory;
 global using LIN.Communication.Services;

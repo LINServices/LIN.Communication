@@ -125,18 +125,16 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         var result = await conversationData.Read(id, tokenInfo.ProfileId);
 
         // Cuentas.
-        List<int> accounts = result.Model.Conversation?.Members?.Select(t => t.Profile.IdentityId).ToList() ?? [];
+        List<int> accountIds = result.Model.Conversation?.Members?.Select(t => t.Profile.IdentityId).ToList() ?? [];
 
-
-        var x = await LIN.Access.Auth.Controllers.Account.ReadByIdentity(accounts, tokenAuth);
-
+        // Obtener cuentas.
+        var accounts = await LIN.Access.Auth.Controllers.Account.ReadByIdentity(accountIds, tokenAuth);
 
         return new ReadOneResponse<MemberChatModel>()
         {
-            AlternativeObject = x.Models,
+            AlternativeObject = accounts.Models,
             Model = result.Model,
-            Response = result.Response,
-
+            Response = result.Response
         };
 
     }

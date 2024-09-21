@@ -63,10 +63,10 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
     /// <summary>
     /// Enviar un mensaje.
     /// </summary>
-    /// <param name="me">Id del perfil</param>
+    /// <param name="profileId">Id del perfil</param>
     /// <param name="groupName">Id del grupo</param>
     /// <param name="message">Mensaje</param>
-    public async Task SendMessage(int me, int groupName, string message, string guid)
+    public async Task SendMessage(int profileId, int groupName, string message, string guid)
     {
 
         // Si el mansaje esta vacío.
@@ -74,7 +74,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
             return;
 
         // Data
-        var data = Mems.Sessions[me];
+        var data = Mems.Sessions[profileId];
 
         // Obtiene el perfil.
         ProfileModel? profile = data?.Profile;
@@ -102,7 +102,5 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         await messageSender.Send(messageModel, guid, profile);
 
     }
-
-    public static Dictionary<int, List<MessageModel>> Conversations { get; set; } = [];
 
 }

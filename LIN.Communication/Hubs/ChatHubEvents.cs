@@ -1,9 +1,7 @@
 ﻿namespace LIN.Communication.Hubs;
 
-
 public partial class ChatHub : Hub
 {
-
 
     /// <summary>
     /// Evento: Cuando un dispositivo se desconecta
@@ -33,6 +31,5 @@ public partial class ChatHub : Hub
         {
         }
     }
-
 
 }

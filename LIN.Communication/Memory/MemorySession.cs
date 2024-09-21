@@ -27,7 +27,6 @@ public class MemorySession
     public DateTime LastTime { get; set; }
 
 
-
     /// <summary>
     /// Nueva session en memoria.
     /// </summary>

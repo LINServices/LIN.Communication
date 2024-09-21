@@ -61,7 +61,7 @@ public class Messages (Context context)
 
             return new(Responses.Success, groups);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();

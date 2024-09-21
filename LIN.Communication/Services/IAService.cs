@@ -66,7 +66,4 @@ public class IAService : Services.Interfaces.IIAService
         Data = null!;
     }
 
-
-
-
 }

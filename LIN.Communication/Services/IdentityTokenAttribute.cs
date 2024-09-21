@@ -2,10 +2,8 @@
 
 namespace LIN.Communication.Services;
 
-
 public class LocalTokenAttribute : ActionFilterAttribute
 {
-
 
     /// <summary>
     /// Filtro del token.
@@ -41,6 +39,5 @@ public class LocalTokenAttribute : ActionFilterAttribute
         await base.OnActionExecutionAsync(context, next);
 
     }
-
 
 }

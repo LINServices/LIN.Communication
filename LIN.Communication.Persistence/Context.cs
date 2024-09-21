@@ -1,6 +1,5 @@
 ﻿namespace LIN.Communication.Persistence;
 
-
 /// <summary>
 /// Nuevo contexto a la base de datos
 /// </summary>
@@ -37,10 +36,10 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Tablas.
-        modelBuilder.Entity<ProfileModel>().ToTable("Profiles");
-        modelBuilder.Entity<ConversationModel>().ToTable("Conversations");
-        modelBuilder.Entity<MemberChatModel>().ToTable("Members");
-        modelBuilder.Entity<MessageModel>().ToTable("Messages");
+        modelBuilder.Entity<ProfileModel>().ToTable("profiles");
+        modelBuilder.Entity<ConversationModel>().ToTable("conversations");
+        modelBuilder.Entity<MemberChatModel>().ToTable("members");
+        modelBuilder.Entity<MessageModel>().ToTable("messages");
 
         base.OnModelCreating(modelBuilder);
     }
