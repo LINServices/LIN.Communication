@@ -1,6 +1,6 @@
 ﻿namespace LIN.Communication.Persistence.Data;
 
-public partial class Members(Context context)
+public class Members(Context context)
 {
 
     /// <summary>

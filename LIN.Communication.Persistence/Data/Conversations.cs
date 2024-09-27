@@ -1,6 +1,6 @@
 ﻿namespace LIN.Communication.Persistence.Data;
 
-public partial class Conversations(Context context)
+public class Conversations(Context context)
 {
 
     /// <summary>

@@ -5,16 +5,13 @@ using System.Security.Claims;
 
 namespace LIN.Communication.Services;
 
-
 public class Jwt
 {
-
 
     /// <summary>
     /// Llave del token
     /// </summary>
     private static string JwtKey { get; set; } = string.Empty;
-
 
 
     /// <summary>
@@ -24,8 +21,6 @@ public class Jwt
     {
         JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key");
     }
-
-
 
 
     /// <summary>
@@ -58,7 +53,6 @@ public class Jwt
         // Genera el token
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
 
 
     /// <summary>
@@ -122,6 +116,5 @@ public class Jwt
         return new();
 
     }
-
 
 }

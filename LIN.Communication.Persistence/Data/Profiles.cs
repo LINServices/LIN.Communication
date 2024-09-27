@@ -1,6 +1,6 @@
 ﻿namespace LIN.Communication.Persistence.Data;
 
-public class Profiles (Context context)
+public class Profiles(Context context)
 {
 
     /// <summary>

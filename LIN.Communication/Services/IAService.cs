@@ -1,6 +1,6 @@
 ﻿namespace LIN.Communication.Services;
 
-public class IAService : Services.Interfaces.IIAService
+public class IAService : Interfaces.IIAService
 {
 
     private string Data { get; set; } = string.Empty;
@@ -22,7 +22,6 @@ public class IAService : Services.Interfaces.IIAService
     }
 
 
-
     /// <summary>
     /// Obtener las instrucciones base.
     /// </summary>
@@ -35,7 +34,6 @@ public class IAService : Services.Interfaces.IIAService
         return Default ?? string.Empty;
 
     }
-
 
 
     /// <summary>

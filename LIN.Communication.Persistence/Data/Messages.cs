@@ -1,6 +1,6 @@
 ﻿namespace LIN.Communication.Persistence.Data;
 
-public class Messages (Context context)
+public class Messages(Context context)
 {
 
     /// <summary>
