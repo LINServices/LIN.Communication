@@ -50,7 +50,6 @@ public class Messages(Context context)
                              select new MessageModel
                              {
                                  Contenido = M.Contenido,
-                                 Conversacion = M.Conversacion,
                                  ID = M.ID,
                                  Remitente = M.Remitente,
                                  Time = M.Time

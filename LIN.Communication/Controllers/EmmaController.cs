@@ -4,27 +4,29 @@ using System.Text;
 namespace LIN.Communication.Controllers;
 
 [Route("Emma")]
-public class EmmaController(IIAService ia, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData) : ControllerBase
+public class EmmaController(IIAService ia, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData, IConfiguration configuration) : ControllerBase
 {
 
     /// <summary>
-    /// Consulta para LIN Allo Emma.
+    /// Consulta a la asistente virtual.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
-    /// <param name="consult">Consulta.</param>
+    /// <param name="tokenAuth">Token de identidad.</param>
+    /// <param name="consult">Query.</param>
     [HttpPost]
     public async Task<HttpReadOneResponse<ResponseIAModel>> Assistant([FromHeader] string tokenAuth, [FromBody] string consult)
     {
 
+        // Cliente HTTP.
         HttpClient client = new();
 
+        // Headers.
         client.DefaultRequestHeaders.Add("token", tokenAuth);
         client.DefaultRequestHeaders.Add("useDefaultContext", true.ToString().ToLower());
 
-
+        // Request.
         var request = new LIN.Types.Models.EmmaRequest
         {
-            AppContext = "allo",
+            AppContext = configuration["app:name"],
             Asks = consult
         };
 
@@ -32,7 +34,7 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
 
         StringContent stringContent = new(Newtonsoft.Json.JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
-        var result = await client.PostAsync("http://api.emma.linplatform.com/emma", stringContent);
+        var result = await client.PostAsync(configuration["services:emma"], stringContent);
 
 
         var ss = await result.Content.ReadAsStringAsync();
