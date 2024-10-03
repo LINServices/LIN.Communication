@@ -18,7 +18,7 @@ public class Conversations(Context context)
             foreach (var user in data.Members)
                 context.Attach(user.Profile);
 
-            var res = context.Conversaciones.Add(data);
+            var res = context.Conversations.Add(data);
             await context.SaveChangesAsync();
             return new(Responses.Success, data.ID);
         }
@@ -119,7 +119,7 @@ public class Conversations(Context context)
         try
         {
             // Consulta
-            var v = await (from M in context.Conversaciones
+            var v = await (from M in context.Conversations
                            where M.ID == id
                            where M.Type != ConversationsTypes.Personal
                            select M).ExecuteUpdateAsync(setters => setters
@@ -145,7 +145,7 @@ public class Conversations(Context context)
     /// <param name="profileId">Id propio.</param>
     public async Task<ReadOneResponse<ConversationModel>> Find(int friendId, int profileId)
     {
-        var conversation = await (from u in context.Conversaciones
+        var conversation = await (from u in context.Conversations
                                   where u.Type == ConversationsTypes.Personal
                                   && u.Members.Count == 2
                                   && u.Members.Where(t => t.Profile.ID == friendId).Any()

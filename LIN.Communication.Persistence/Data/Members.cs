@@ -15,35 +15,34 @@ public class Members(Context context)
         try
         {
             // Consulta
-            var group = await (from M in context.Conversaciones
-                               where M.ID == id
-                               select M).FirstOrDefaultAsync();
+            var group = await (from conversation in context.Conversations
+                               where conversation.ID == id
+                               select conversation).FirstOrDefaultAsync();
 
-            if (group == null)
-            {
+            // No existe la conversación.
+            if (group is null)
                 return new(Responses.NotRows);
-            }
 
-
-            var exist = await (from M in context.Conversaciones
-                               where M.ID == id
+            // Validar el integrante ya existe.
+            var exist = await (from conversation in context.Conversations
+                               where conversation.ID == id
                                join MM in context.Members
-                               on M.ID equals MM.Conversation.ID
+                               on conversation.ID equals MM.Conversation.ID
                                where MM.Profile.ID == profile
                                select MM).AnyAsync();
 
+            // Si el integrante ya existe.
             if (exist)
-            {
-                return new(Responses.Success);
-            }
+                return new(Responses.ResourceExist);
 
+            // Si es una conversación personal, se convierte en grupo.
             if (group.Type == ConversationsTypes.Personal)
             {
                 group.Type = ConversationsTypes.Group;
                 group.Name = "Grupo";
             }
 
-
+            // Perfil ya existe.
             var profileModel = new ProfileModel()
             {
                 ID = profile
@@ -118,10 +117,10 @@ public class Members(Context context)
         {
 
             // Consulta.
-            var deleted = await (from M in context.Members
-                                 where M.Profile.ID == profile
-                                 && M.Conversation.ID == id
-                                 select M).ExecuteDeleteAsync();
+            await (from M in context.Members
+                   where M.Profile.ID == profile
+                   && M.Conversation.ID == id
+                   select M).ExecuteDeleteAsync();
 
             return new(Responses.Success);
         }

@@ -20,7 +20,7 @@ public class Profiles(Context context)
             await context.SaveChangesAsync();
             return new(Responses.Success, data.Profile);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
@@ -45,7 +45,7 @@ public class Profiles(Context context)
 
             return new(Responses.Success, profile ?? new());
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
@@ -73,7 +73,7 @@ public class Profiles(Context context)
 
             return new(Responses.Success, profile ?? new());
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
@@ -100,7 +100,7 @@ public class Profiles(Context context)
 
             return new(Responses.Success, profiles ?? []);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
@@ -133,7 +133,7 @@ public class Profiles(Context context)
 
             return new(Responses.Success);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
@@ -159,7 +159,7 @@ public class Profiles(Context context)
             // Respuesta.
             return new(Responses.Success, lastConnection);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();

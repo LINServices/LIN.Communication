@@ -19,11 +19,11 @@ public class Messages(Context context)
             context.Attach(data.Conversacion);
             context.Attach(data.Remitente);
 
-            var res = context.Mensajes.Add(data);
+            var res = context.Messages.Add(data);
             await context.SaveChangesAsync();
             return new(Responses.Success, data.ID);
         }
-        catch
+        catch (Exception)
         {
         }
         return new();
@@ -43,7 +43,7 @@ public class Messages(Context context)
         {
 
             // Consulta
-            var baseQuery = (from M in context.Mensajes
+            var baseQuery = (from M in context.Messages
                              where M.Conversacion.ID == id
                              && M.ID > lastID
                              orderby M.ID descending

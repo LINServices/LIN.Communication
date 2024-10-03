@@ -3,7 +3,7 @@ using System.Text;
 
 namespace LIN.Communication.Controllers;
 
-[Route("Emma")]
+[Route("[controller]")]
 public class EmmaController(IIAService ia, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData, IConfiguration configuration) : ControllerBase
 {
 
@@ -30,18 +30,17 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
             Asks = consult
         };
 
-
-
+        // Contenido.
         StringContent stringContent = new(Newtonsoft.Json.JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
+        // Petición.
         var result = await client.PostAsync(configuration["services:emma"], stringContent);
 
+        // Obtener contenido.
+        var content = await result.Content.ReadAsStringAsync();
 
-        var ss = await result.Content.ReadAsStringAsync();
-
-
-        dynamic? fin = Newtonsoft.Json.JsonConvert.DeserializeObject(ss);
-
+        // Obtener objeto.
+        dynamic? fin = Newtonsoft.Json.JsonConvert.DeserializeObject(content);
 
         // Respuesta
         return new ReadOneResponse<ResponseIAModel>()
@@ -58,10 +57,10 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
 
 
     /// <summary>
-    /// Emma IA.
+    /// Emma IA desde el servicio Emma.
     /// </summary>
-    /// <param name="token">Token de acceso.</param>
-    /// <param name="consult">Prompt.</param>
+    /// <param name="tokenAuth">Token de identidad.</param>
+    /// <param name="includeMethods">Incluir métodos.</param>
     [HttpGet]
     public async Task<HttpReadOneResponse<object>> RequestFromEmma([FromHeader] string tokenAuth, [FromHeader] bool includeMethods)
     {
@@ -69,7 +68,7 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
         // Validar token.
         var response = await LIN.Access.Auth.Controllers.Authentication.Login(tokenAuth);
 
-
+        // Validar en Auth.
         if (response.Response != Responses.Success)
         {
             return new ReadOneResponse<object>()
@@ -78,9 +77,8 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
             };
         }
 
-        // 
+        // Obtener el perfil.
         var profile = await profilesData.ReadByIdentity(response.Model.Id);
-
 
         if (profile.Response != Responses.Success)
         {

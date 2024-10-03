@@ -15,7 +15,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     /// <summary>
     /// Tabla de conversaciones.
     /// </summary>
-    public DbSet<ConversationModel> Conversaciones { get; set; }
+    public DbSet<ConversationModel> Conversations { get; set; }
 
 
     /// <summary>
@@ -27,7 +27,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     /// <summary>
     /// Tabla de mensajes
     /// </summary>
-    public DbSet<MessageModel> Mensajes { get; set; }
+    public DbSet<MessageModel> Messages { get; set; }
 
 
     /// <summary>
