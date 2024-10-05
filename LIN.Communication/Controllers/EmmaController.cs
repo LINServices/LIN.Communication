@@ -26,7 +26,7 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
         // Modelo de Emma.
         var request = new AssistantRequest()
         {
-            App = "contacts",
+            App = "allo",
             Prompt = consult
         };
 
