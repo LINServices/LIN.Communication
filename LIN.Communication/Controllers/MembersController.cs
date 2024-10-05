@@ -19,7 +19,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
         var profile = Mems.Sessions[id];
 
         // Perfil no existe.
-        if (profile == null)
+        if (profile is null)
             return new()
             {
                 Message = "Sesión no encontrada",
@@ -235,7 +235,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
         var conversation = await conversationData.Find(friendId, tokenInfo.ProfileId);
 
         // Si ya existe.
-        if (conversation.Model != null)
+        if (conversation.Model is not null)
         {
             return new CreateResponse()
             {

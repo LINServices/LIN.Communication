@@ -95,7 +95,7 @@ public class Conversations(Context context)
                                     Rol = M.Rol
                                 }).FirstOrDefaultAsync();
 
-            if (groups == null)
+            if (groups is null)
                 return new(Responses.NotRows);
 
             return new(Responses.Success, groups);

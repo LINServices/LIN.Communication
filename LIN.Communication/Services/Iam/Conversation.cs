@@ -21,7 +21,7 @@ public class Conversation(Context context) : IIamService
                               select member).FirstOrDefaultAsync();
 
             // No existe.
-            if (have == null)
+            if (have is null)
                 return IamLevels.NotAccess;
 
             // Administrador.

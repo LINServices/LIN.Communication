@@ -21,7 +21,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Validar modelo.
-        if (modelo == null || string.IsNullOrWhiteSpace(modelo.Name))
+        if (modelo is null || string.IsNullOrWhiteSpace(modelo.Name))
             return new()
             {
                 Message = "El modelo es invalido.",
@@ -82,7 +82,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
 
         // Sesión en memoria.
         var onHub = Mems.Sessions[tokenInfo.ProfileId];
-        if (onHub != null)
+        if (onHub is not null)
         {
             onHub.Conversations = [];
             foreach (var c in result.Models)

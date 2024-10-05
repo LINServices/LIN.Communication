@@ -18,7 +18,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
             MemorySession? memorySession = Mems.Sessions[profile.ID];
 
             // Si no existe la sesión.
-            if (memorySession == null)
+            if (memorySession is null)
             {
                 // Modelo.
                 memorySession = new()
@@ -80,7 +80,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         ProfileModel? profile = data?.Profile;
 
         // Si el perfil no existe, o esta registrado.
-        if (profile == null)
+        if (profile is null)
             return;
 
         // Hora actual.

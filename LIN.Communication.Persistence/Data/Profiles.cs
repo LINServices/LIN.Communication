@@ -95,7 +95,7 @@ public class Profiles(Context context)
                                   where ids.Contains(P.IdentityId)
                                   select P).ToListAsync();
 
-            if (profiles == null)
+            if (profiles is null)
                 return new(Responses.NotExistProfile);
 
             return new(Responses.Success, profiles ?? []);
@@ -125,7 +125,7 @@ public class Profiles(Context context)
                                  where P.IdentityId == id
                                  select P).FirstOrDefaultAsync();
 
-            if (profile == null)
+            if (profile is null)
                 return new(Responses.NotExistProfile);
 
             profile.LastConnection = time;

@@ -26,8 +26,8 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
         // Request.
         var request = new LIN.Types.Models.EmmaRequest
         {
-            AppContext = configuration["app:name"],
-            Asks = consult
+            App = configuration["app:name"],
+            Prompt = consult
         };
 
         // Contenido.
@@ -91,7 +91,7 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
 
         var getProf = Mems.Sessions[profile.Model.ID];
 
-        if (getProf == null)
+        if (getProf is null)
         {
 
             var convs = (await conversationData.ReadAll(profile.Model.ID))?.Models.Select(t =>

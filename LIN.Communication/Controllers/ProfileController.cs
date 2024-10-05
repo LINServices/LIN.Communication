@@ -1,6 +1,6 @@
 namespace LIN.Communication.Controllers;
 
-[Route("profile")]
+[Route("[controller]")]
 public class ProfileController(Persistence.Data.Profiles profilesData) : ControllerBase
 {
 

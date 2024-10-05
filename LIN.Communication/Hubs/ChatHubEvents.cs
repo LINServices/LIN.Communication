@@ -16,7 +16,7 @@ public partial class ChatHub : Hub
             var session = Mems.Sessions[Context.ConnectionId];
 
             // No existe.
-            if (session == null)
+            if (session is null)
                 return;
 
             // Remover el dispositivo.
