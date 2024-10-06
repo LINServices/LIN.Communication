@@ -8,16 +8,13 @@
 
 
     <ItemGroup>
+        <PackageReference Include="LIN.Types.Cloud.OpenAssistant" Version="1.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\AccesoAPI\LIN.Access.Auth\LIN.Access.Auth.csproj" />
         <ProjectReference Include="..\..\..\Tipos\Http\Http.csproj" />
-        <ProjectReference Include="..\..\..\Tipos\LIN.Types.Cloud.Identity\LIN.Types.Cloud.Identity.csproj" />
-        <ProjectReference Include="..\..\..\Tipos\LIN.Types.Cloud.OpenAssistant\LIN.Types.Cloud.OpenAssistant.csproj" />
-        <ProjectReference Include="..\..\..\Tipos\LIN.Types.Communication\LIN.Types.Communication.csproj" />
-        <ProjectReference Include="..\..\..\Tipos\LIN.Types\LIN.Types.csproj" />
         <ProjectReference Include="..\LIN.Communication.Persistence\LIN.Communication.Persistence.csproj" />
     </ItemGroup>
 
