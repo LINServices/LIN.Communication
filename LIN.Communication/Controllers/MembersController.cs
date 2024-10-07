@@ -4,6 +4,7 @@ using LIN.Communication.Services.Models;
 namespace LIN.Communication.Controllers;
 
 [Route("conversations")]
+[RateLimit(requestLimit: 10, timeWindowSeconds: 30, blockDurationSeconds: 300)]
 public class MembersController(IIamService Iam, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData, Persistence.Data.Members membersData) : ControllerBase
 {
 

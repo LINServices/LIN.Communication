@@ -5,6 +5,7 @@ namespace LIN.Communication.Controllers;
 
 [LocalToken]
 [Route("conversations")]
+[RateLimit(requestLimit: 10, timeWindowSeconds: 30, blockDurationSeconds: 300)]
 public class ConversationController(IIamService Iam, Persistence.Data.Conversations conversationData) : ControllerBase
 {
 

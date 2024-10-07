@@ -11,6 +11,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     /// <param name="password">Contraseña del usuario</param>
     /// <param name="app">Key de la app que solicita la información</param>
     [HttpGet("login")]
+    [RateLimit(requestLimit: 5, timeWindowSeconds: 60, blockDurationSeconds: 120)]
     public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string app)
     {
 
@@ -99,6 +100,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     /// </summary>
     /// <param name="token">Token</param>
     [HttpGet("login/token")]
+    [RateLimit(requestLimit: 5, timeWindowSeconds: 60, blockDurationSeconds: 120)]
     public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> LoginToken([FromQuery] string token)
     {
 
@@ -187,6 +189,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     /// <param name="pattern">Patron de búsqueda.</param>
     /// <param name="token">Token de acceso.</param>
     [HttpGet("search")]
+    [RateLimit(requestLimit: 6, timeWindowSeconds: 60, blockDurationSeconds: 120)]
     public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> Search([FromQuery] string pattern, [FromHeader] string token)
     {
 

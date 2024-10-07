@@ -16,6 +16,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     /// <param name="token">Token de acceso</param>
     [HttpGet("{id:int}/messages")]
     [LocalToken]
+    [RateLimit(requestLimit: 5, timeWindowSeconds: 30, blockDurationSeconds: 60)]
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id, [FromHeader] int lastID, [FromHeader] string token)
     {
 
@@ -51,6 +52,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     /// <param name="guid">Guid único</param>
     [HttpPost("{id:int}/messages")]
     [LocalToken]
+    [RateLimit(requestLimit: 10, timeWindowSeconds: 20, blockDurationSeconds: 100)]
     public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid)
     {
 
