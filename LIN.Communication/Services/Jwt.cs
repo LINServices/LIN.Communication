@@ -85,13 +85,11 @@ public class Jwt
                 var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
                 var jwtToken = (JwtSecurityToken)validatedToken;
 
-
                 // Si el token es válido, puedes acceder a los claims (datos) del usuario
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.PrimarySid)?.Value, out int id);
 
                 // 
                 _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value, out int identity);
-
 
                 string name = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value ?? "";
 
@@ -106,10 +104,7 @@ public class Jwt
             }
             catch
             {
-
             }
-
-
         }
         catch { }
 

@@ -11,7 +11,7 @@
         <PackageReference Include="Http.Utils" Version="1.0.0" />
         <PackageReference Include="LIN.Access.Auth" Version="1.1.0" />
         <PackageReference Include="LIN.Types.Cloud.OpenAssistant" Version="1.0.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     </ItemGroup>
 
     <ItemGroup>

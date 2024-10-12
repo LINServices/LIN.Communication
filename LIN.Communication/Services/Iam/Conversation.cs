@@ -25,7 +25,7 @@ public class Conversation(Context context) : IIamService
                 return IamLevels.NotAccess;
 
             // Administrador.
-            if (have.Rol == MemberRoles.Admin)
+            if (have.Rol is MemberRoles.Admin)
                 return IamLevels.Privileged;
 
             // Visualizador.

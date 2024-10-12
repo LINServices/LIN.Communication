@@ -52,9 +52,6 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
                 Message = "No tienes acceso a esta conversación."
             };
 
-        // Hora actual.
-        var time = DateTime.Now;
-
         // Modelo del mensaje.
         MessageModel messageModel = new()
         {
@@ -65,7 +62,7 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
                 Alias = sender.Alias,
                 ID = sender.ID
             },
-            Time = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0),
+            Time = DateTime.Now,
             Guid = guid,
             Conversacion = new()
             {
@@ -75,8 +72,8 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
 
         // Envía el mensaje en tiempo real.
         await hub.Clients.Group(message.Conversacion.ID.ToString()).SendAsync($"sendMessage", messageModel);
-
-        // Crea el mensaje en la BD
+        
+        // Crea el mensaje en la BD.
         await messagesData.Create(messageModel);
 
         // Retorna el resultado.

@@ -52,7 +52,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     /// <param name="guid">Guid único</param>
     [HttpPost("{id:int}/messages")]
     [LocalToken]
-    [RateLimit(requestLimit: 10, timeWindowSeconds: 20, blockDurationSeconds: 100)]
+    [RateLimit(requestLimit: 20, timeWindowSeconds: 10, blockDurationSeconds: 100)]
     public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid)
     {
 
@@ -67,9 +67,6 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Hora actual.
-        var time = DateTime.Now;
-
         // Modelo del mensaje.
         MessageModel messageModel = new()
         {
@@ -80,7 +77,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
                 Alias = tokenInfo.Alias,
                 ID = tokenInfo.ProfileId
             },
-            Time = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0),
+            Time = DateTime.Now,
             Guid = guid,
             Conversacion = new()
             {

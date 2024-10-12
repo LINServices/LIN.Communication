@@ -1,5 +1,5 @@
 ﻿namespace LIN.Communication.Persistence.Data;
-
+using LIN.Communication.Persistence.Extensions;
 public class Conversations(Context context)
 {
 

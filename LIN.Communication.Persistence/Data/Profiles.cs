@@ -115,7 +115,6 @@ public class Profiles(Context context)
     public async Task<ResponseBase> SetLastConnection(int id, DateTime time)
     {
 
-
         // Ejecución
         try
         {
