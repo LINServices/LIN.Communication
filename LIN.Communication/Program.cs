@@ -1,5 +1,6 @@
 using Http.Extensions;
 using LIN.Access.Auth;
+using LIN.Communication.Persistence;
 using LIN.Communication.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,6 +29,13 @@ app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
 {
     options.AllowStatefulReconnects = true;
     options.ApplicationMaxBufferSize = long.MaxValue;
+});
+
+builder.Services.AddDatabaseAction(() =>
+{
+    var context = app.Services.GetRequiredService<Context>();
+    context.Profiles.Where(x => x.ID == 0).FirstOrDefaultAsync();
+    return "Success";
 });
 
 app.Run();
