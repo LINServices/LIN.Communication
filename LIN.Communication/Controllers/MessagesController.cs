@@ -86,12 +86,14 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
         };
 
         // Enviar mensaje.
-        await messageSender.Send(messageModel, guid, tokenInfo);
+        var response = await messageSender.Send(messageModel, guid, tokenInfo);
 
         // Retorna el resultado.
         return new()
         {
-            Response = Responses.Success
+            Response = response.Response,
+            Errors = response.Errors,
+            Message = response.Message
         };
 
     }

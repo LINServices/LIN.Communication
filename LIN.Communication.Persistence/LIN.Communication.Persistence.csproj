@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="LIN.Types.Cloud.Identity" Version="1.5.3" />
 		<PackageReference Include="LIN.Types.Communication" Version="1.2.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.10" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
 	</ItemGroup>
 

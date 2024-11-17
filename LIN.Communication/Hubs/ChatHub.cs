@@ -73,7 +73,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         if (message.Trim() == string.Empty)
             return;
 
-        // Data
+        // Data.
         var data = Mems.Sessions[profileId];
 
         // Obtiene el perfil.
