@@ -8,8 +8,8 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Http.Utils" Version="2.8.0.2" />
-        <PackageReference Include="LIN.Access.Auth" Version="1.4.0" />
+        <PackageReference Include="Http.Utils" Version="3.0.0" />
+        <PackageReference Include="LIN.Access.Auth" Version="1.6.0" />
         <PackageReference Include="LIN.Types.Cloud.OpenAssistant" Version="1.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     </ItemGroup>
