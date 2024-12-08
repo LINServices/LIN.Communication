@@ -2,6 +2,7 @@ using Http.Extensions;
 using LIN.Access.Auth;
 using LIN.Communication.Persistence;
 using LIN.Communication.Persistence.Extensions;
+using LIN.Communication.Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,8 @@ builder.Services.AddAuthenticationService(builder.Configuration["services:auth"]
 // Persistencia.
 builder.Services.AddPersistence(builder.Configuration);
 
+builder.Services.AddSettingsHangfire(builder.Configuration);
+
 // App.
 var app = builder.Build();
 
@@ -22,6 +25,8 @@ app.UsePersistence();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseSettingsHangfire();
 
 Jwt.Open();
 

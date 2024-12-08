@@ -15,6 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\LIN.Communication.Hangfire\LIN.Communication.Hangfire.csproj" />
         <ProjectReference Include="..\LIN.Communication.Persistence\LIN.Communication.Persistence.csproj" />
     </ItemGroup>
 

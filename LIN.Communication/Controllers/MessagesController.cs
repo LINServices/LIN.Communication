@@ -53,7 +53,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     [HttpPost("{id:int}/messages")]
     [LocalToken]
     [RateLimit(requestLimit: 20, timeWindowSeconds: 10, blockDurationSeconds: 100)]
-    public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid)
+    public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid, [FromQuery] DateTime? sendAt)
     {
 
         // Validar contenido.
@@ -86,7 +86,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
         };
 
         // Enviar mensaje.
-        var response = await messageSender.Send(messageModel, guid, tokenInfo);
+        var response = await messageSender.Send(messageModel, guid, tokenInfo, sendAt);
 
         // Retorna el resultado.
         return new()
