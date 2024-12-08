@@ -39,7 +39,7 @@ app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
 builder.Services.AddDatabaseAction(() =>
 {
     var context = app.Services.GetRequiredService<Context>();
-    context.Profiles.Where(x => x.ID == 0).FirstOrDefaultAsync();
+    context.Profiles.Where(x => x.Id == 0).FirstOrDefaultAsync();
     return "Success";
 });
 

@@ -5,8 +5,30 @@ using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Services;
 
-public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Persistence.Data.Messages messagesData) : Interfaces.IMessageSender
+public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Persistence.Data.Messages messagesData, Persistence.Data.Profiles profilesData) : Interfaces.IMessageSender
 {
+
+
+    /// <summary>
+    /// Enviar mensaje.
+    /// </summary>
+    public async Task<ResponseBase> SendDelay(int idTemporal, int profileId)
+    {
+
+        // Obtener los datos.
+        var message = await messagesData.ReadOneTemp(idTemporal);
+        var profile = await profilesData.Read(profileId);
+
+        return await Send(new()
+        {
+            Contenido = message.Model.Message,
+            Conversacion = new()
+            {
+                Id = message.Model.Conversation
+            }
+        }, string.Empty, profile.Model, null);
+    }
+
 
     /// <summary>
     /// Enviar mensaje.
@@ -18,7 +40,7 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
     {
         return await Send(message, guid, new ProfileModel()
         {
-            ID = sender.ProfileId,
+            Id = sender.ProfileId,
             Alias = sender.Alias,
             IdentityId = sender.IdentityId,
         }, timeToSend);
@@ -42,31 +64,48 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
                 Response = Responses.InvalidParam,
             };
 
+        // Si el mensaje es programado.
         if (timeToSend is not null)
         {
 
+            // Obtener el delay.
             TimeSpan delay = timeToSend.Value - DateTime.Now;
 
-            // Programar el job
-            if (delay > TimeSpan.Zero) // Asegurarse de que la fecha está en el futuro
+            // Validar si el delay es valido.
+            if (delay > TimeSpan.Zero)
             {
-                BackgroundJob.Schedule<MessageSender>((t) => t.Send(message, guid, sender, null), delay);
-            }
-            else
-            {
+
+                // Crear el mensaje temporal.
+                var createMessageTemp = await messagesData.Create(new TempMessageModel()
+                {
+                    Conversation = message.Conversacion.Id,
+                    Message = message.Contenido,
+                    Time = timeToSend.Value,
+                });
+
+                // Encolar el Job.
+                BackgroundJob.Schedule<MessageSender>((t) => t.SendDelay(createMessageTemp.LastID, sender.Id), delay);
+
                 return new()
                 {
-                    Message = "La fecha y hora deben estar en el futuro."
+                    Response = Responses.Success,
+                    Message = "El mensaje fue programado."
                 };
             }
+
             return new()
             {
-                Message = "El mensaje fue programado."
+                Message = "La fecha y hora deben estar en el futuro.",
+                Response = Responses.InvalidParam,
+                Errors = [new() {
+                    Tittle = "Fecha y hora de envió invalida",
+                    Description = "La fecha para programar el mensaje debe estar en el futuro."
+                }]
             };
         }
 
         // Iam.
-        IamLevels iam = await IamService.Validate(sender.ID, message.Conversacion.ID);
+        IamLevels iam = await IamService.Validate(sender.Id, message.Conversacion.Id);
 
         // Not access.
         if (iam == IamLevels.NotAccess)
@@ -84,18 +123,18 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
             {
                 IdentityId = sender.IdentityId,
                 Alias = sender.Alias,
-                ID = sender.ID
+                Id = sender.Id
             },
             Time = DateTime.Now,
             Guid = guid,
             Conversacion = new()
             {
-                ID = message.Conversacion.ID
+                Id = message.Conversacion.Id
             }
         };
 
         // Envía el mensaje en tiempo real.
-        await hub.Clients.Group(message.Conversacion.ID.ToString()).SendAsync($"sendMessage", messageModel);
+        await hub.Clients.Group(message.Conversacion.Id.ToString()).SendAsync($"sendMessage", messageModel);
 
         // Crea el mensaje en la BD.
         await messagesData.Create(messageModel);

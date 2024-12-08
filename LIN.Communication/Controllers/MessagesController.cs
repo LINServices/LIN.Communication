@@ -75,13 +75,13 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
             {
                 IdentityId = tokenInfo.IdentityId,
                 Alias = tokenInfo.Alias,
-                ID = tokenInfo.ProfileId
+                Id = tokenInfo.ProfileId
             },
             Time = DateTime.Now,
             Guid = guid,
             Conversacion = new()
             {
-                ID = id
+                Id = id
             }
         };
 

@@ -1,11 +1,11 @@
-﻿using LIN.Communication.Services.Models;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 
-namespace LIN.Communication.Services;
+namespace LIN.Communication.Hangfire.Services;
 
-public class Jwt
+public class JwtService
 {
 
     /// <summary>
@@ -15,11 +15,11 @@ public class Jwt
 
 
     /// <summary>
-    /// Inicia el servicio Jwt
+    /// Inicia el servicio JwtService
     /// </summary>
     public static void Open()
     {
-        JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key");
+        JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key_hangfire");
     }
 
 
@@ -27,11 +27,14 @@ public class Jwt
     /// Genera un JSON Web Token
     /// </summary>
     /// <param name="user">Modelo de usuario</param>
-    internal static string Generate(ProfileModel user)
+    public static string Generate(string user)
     {
 
+        if (JwtKey == string.Empty)
+            Open();
+
         // Configuración
-        var securityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(JwtKey));
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey));
 
         // Credenciales
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
@@ -39,13 +42,11 @@ public class Jwt
         // Reclamaciones
         var claims = new[]
         {
-            new Claim(ClaimTypes.PrimarySid, user.Id.ToString()),
-            new Claim(ClaimTypes.UserData, user.IdentityId.ToString()),
-            new Claim(ClaimTypes.Name, user.Alias)
+            new Claim(ClaimTypes.PrimarySid, user)
         };
 
         // Expiración del token
-        var expiración = DateTime.Now.AddHours(5);
+        var expiración = DateTime.Now.AddMinutes(30);
 
         // Token
         var token = new JwtSecurityToken(null, null, claims, null, expiración, credentials);
@@ -59,13 +60,17 @@ public class Jwt
     /// Valida un JSON Web token
     /// </summary>
     /// <param name="token">Token a validar</param>
-    internal static JwtModel Validate(string token)
+    public static bool Validate(string token)
     {
         try
         {
 
+            // Comprobación
+            if (string.IsNullOrWhiteSpace(token))
+                return false;
+
             // Configurar la clave secreta
-            var key = System.Text.Encoding.ASCII.GetBytes(JwtKey);
+            var key = Encoding.ASCII.GetBytes(JwtKey);
 
             // Validar el token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -76,7 +81,7 @@ public class Jwt
                 IssuerSigningKey = new SymmetricSecurityKey(key),
                 ValidateIssuer = false,
                 ValidateAudience = false,
-                RequireExpirationTime = true,
+                RequireExpirationTime = true
             };
 
             try
@@ -86,29 +91,20 @@ public class Jwt
                 var jwtToken = (JwtSecurityToken)validatedToken;
 
                 // Si el token es válido, puedes acceder a los claims (datos) del usuario
-                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.PrimarySid)?.Value, out int id);
+                var user = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier)?.Value;
 
                 // 
-                _ = int.TryParse(jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.UserData)?.Value, out int identity);
-
-                string name = jwtToken.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value ?? "";
-
-                // Devuelve una respuesta exitosa
-                return new()
-                {
-                    IsAuthenticated = true,
-                    IdentityId = identity,
-                    Alias = name,
-                    ProfileId = id,
-                };
+                return true;
             }
-            catch
+            catch (SecurityTokenException)
             {
             }
+
+
         }
         catch { }
 
-        return new();
+        return false;
 
     }
 

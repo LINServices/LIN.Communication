@@ -32,7 +32,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             Response = Responses.Success,
             Model = new()
             {
-                ID = id,
+                Id = id,
                 IsOnline = profile?.Devices.Count != 0,
                 LastTime = profile?.LastTime ?? (await profilesData.GetLastConnection(id)).Model,
             }
@@ -118,7 +118,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
                                 Rol = member.Rol,
                                 Profile = new()
                                 {
-                                    ID = member.Profile.ID,
+                                    Id = member.Profile.Id,
                                     Alias = member.Profile.Alias,
                                     LastConnection = member.Profile.LastConnection,
                                 }
@@ -241,7 +241,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             return new CreateResponse()
             {
                 Response = Responses.Success,
-                LastID = conversation.Model.ID,
+                LastID = conversation.Model.Id,
                 Message = "Se encontró."
             };
         }
@@ -249,26 +249,26 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
         // Crear el chat
         var response = await conversationData.Create(new()
         {
-            ID = 0,
+            Id = 0,
             Name = "Chat Personal",
             Type = ConversationsTypes.Personal,
             Visibility = ConversationVisibility.@public,
             Members = [
                  new MemberChatModel()
                  {
-                     ID = 0,
+                     Id = 0,
                      Profile = new()
                      {
-                         ID = tokenInfo.ProfileId
+                         Id = tokenInfo.ProfileId
                      },
                      Rol = MemberRoles.Admin
                  },
                  new MemberChatModel()
                  {
-                     ID = 0,
+                     Id = 0,
                      Profile = new()
                      {
-                        ID = friendId
+                        Id = friendId
                      },
                      Rol = MemberRoles.Admin
                  }

@@ -10,7 +10,7 @@ public class Messages(Context context)
     public async Task<CreateResponse> Create(MessageModel data)
     {
         // Id
-        data.ID = 0;
+        data.Id = 0;
 
         // Ejecución
         try
@@ -21,7 +21,30 @@ public class Messages(Context context)
 
             var res = context.Messages.Add(data);
             await context.SaveChangesAsync();
-            return new(Responses.Success, data.ID);
+            return new(Responses.Success, data.Id);
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
+    /// Crea un nuevo mensaje temporal.
+    /// </summary>
+    /// <param name="data">Modelo del mensaje</param>
+    public async Task<CreateResponse> Create(TempMessageModel data)
+    {
+        // Id
+        data.Id = 0;
+
+        // Ejecución
+        try
+        {
+            var res = context.TempMessages.Add(data);
+            await context.SaveChangesAsync();
+            return new(Responses.Success, data.Id);
         }
         catch (Exception)
         {
@@ -42,23 +65,49 @@ public class Messages(Context context)
         try
         {
 
-            // Consulta
+            // Consulta.
             var baseQuery = (from M in context.Messages
-                             where M.Conversacion.ID == id
-                             && M.ID > lastID
-                             orderby M.ID descending
+                             where M.Conversacion.Id == id
+                             && M.Id > lastID
+                             orderby M.Id descending
                              select new MessageModel
                              {
                                  Contenido = M.Contenido,
-                                 ID = M.ID,
+                                 Id = M.Id,
                                  Remitente = M.Remitente,
                                  Time = M.Time
                              }).Take(100);
 
             // Grupos
-            var groups = await baseQuery.OrderBy(A => A.ID).ToListAsync();
+            var groups = await baseQuery.OrderBy(A => A.Id).ToListAsync();
 
             return new(Responses.Success, groups);
+        }
+        catch (Exception)
+        {
+        }
+        return new();
+    }
+
+
+    /// <summary>
+    /// Obtiene un mensajes temporal.
+    /// </summary>
+    /// <param name="id">Id del mensaje</param>
+    public async Task<ReadOneResponse<TempMessageModel>> ReadOneTemp(int id)
+    {
+
+        // Ejecución
+        try
+        {
+
+            // Consulta.
+            var message = await (from M in context.TempMessages
+                             where M.Id == id
+                             select M).FirstOrDefaultAsync();
+
+            return (message is null) ? new(Responses.NotRows) : new(Responses.Success, message);
+
         }
         catch (Exception)
         {

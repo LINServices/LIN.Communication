@@ -30,7 +30,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
             };
 
         // Organizar el modelo.
-        modelo.ID = 0;
+        modelo.Id = 0;
         modelo.Mensajes = [];
         modelo.Members ??= [];
 
@@ -38,8 +38,8 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         List<MemberChatModel> members = [];
         foreach (var member in modelo.Members)
         {
-            member.ID = 0;
-            if (member.Profile.ID == tokenInfo.ProfileId)
+            member.Id = 0;
+            if (member.Profile.Id == tokenInfo.ProfileId)
                 continue;
 
             members.Add(member);
@@ -50,7 +50,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         {
             Profile = new()
             {
-                ID = tokenInfo.ProfileId
+                Id = tokenInfo.ProfileId
             },
             Rol = MemberRoles.Admin
         });
@@ -87,7 +87,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         {
             onHub.Conversations = [];
             foreach (var c in result.Models)
-                onHub.Conversations.Add((c.Conversation.ID, c.Conversation.Name));
+                onHub.Conversations.Add((c.Conversation.Id, c.Conversation.Name));
         }
 
         // Retorna el resultado

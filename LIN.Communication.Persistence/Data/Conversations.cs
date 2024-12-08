@@ -10,7 +10,7 @@ public class Conversations(Context context)
     public async Task<CreateResponse> Create(ConversationModel data)
     {
         // Id
-        data.ID = 0;
+        data.Id = 0;
 
         // Ejecución
         try
@@ -20,7 +20,7 @@ public class Conversations(Context context)
 
             var res = context.Conversations.Add(data);
             await context.SaveChangesAsync();
-            return new(Responses.Success, data.ID);
+            return new(Responses.Success, data.Id);
         }
         catch (Exception)
         {
@@ -42,15 +42,15 @@ public class Conversations(Context context)
 
             // Consulta
             var groups = await (from M in context.Members
-                                where M.Profile.ID == id
+                                where M.Profile.Id == id
                                 where M.Conversation.Visibility == ConversationVisibility.@public
                                 select new MemberChatModel
                                 {
                                     Conversation = new ConversationModel
                                     {
-                                        ID = M.Conversation.ID,
+                                        Id = M.Conversation.Id,
                                         Name = M.Conversation.Type != ConversationsTypes.Personal ? M.Conversation.Name
-                                               : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != id)!.Profile.Alias ?? "Yo",
+                                               : M.Conversation.Members.FirstOrDefault(t => t.Profile.Id != id)!.Profile.Alias ?? "Yo",
                                         Type = M.Conversation.Type,
                                         Visibility = M.Conversation.Visibility
                                     },
@@ -79,15 +79,15 @@ public class Conversations(Context context)
 
             // Consulta
             var groups = await (from M in context.Members
-                                where M.Conversation.ID == id
+                                where M.Conversation.Id == id
                                 && M.Conversation.Visibility == ConversationVisibility.@public
                                 select new MemberChatModel
                                 {
                                     Conversation = new ConversationModel
                                     {
-                                        ID = M.Conversation.ID,
+                                        Id = M.Conversation.Id,
                                         Name = M.Conversation.Type != ConversationsTypes.Personal ? M.Conversation.Name
-                                   : M.Conversation.Members.FirstOrDefault(t => t.Profile.ID != profileContext)!.Profile.Alias ?? "Yo",
+                                   : M.Conversation.Members.FirstOrDefault(t => t.Profile.Id != profileContext)!.Profile.Alias ?? "Yo",
 
                                         Type = M.Conversation.Type,
                                         Visibility = M.Conversation.Visibility
@@ -120,7 +120,7 @@ public class Conversations(Context context)
         {
             // Consulta
             var v = await (from M in context.Conversations
-                           where M.ID == id
+                           where M.Id == id
                            where M.Type != ConversationsTypes.Personal
                            select M).ExecuteUpdateAsync(setters => setters
                            .SetProperty(b => b.Name, name));
@@ -148,8 +148,8 @@ public class Conversations(Context context)
         var conversation = await (from u in context.Conversations
                                   where u.Type == ConversationsTypes.Personal
                                   && u.Members.Count == 2
-                                  && u.Members.Where(t => t.Profile.ID == friendId).Any()
-                                  && u.Members.Where(t => t.Profile.ID == profileId).Any()
+                                  && u.Members.Where(t => t.Profile.Id == friendId).Any()
+                                  && u.Members.Where(t => t.Profile.Id == profileId).Any()
                                   select u).FirstOrDefaultAsync();
 
         return new(conversation!);

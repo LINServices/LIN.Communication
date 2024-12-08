@@ -31,6 +31,12 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
 
 
     /// <summary>
+    /// Mensajes temporales.
+    /// </summary>
+    public DbSet<TempMessageModel> TempMessages { get; set; }
+
+
+    /// <summary>
     /// Al crear.
     /// </summary>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +46,7 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         modelBuilder.Entity<ConversationModel>().ToTable("conversations");
         modelBuilder.Entity<MemberChatModel>().ToTable("members");
         modelBuilder.Entity<MessageModel>().ToTable("messages");
+        modelBuilder.Entity<TempMessageModel>().ToTable("temp_messages");
 
         base.OnModelCreating(modelBuilder);
     }

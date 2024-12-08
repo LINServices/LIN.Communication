@@ -24,7 +24,7 @@ public partial class ChatHub : Hub
             session.LastTime = DateTime.Now;
 
             // Establece la ultima conexión.
-            await profilesData.SetLastConnection(session.Profile.ID, DateTime.Now);
+            await profilesData.SetLastConnection(session.Profile.Id, DateTime.Now);
 
         }
         catch (Exception)

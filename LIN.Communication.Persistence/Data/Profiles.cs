@@ -10,7 +10,7 @@ public class Profiles(Context context)
     public async Task<ReadOneResponse<ProfileModel>> Create(AuthModel<ProfileModel> data)
     {
         // Id
-        data.Profile.ID = 0;
+        data.Profile.Id = 0;
         data.Profile.Friends = [];
 
         // Ejecución
@@ -40,7 +40,7 @@ public class Profiles(Context context)
 
             // Consulta.
             var profile = await (from P in context.Profiles
-                                 where P.ID == id
+                                 where P.Id == id
                                  select P).FirstOrDefaultAsync();
 
             return new(Responses.Success, profile ?? new());

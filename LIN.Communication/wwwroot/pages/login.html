@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Hangfire</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Roboto:400);
+
+        /* Aplica estilos generales para centrar el formulario */
+        body, html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f2f2f2; /* Color de fondo opcional */
+        }
+
+        .login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            width: 360px;
+            padding: 8% 0 0;
+            margin: auto;
+        }
+
+        .form {
+            position: relative;
+            z-index: 1;
+            background: #FFFFFF;
+            max-width: 360px;
+            margin: 0 auto 100px;
+            padding: 45px;
+            border-radius: 5%;
+            text-align: center;
+            box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+        }
+
+            .form input {
+                font-family: "Roboto", sans-serif;
+                outline: 0;
+                background: #f2f2f2;
+                width: 100%;
+                border: 0;
+                margin: 0 0 15px;
+                padding: 15px;
+                box-sizing: border-box;
+                font-size: 14px;
+            }
+
+            .form button {
+                font-family: "Roboto", sans-serif;
+                text-transform: uppercase;
+                outline: 0;
+                background: #528cb8;
+                width: 100%;
+                border: 0;
+                border-radius: 5px;
+                padding: 15px;
+                color: #FFFFFF;
+                font-size: 14px;
+                -webkit-transition: all 0.3 ease;
+                transition: all 0.3 ease;
+                cursor: pointer;
+            }
+
+                .form button:hover, .form button:active, .form button:focus {
+                    background: #6f7dc2;
+                }
+
+            .form .message {
+                margin: 15px 0 0;
+                color: #b3b3b3;
+                font-size: 12px;
+            }
+
+                .form .message a {
+                    color: #4CAF50;
+                    text-decoration: none;
+                }
+
+        body {
+            background: #528cb8;
+            background: -webkit-linear-gradient(right, #528cb8, #6f7dc2);
+            background: -moz-linear-gradient(right, #528cb8, #6f7dc2);
+            background: -o-linear-gradient(right, #528cb8, #6f7dc2);
+            background: linear-gradient(to left, #528cb8, #6f7dc2);
+            font-family: "Roboto", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a[href*="http://somee.com"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+
+        div[style="opacity: 0.9; z-index: 2147483647; position: fixed; left: 0px; bottom: 0px; height: 65px; right: 0px; display: block; width: 100%; background-color: #202020; margin: 0px; padding: 0px;"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+
+        div[style="height: 65px;"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+
+        div[onmouseover="S_ssac();"][onmouseout="D_ssac();"] {
+            visibility: hidden !important;
+            display: none !important;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="login-page">
+        <div class="form">
+            <form class="login-form" method="post">
+                <h3>Cuenta de enlace <span style="color: #528cb8; font-weight: bold;">LIN</span></h3>
+                <input type="text" placeholder="Usuario" name="username" />
+                <input type="password" placeholder="Contraseña" name="password" />
+                <button>Iniciar sesión</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

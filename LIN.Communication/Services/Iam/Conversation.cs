@@ -16,8 +16,8 @@ public class Conversation(Context context) : IIamService
         {
             // Consulta.
             var have = await (from member in context.Members
-                              where member.Profile.ID == profile
-                              && member.Conversation.ID == conversation
+                              where member.Profile.Id == profile
+                              && member.Conversation.Id == conversation
                               select member).FirstOrDefaultAsync();
 
             // No existe.

@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using Hangfire.PostgreSql;
+using LIN.Communication.Hangfire.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +21,7 @@ public static class Hangfire
         // Add Hangfire services.
         services.AddHangfire(config =>
         {
-            config.UsePostgreSqlStorage(manager.GetConnectionString("hangfire"));
+            config.UsePostgreSqlStorage(manager.GetConnectionString("hangfire") ?? string.Empty);
             config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
             config.UseSimpleAssemblyNameTypeSerializer();
             config.UseRecommendedSerializerSettings();
@@ -30,6 +31,7 @@ public static class Hangfire
         {
             options.Queues = ["default"];
         });
+        JwtService.Open();
 
         // Jobs.
         return services;
@@ -45,6 +47,7 @@ public static class Hangfire
         // Configuración del tablero.
         app.UseHangfireDashboard("/hangfire", new DashboardOptions
         {
+            AsyncAuthorization = [new IdentityAuthorization()],
             DarkModeEnabled = true,
             DashboardTitle = "LIN Communication"
         });

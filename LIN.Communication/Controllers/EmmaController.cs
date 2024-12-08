@@ -62,32 +62,27 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
 
         // Validar en Auth.
         if (response.Response != Responses.Success)
-        {
             return new ReadOneResponse<object>()
             {
                 Model = "Este usuario no autenticado en LIN Allo."
             };
-        }
-
+        
         // Obtener el perfil.
         var profile = await profilesData.ReadByIdentity(response.Model.Id);
 
         if (profile.Response != Responses.Success)
-        {
             return new ReadOneResponse<object>()
             {
                 Model = "Este usuario no tiene una cuenta en LIN Allo."
             };
-        }
-
-
-        var getProf = Mems.Sessions[profile.Model.ID];
+       
+        var getProf = Mems.Sessions[profile.Model.Id];
 
         if (getProf is null)
         {
 
-            var convs = (await conversationData.ReadAll(profile.Model.ID))?.Models.Select(t =>
-            (t.Conversation.ID, t.Conversation.Name));
+            var convs = (await conversationData.ReadAll(profile.Model.Id))?.Models.Select(t =>
+            (t.Conversation.Id, t.Conversation.Name));
 
             getProf = new MemorySession()
             {

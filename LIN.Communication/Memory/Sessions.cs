@@ -39,7 +39,7 @@ public class Sessions : Dictionary<int, MemorySession>
     /// <param name="session">Modelo</param>
     public void Add(MemorySession session)
     {
-        this.Add(session.Profile.ID, session);
+        this.Add(session.Profile.Id, session);
     }
 
 

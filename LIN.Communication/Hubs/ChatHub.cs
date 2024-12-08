@@ -15,7 +15,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         {
 
             // Perfil actual.
-            MemorySession? memorySession = Mems.Sessions[profile.ID];
+            MemorySession? memorySession = Mems.Sessions[profile.Id];
 
             // Si no existe la sesión.
             if (memorySession is null)
@@ -95,7 +95,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
             Guid = guid,
             Conversacion = new()
             {
-                ID = groupName
+                Id = groupName
             }
         };
 

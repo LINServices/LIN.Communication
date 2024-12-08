@@ -16,7 +16,7 @@ public class Members(Context context)
         {
             // Consulta
             var group = await (from conversation in context.Conversations
-                               where conversation.ID == id
+                               where conversation.Id == id
                                select conversation).FirstOrDefaultAsync();
 
             // No existe la conversación.
@@ -25,10 +25,10 @@ public class Members(Context context)
 
             // Validar el integrante ya existe.
             var exist = await (from conversation in context.Conversations
-                               where conversation.ID == id
+                               where conversation.Id == id
                                join MM in context.Members
-                               on conversation.ID equals MM.Conversation.ID
-                               where MM.Profile.ID == profile
+                               on conversation.Id equals MM.Conversation.Id
+                               where MM.Profile.Id == profile
                                select MM).AnyAsync();
 
             // Si el integrante ya existe.
@@ -45,7 +45,7 @@ public class Members(Context context)
             // Perfil ya existe.
             var profileModel = new ProfileModel()
             {
-                ID = profile
+                Id = profile
             };
 
             context.Attach(profileModel);
@@ -83,13 +83,13 @@ public class Members(Context context)
 
             // Consulta
             var groups = await (from M in context.Members
-                                where M.Conversation.ID == id
+                                where M.Conversation.Id == id
                                 select new MemberChatModel
                                 {
                                     Profile = new()
                                     {
                                         Alias = M.Profile.Alias,
-                                        ID = M.Profile.ID,
+                                        Id = M.Profile.Id,
                                         IdentityId = M.Profile.IdentityId
                                     },
                                     Rol = M.Rol,
@@ -118,8 +118,8 @@ public class Members(Context context)
 
             // Consulta.
             await (from M in context.Members
-                   where M.Profile.ID == profile
-                   && M.Conversation.ID == id
+                   where M.Profile.Id == profile
+                   && M.Conversation.Id == id
                    select M).ExecuteDeleteAsync();
 
             return new(Responses.Success);
