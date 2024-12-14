@@ -66,7 +66,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
     /// <param name="profileId">Id del perfil</param>
     /// <param name="groupName">Id del grupo</param>
     /// <param name="message">Mensaje</param>
-    public async Task SendMessage(int profileId, int groupName, string message, string guid)
+    public async Task SendMessage(int profileId, int groupName, string message, string guid, DateTime? timeToSend = null)
     {
 
         // Si el mansaje esta vacío.
@@ -99,7 +99,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
             }
         };
 
-        await messageSender.Send(messageModel, guid, profile);
+        await messageSender.Send(messageModel, guid, profile, timeToSend);
 
     }
 
