@@ -70,7 +70,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
     {
 
         // Si el mansaje esta vacío.
-        if (message.Trim() == string.Empty)
+        if (string.IsNullOrWhiteSpace(message))
             return;
 
         // Data.

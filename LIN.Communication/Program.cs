@@ -14,7 +14,6 @@ builder.Services.AddAuthenticationService(builder.Configuration["services:auth"]
 
 // Persistencia.
 builder.Services.AddPersistence(builder.Configuration);
-
 builder.Services.AddSettingsHangfire(builder.Configuration);
 
 // App.

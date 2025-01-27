@@ -13,12 +13,10 @@ public class IAService : Interfaces.IIAService
     /// </summary>
     public string GetActions()
     {
-
         if (string.IsNullOrWhiteSpace(Data))
             Data = File.ReadAllText("wwwroot/Actions.ia");
 
         return Data ?? string.Empty;
-
     }
 
 
