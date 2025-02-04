@@ -89,7 +89,7 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
                 return new()
                 {
                     Response = Responses.Success,
-                    Message = "El mensaje fue programado."
+                    Message = $"El mensaje fue programado para enviarse en {delay.Minutes} minutos."
                 };
             }
 

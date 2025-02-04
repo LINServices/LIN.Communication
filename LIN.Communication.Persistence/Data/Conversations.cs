@@ -44,6 +44,7 @@ public class Conversations(Context context)
             var groups = await (from M in context.Members
                                 where M.Profile.Id == id
                                 where M.Conversation.Visibility == ConversationVisibility.@public
+                                where M.Conversation.Mensajes.Count() > 0
                                 select new MemberChatModel
                                 {
                                     Conversation = new ConversationModel
