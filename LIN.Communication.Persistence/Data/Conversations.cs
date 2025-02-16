@@ -44,7 +44,6 @@ public class Conversations(Context context)
             var groups = await (from M in context.Members
                                 where M.Profile.Id == id
                                 where M.Conversation.Visibility == ConversationVisibility.@public
-                                where M.Conversation.Mensajes.Count() > 0
                                 select new MemberChatModel
                                 {
                                     Conversation = new ConversationModel
@@ -88,8 +87,7 @@ public class Conversations(Context context)
                                     {
                                         Id = M.Conversation.Id,
                                         Name = M.Conversation.Type != ConversationsTypes.Personal ? M.Conversation.Name
-                                   : M.Conversation.Members.FirstOrDefault(t => t.Profile.Id != profileContext)!.Profile.Alias ?? "Yo",
-
+                                        : M.Conversation.Members.FirstOrDefault(t => t.Profile.Id != profileContext)!.Profile.Alias ?? "Yo",
                                         Type = M.Conversation.Type,
                                         Visibility = M.Conversation.Visibility
                                     },
@@ -125,7 +123,6 @@ public class Conversations(Context context)
                            where M.Type != ConversationsTypes.Personal
                            select M).ExecuteUpdateAsync(setters => setters
                            .SetProperty(b => b.Name, name));
-
 
             if (v <= 0)
                 return new(Responses.NotRows);

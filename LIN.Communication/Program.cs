@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSignalR();
 builder.Services.AddLINHttp();
 builder.Services.AddLocalServices();
-builder.Services.AddAuthenticationService(builder.Configuration["services:auth"]);
+builder.Services.AddAuthenticationService(builder.Configuration["services:auth"], builder.Configuration["policy:linapp"]);
 
 // Persistencia.
 builder.Services.AddPersistence(builder.Configuration);
