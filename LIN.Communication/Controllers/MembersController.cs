@@ -241,7 +241,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             return new CreateResponse()
             {
                 Response = Responses.Success,
-                LastID = conversation.Model.Id,
+                LastId = conversation.Model.Id,
                 Message = "Se encontró."
             };
         }
@@ -252,7 +252,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             Id = 0,
             Name = "Chat Personal",
             Type = ConversationsTypes.Personal,
-            Visibility = ConversationVisibility.@public,
+            Visibility = ConversationVisibility.Public,
             Members = [
                  new MemberChatModel()
                  {

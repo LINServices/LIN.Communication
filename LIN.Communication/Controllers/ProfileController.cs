@@ -12,18 +12,15 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     /// <param name="app">Key de la app que solicita la información</param>
     [HttpGet("login")]
     [RateLimit(requestLimit: 5, timeWindowSeconds: 60, blockDurationSeconds: 120)]
-    public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> Login([FromQuery] string user, [FromQuery] string password, [FromHeader] string? app)
+    public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> Login([FromQuery] string user, [FromQuery] string password)
     {
 
         // Validación de datos.
         if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(password))
             return new(Responses.InvalidParam);
 
-        if (string.IsNullOrWhiteSpace(app))
-            app = null;
-
         // Respuesta de autenticación
-        var authResponse = await LIN.Access.Auth.Controllers.Authentication.Login(user, password, app);
+        var authResponse = await LIN.Access.Auth.Controllers.Authentication.Login(user, password);
 
         // Autenticación errónea
         if (authResponse.Response != Responses.Success)

@@ -43,7 +43,7 @@ public class Conversations(Context context)
             // Consulta
             var groups = await (from M in context.Members
                                 where M.Profile.Id == id
-                                where M.Conversation.Visibility == ConversationVisibility.@public
+                                where M.Conversation.Visibility == ConversationVisibility.Public
                                 select new MemberChatModel
                                 {
                                     Conversation = new ConversationModel
@@ -80,7 +80,7 @@ public class Conversations(Context context)
             // Consulta
             var groups = await (from M in context.Members
                                 where M.Conversation.Id == id
-                                && M.Conversation.Visibility == ConversationVisibility.@public
+                                && M.Conversation.Visibility == ConversationVisibility.Public
                                 select new MemberChatModel
                                 {
                                     Conversation = new ConversationModel

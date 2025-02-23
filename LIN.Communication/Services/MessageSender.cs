@@ -84,7 +84,7 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
                 });
 
                 // Encolar el Job.
-                BackgroundJob.Schedule<MessageSender>((t) => t.SendDelay(createMessageTemp.LastID, sender.Id), delay);
+                BackgroundJob.Schedule<MessageSender>((t) => t.SendDelay(createMessageTemp.LastId, sender.Id), delay);
 
                 return new()
                 {
