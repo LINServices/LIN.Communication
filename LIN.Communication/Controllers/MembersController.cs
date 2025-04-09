@@ -1,7 +1,4 @@
-﻿using LIN.Communication.Services.Iam;
-using LIN.Communication.Services.Models;
-
-namespace LIN.Communication.Controllers;
+﻿namespace LIN.Communication.Controllers;
 
 [Route("conversations")]
 [RateLimit(requestLimit: 10, timeWindowSeconds: 20, blockDurationSeconds: 300)]
@@ -9,14 +6,14 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
 {
 
     /// <summary>
-    /// Validación si un usuario esta online.
+    /// Validar si un usuario esta actualmente en linea.
     /// </summary>
-    /// <param name="id">Id del usuario.</param>
+    /// <param name="id">Id del usuario (Perfil)</param>
     [HttpGet("isOnline")]
     public async Task<HttpReadOneResponse<IsOnlineResult>> ReadOnline([FromQuery] int id)
     {
 
-        // Obtiene el perfil
+        // Obtener el perfil de la cache.
         var profile = Mems.Sessions[id];
 
         // Perfil no existe.
@@ -34,7 +31,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             {
                 Id = id,
                 IsOnline = profile?.Devices.Count != 0,
-                LastTime = profile?.LastTime ?? (await profilesData.GetLastConnection(id)).Model,
+                LastTime = profile?.LastTime ?? (await profilesData.GetLastConnection(id)).Model // Si no se encontro la fecha, obtien desde repositorio.
             }
         };
 
@@ -54,7 +51,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Busca el acceso
+        // Validar acceso con Iam.
         var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
         if (iam == IamLevels.NotAccess)
@@ -67,9 +64,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
         // Obtiene el usuario
         var result = await membersData.ReadAll(id);
 
-        // Retorna el resultado
         return result ?? new();
-
     }
 
 
@@ -125,7 +120,6 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
                             }
                         }).ToList();
 
-        // Retorna el resultado
         return new ReadAllResponse<SessionModel<MemberChatModel>>
         {
             Models = response,
@@ -184,7 +178,6 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
 
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
-
 
         // Validación Iam.
         if (tokenInfo.ProfileId != profileId)
@@ -275,9 +268,6 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             ]
         });
 
-        // Retorna el resultado
         return response;
-
     }
-
 }

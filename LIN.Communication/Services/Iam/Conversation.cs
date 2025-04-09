@@ -14,17 +14,17 @@ public class Conversation(Context context) : IIamService
     {
         try
         {
-            // Consulta.
+            // Buscar en los integrantes de una conversación si existe el perfil.
             var have = await (from member in context.Members
                               where member.Profile.Id == profile
                               && member.Conversation.Id == conversation
                               select member).FirstOrDefaultAsync();
 
-            // No existe.
+            // Si no hay registros, no tiene acceso.
             if (have is null)
                 return IamLevels.NotAccess;
 
-            // Administrador.
+            // Si es el administrador.
             if (have.Rol is MemberRoles.Admin)
                 return IamLevels.Privileged;
 

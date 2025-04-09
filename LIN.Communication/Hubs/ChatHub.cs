@@ -1,14 +1,12 @@
-﻿using LIN.Communication.Services.Interfaces;
-
-namespace LIN.Communication.Hubs;
+﻿namespace LIN.Communication.Hubs;
 
 public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Profiles profilesData) : Hub
 {
 
     /// <summary>
-    /// Carga una sesión.
+    /// Crear una sesión de tiempo real a partir de un perfil.
     /// </summary>
-    /// <param name="profile">Perfil</param>
+    /// <param name="profile">Modelo del perfil.</param>
     public void Load(ProfileModel profile)
     {
         try
@@ -41,12 +39,12 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
 
 
     /// <summary>
-    /// Une una conexión a un grupo de tiempo real.
+    /// Unir un dispositovo a un grupo.
     /// </summary>
-    /// <param name="name">Id del grupo</param>
-    public async Task JoinGroup(int name)
+    /// <param name="id">Id de la conversación.</param>
+    public async Task JoinGroup(int id)
     {
-        await Groups.AddToGroupAsync(Context.ConnectionId, name.ToString());
+        await Groups.AddToGroupAsync(Context.ConnectionId, id.ToString());
     }
 
 

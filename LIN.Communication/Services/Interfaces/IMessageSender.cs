@@ -1,6 +1,4 @@
-﻿using LIN.Communication.Services.Models;
-
-namespace LIN.Communication.Services.Interfaces;
+﻿namespace LIN.Communication.Services.Interfaces;
 
 public interface IMessageSender
 {

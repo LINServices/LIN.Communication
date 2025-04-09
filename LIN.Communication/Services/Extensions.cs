@@ -1,7 +1,4 @@
-﻿using LIN.Communication.Services.Iam;
-using LIN.Communication.Services.Interfaces;
-
-namespace LIN.Communication.Services;
+﻿namespace LIN.Communication.Services;
 
 public static class Extensions
 {

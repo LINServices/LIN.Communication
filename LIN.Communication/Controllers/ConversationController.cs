@@ -1,6 +1,3 @@
-using LIN.Communication.Services.Iam;
-using LIN.Communication.Services.Models;
-
 namespace LIN.Communication.Controllers;
 
 [LocalToken]
@@ -18,7 +15,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
     public async Task<HttpCreateResponse> Create([FromBody] ConversationModel modelo, [FromHeader] string token)
     {
 
-        // Información del token.
+        // Obtener la información del token de acceso.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
         // Validar modelo.
@@ -34,7 +31,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         modelo.Mensajes = [];
         modelo.Members ??= [];
 
-        // Integrantes.
+        // Organizar la información de los integrantes..
         List<MemberChatModel> members = [];
         foreach (var member in modelo.Members)
         {
@@ -45,7 +42,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
             members.Add(member);
         }
 
-        // Agrega al administrador.
+        // Generar el integrante administrador.
         members.Add(new()
         {
             Profile = new()
@@ -55,15 +52,12 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
             Rol = MemberRoles.Admin
         });
 
-        // Establecer los miembros.
         modelo.Members = members;
 
-        // Obtiene el resultado
+        // Crear en el reposotorio.
         var response = await conversationData.Create(modelo);
 
-        // Retorna el resultado
         return response ?? new();
-
     }
 
 
@@ -90,7 +84,6 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
                 onHub.Conversations.Add((c.Conversation.Id, c.Conversation.Name));
         }
 
-        // Retorna el resultado
         return new ReadAllResponse<MemberChatModel>
         {
             Models = result.Models,
@@ -111,10 +104,9 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         // Información del token.
         JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
 
-        // Validación Iam.
+        // Validación acceso con Iam.
         var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
-        // Valida el acceso Iam.
         if (iam == IamLevels.NotAccess)
             return new()
             {
@@ -122,13 +114,13 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
                 Message = "No tienes acceso a esta conversación."
             };
 
-        // Obtiene el usuario
+        // Obtener el modelo de la conversación.
         var result = await conversationData.Read(id, tokenInfo.ProfileId);
 
-        // Cuentas.
+        // Obtener los ids de las cuentas de LIN Identity.
         List<int> accountIds = result.Model.Conversation?.Members?.Select(t => t.Profile.IdentityId).ToList() ?? [];
 
-        // Obtener cuentas.
+        // Obtener cuentas en el servicio de identidad.
         var accounts = await LIN.Access.Auth.Controllers.Account.ReadByIdentity(accountIds, tokenAuth);
 
         return new ReadOneResponse<MemberChatModel>()
@@ -142,7 +134,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
 
 
     /// <summary>
-    /// Actualizar el nombre de un grupo.
+    /// Actualizar el nombre de una conversación.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     /// <param name="newName">Nuevo nombre.</param>
@@ -164,7 +156,6 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         // Validación Iam.
         var iam = await Iam.Validate(tokenInfo.ProfileId, id);
 
-        // Valida el acceso Iam.
         if (iam != IamLevels.Privileged)
             return new()
             {
@@ -172,14 +163,10 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
                 Message = "No tienes acceso a esta conversación."
             };
 
-        // Obtiene el usuario
+        // Enviar la actualización al repositorio.
         var result = await conversationData.UpdateName(id, newName);
 
-        return new()
-        {
-            Response = result.Response
-        };
-
+        return result;
     }
 
 }

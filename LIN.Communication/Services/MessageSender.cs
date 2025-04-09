@@ -1,20 +1,16 @@
 ﻿using Hangfire;
 using LIN.Communication.Hubs;
-using LIN.Communication.Services.Iam;
-using LIN.Communication.Services.Models;
 
 namespace LIN.Communication.Services;
 
 public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Persistence.Data.Messages messagesData, Persistence.Data.Profiles profilesData) : Interfaces.IMessageSender
 {
 
-
     /// <summary>
     /// Enviar mensaje.
     /// </summary>
     public async Task<ResponseBase> SendDelay(int idTemporal, int profileId)
     {
-
         // Obtener los datos.
         var message = await messagesData.ReadOneTemp(idTemporal);
         var profile = await profilesData.Read(profileId);
@@ -74,7 +70,6 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
             // Validar si el delay es valido.
             if (delay > TimeSpan.Zero)
             {
-
                 // Crear el mensaje temporal.
                 var createMessageTemp = await messagesData.Create(new TempMessageModel()
                 {
@@ -104,10 +99,9 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
             };
         }
 
-        // Iam.
+        // Validar acceso Iam.
         IamLevels iam = await IamService.Validate(sender.Id, message.Conversacion.Id);
 
-        // Not access.
         if (iam == IamLevels.NotAccess)
             return new()
             {

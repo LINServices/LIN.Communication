@@ -15,10 +15,11 @@ public class Conversations(Context context)
         // Ejecución
         try
         {
+            // Adjuntar los perfiles de los integrantes de la conversación.
             foreach (var user in data.Members)
                 context.Attach(user.Profile);
 
-            var res = context.Conversations.Add(data);
+            var createResponse = context.Conversations.Add(data);
             await context.SaveChangesAsync();
             return new(Responses.Success, data.Id);
         }
@@ -40,7 +41,7 @@ public class Conversations(Context context)
         try
         {
 
-            // Consulta
+            // Consulta las conversaciones publicas.
             var groups = await (from M in context.Members
                                 where M.Profile.Id == id
                                 where M.Conversation.Visibility == ConversationVisibility.Public
@@ -118,13 +119,13 @@ public class Conversations(Context context)
         try
         {
             // Consulta
-            var v = await (from M in context.Conversations
-                           where M.Id == id
-                           where M.Type != ConversationsTypes.Personal
-                           select M).ExecuteUpdateAsync(setters => setters
-                           .SetProperty(b => b.Name, name));
+            var updateCount = await (from M in context.Conversations
+                                     where M.Id == id
+                                     where M.Type != ConversationsTypes.Personal
+                                     select M).ExecuteUpdateAsync(setters => setters
+                                     .SetProperty(b => b.Name, name));
 
-            if (v <= 0)
+            if (updateCount <= 0)
                 return new(Responses.NotRows);
 
             return new(Responses.Success);

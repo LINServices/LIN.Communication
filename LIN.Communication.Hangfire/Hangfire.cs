@@ -1,6 +1,4 @@
-﻿using Hangfire;
-using Hangfire.PostgreSql;
-using LIN.Communication.Hangfire.Services;
+﻿using LIN.Communication.Hangfire.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,19 +16,20 @@ public static class Hangfire
     public static IServiceCollection AddSettingsHangfire(this IServiceCollection services, IConfigurationManager manager)
     {
 
+        // Si la cadena es valida.
         // Add Hangfire services.
-        services.AddHangfire(config =>
-        {
-            config.UsePostgreSqlStorage(manager.GetConnectionString("hangfire") ?? string.Empty);
-            config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
-            config.UseSimpleAssemblyNameTypeSerializer();
-            config.UseRecommendedSerializerSettings();
-        });
+        //services.AddHangfire(config =>
+        //{
+        //    config.UsePostgreSqlStorage(manager.GetConnectionString("hangfire") ?? string.Empty);
+        //    config.SetDataCompatibilityLevel(CompatibilityLevel.Version_170);
+        //    config.UseSimpleAssemblyNameTypeSerializer();
+        //    config.UseRecommendedSerializerSettings();
+        //});
 
-        services.AddHangfireServer(options =>
-        {
-            options.Queues = ["default"];
-        });
+        //services.AddHangfireServer(options =>
+        //{
+        //    options.Queues = ["default"];
+        //});
         JwtService.Open();
 
         // Jobs.
@@ -45,14 +44,13 @@ public static class Hangfire
     public static IApplicationBuilder UseSettingsHangfire(this IApplicationBuilder app)
     {
         // Configuración del tablero.
-        app.UseHangfireDashboard("/hangfire", new DashboardOptions
-        {
-            AsyncAuthorization = [new IdentityAuthorization()],
-            DarkModeEnabled = true,
-            DashboardTitle = "LIN Communication"
-        });
+        //app.UseHangfireDashboard("/hangfire", new DashboardOptions
+        //{
+        //    AsyncAuthorization = [new IdentityAuthorization()],
+        //    DarkModeEnabled = true,
+        //    DashboardTitle = "LIN Communication"
+        //});
 
         return app;
     }
-
 }

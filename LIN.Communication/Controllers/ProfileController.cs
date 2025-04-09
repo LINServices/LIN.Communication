@@ -9,7 +9,6 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     /// </summary>
     /// <param name="user">Usuario único</param>
     /// <param name="password">Contraseña del usuario</param>
-    /// <param name="app">Key de la app que solicita la información</param>
     [HttpGet("login")]
     [RateLimit(requestLimit: 5, timeWindowSeconds: 60, blockDurationSeconds: 120)]
     public async Task<HttpReadOneResponse<AuthModel<ProfileModel>>> Login([FromQuery] string user, [FromQuery] string password)
@@ -20,7 +19,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
             return new(Responses.InvalidParam);
 
         // Respuesta de autenticación
-        var authResponse = await LIN.Access.Auth.Controllers.Authentication.Login(user, password);
+        var authResponse = await Access.Auth.Controllers.Authentication.Login(user, password);
 
         // Autenticación errónea
         if (authResponse.Response != Responses.Success)
@@ -32,7 +31,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
             };
         }
 
-        // Obtiene el perfil
+        // Obtiene el perfil según el id de la identidad.
         var profile = await profilesData.ReadByIdentity(authResponse.Model.IdentityId);
 
         switch (profile.Response)
@@ -42,6 +41,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
 
             case Responses.NotExistProfile:
                 {
+                    // Crear el perfil en caso de no existir.
                     var res = await profilesData.Create(new()
                     {
                         Account = authResponse.Model,
@@ -52,6 +52,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
                         }
                     });
 
+                    // Si hubo un error al crear el perfil.
                     if (res.Response != Responses.Success)
                     {
                         return new ReadOneResponse<AuthModel<ProfileModel>>
@@ -72,8 +73,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
                 };
         }
 
-
-        // Genera el token
+        // Genera el token de acceso.
         var token = Jwt.Generate(profile.Model);
 
         return new ReadOneResponse<AuthModel<ProfileModel>>
@@ -110,18 +110,14 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
         if (response.Response != Responses.Success)
             return new(response.Response);
 
-
+        // Obtener el perfil según el id de la identidad.
         var profile = await profilesData.ReadByIdentity(response.Model.Id);
-
 
         var httpResponse = new ReadOneResponse<AuthModel<ProfileModel>>()
         {
             Response = Responses.Success,
-            Message = "Success",
-
+            Message = "Success"
         };
-
-
 
         switch (profile.Response)
         {
@@ -173,13 +169,11 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
 
         httpResponse.Model.Account = response.Model;
         httpResponse.Model.TokenCollection = new()
-    {
-        { "identity",response.Token}
-    };
-
+        {
+            { "identity",response.Token}
+        };
 
         return httpResponse;
-
     }
 
 
@@ -193,7 +187,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> Search([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        // Busca el acceso
+        // Buscar las cuentas segun un patron de busqueda en LIN Identity.
         var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token);
 
         // Si no tiene acceso
@@ -224,7 +218,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
         return new ReadAllResponse<SessionModel<ProfileModel>>
         {
             Response = Responses.Success,
-            Models = final.ToList()
+            Models = [.. final]
         };
 
     }

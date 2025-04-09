@@ -48,6 +48,7 @@ public class Members(Context context)
                 Id = profile
             };
 
+            // Ajuntar el perfil.
             context.Attach(profileModel);
 
             var member = new MemberChatModel()

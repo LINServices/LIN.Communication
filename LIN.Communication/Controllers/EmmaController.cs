@@ -1,9 +1,9 @@
-using LIN.Communication.Services.Interfaces;
 using System.Text;
 
 namespace LIN.Communication.Controllers;
 
 [Route("[controller]")]
+[Obsolete("Este controlador se debe reacer")]
 public class EmmaController(IIAService ia, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData, IConfiguration configuration) : ControllerBase
 {
 
@@ -66,7 +66,7 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
             {
                 Model = "Este usuario no autenticado en LIN Allo."
             };
-        
+
         // Obtener el perfil.
         var profile = await profilesData.ReadByIdentity(response.Model.Id);
 
@@ -75,7 +75,7 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
             {
                 Model = "Este usuario no tiene una cuenta en LIN Allo."
             };
-       
+
         var getProf = Mems.Sessions[profile.Model.Id];
 
         if (getProf is null)

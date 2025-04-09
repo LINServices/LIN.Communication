@@ -1,5 +1,6 @@
 ﻿namespace LIN.Communication.Services;
 
+[Obsolete("Se debe actualizar estos fragmentos.")]
 public class IAService : Interfaces.IIAService
 {
 

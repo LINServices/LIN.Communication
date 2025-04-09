@@ -1,8 +1,8 @@
 using Http.Extensions;
 using LIN.Access.Auth;
+using LIN.Communication.Hangfire;
 using LIN.Communication.Persistence;
 using LIN.Communication.Persistence.Extensions;
-using LIN.Communication.Hangfire;
 
 var builder = WebApplication.CreateBuilder(args);
 

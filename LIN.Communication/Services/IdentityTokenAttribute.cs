@@ -12,7 +12,6 @@ public class LocalTokenAttribute : ActionFilterAttribute
     /// <param name="next">Siguiente.</param>
     public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
-
         // Contexto HTTP.
         var httpContext = context.HttpContext;
 
@@ -37,7 +36,6 @@ public class LocalTokenAttribute : ActionFilterAttribute
         // Agrega la información del token.
         context.HttpContext.Items.Add(value.ToString(), tokenInfo);
         await base.OnActionExecutionAsync(context, next);
-
     }
 
 }

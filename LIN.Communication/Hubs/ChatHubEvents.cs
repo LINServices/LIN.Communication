@@ -11,7 +11,6 @@ public partial class ChatHub : Hub
     {
         try
         {
-
             // Obtiene la sesión por el dispositivo
             var session = Mems.Sessions[Context.ConnectionId];
 
