@@ -16,9 +16,9 @@ public class Jwt
     /// <summary>
     /// Inicia el servicio Jwt
     /// </summary>
-    public static void Open()
+    public static void Open(string value)
     {
-        JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key");
+        JwtKey = value;
     }
 
 

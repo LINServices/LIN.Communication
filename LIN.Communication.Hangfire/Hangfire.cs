@@ -30,7 +30,7 @@ public static class Hangfire
         //{
         //    options.Queues = ["default"];
         //});
-        JwtService.Open();
+        JwtService.Open(manager["jwt:key_hangfire"] ?? string.Empty);
 
         // Jobs.
         return services;

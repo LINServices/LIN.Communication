@@ -17,9 +17,9 @@ public class JwtService
     /// <summary>
     /// Inicia el servicio JwtService
     /// </summary>
-    public static void Open()
+    public static void Open(string configuration)
     {
-        JwtKey = Http.Services.Configuration.GetConfiguration("jwt:key_hangfire");
+        JwtKey = configuration;
     }
 
 
@@ -29,9 +29,6 @@ public class JwtService
     /// <param name="user">Modelo de usuario</param>
     public static string Generate(string user)
     {
-
-        if (JwtKey == string.Empty)
-            Open();
 
         // Configuración
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtKey));

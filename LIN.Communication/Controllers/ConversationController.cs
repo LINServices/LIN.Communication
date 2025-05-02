@@ -125,7 +125,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
 
         return new ReadOneResponse<MemberChatModel>()
         {
-            AlternativeObject = accounts.Models,
+            Alternatives = [accounts.Models],
             Model = result.Model,
             Response = result.Response
         };

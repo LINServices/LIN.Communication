@@ -27,7 +27,7 @@ app.MapControllers();
 
 app.UseSettingsHangfire();
 
-Jwt.Open();
+Jwt.Open(builder.Configuration["jwt:key"]);
 
 app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
 {

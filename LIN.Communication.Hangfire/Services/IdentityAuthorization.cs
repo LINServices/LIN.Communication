@@ -31,7 +31,7 @@ public class IdentityAuthorization : IDashboardAsyncAuthorizationFilter
             var username = httpContext.Request.Form["username"].ToString() ?? "";
             var password = httpContext.Request.Form["password"].ToString() ?? "";
 
-            string policy = Http.Services.Configuration.GetConfiguration("policy:current");
+            string policy = "";//Http.Services.Configuration.GetConfiguration("policy:current");
 
             // Validar en LIN Auth.
             var result = await Access.Auth.Controllers.Authentication.OnPolicy(username, password, policy ?? string.Empty);
