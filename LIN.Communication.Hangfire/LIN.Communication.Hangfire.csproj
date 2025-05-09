@@ -11,8 +11,8 @@
 		<PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
 		<PackageReference Include="LIN.Types.Communication" Version="1.5.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
-		<PackageReference Include="LIN.Access.Auth" Version="4.0.1" />
-		<PackageReference Include="Http.Utils" Version="4.5.1" />
+		<PackageReference Include="LIN.Access.Auth" Version="4.1.0" />
+		<PackageReference Include="Http.Utils" Version="4.6.0" />
 	</ItemGroup>
 
 	<ItemGroup>
