@@ -19,7 +19,7 @@ builder.Services.AddSettingsHangfire(builder.Configuration);
 // App.
 var app = builder.Build();
 
-app.UseLINHttp();
+app.UseLINHttp(useGateway: true);
 app.UsePersistence();
 app.UseHttpsRedirection();
 app.UseAuthorization();

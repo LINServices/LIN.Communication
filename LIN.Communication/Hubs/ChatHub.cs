@@ -39,7 +39,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
 
 
     /// <summary>
-    /// Unir un dispositovo a un grupo.
+    /// Unir un dispositivo a un grupo.
     /// </summary>
     /// <param name="id">Id de la conversación.</param>
     public async Task JoinGroup(int id)

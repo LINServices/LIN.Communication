@@ -31,7 +31,7 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
             {
                 Id = id,
                 IsOnline = profile?.Devices.Count != 0,
-                LastTime = profile?.LastTime ?? (await profilesData.GetLastConnection(id)).Model // Si no se encontro la fecha, obtien desde repositorio.
+                LastTime = profile?.LastTime ?? (await profilesData.GetLastConnection(id)).Model // Si no se encontró la fecha, obtiene desde repositorio.
             }
         };
 

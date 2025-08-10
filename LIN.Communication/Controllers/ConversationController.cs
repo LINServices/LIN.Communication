@@ -54,7 +54,7 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
 
         modelo.Members = members;
 
-        // Crear en el reposotorio.
+        // Crear en el repositorio.
         var response = await conversationData.Create(modelo);
 
         return response ?? new();

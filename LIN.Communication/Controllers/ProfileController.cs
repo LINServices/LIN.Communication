@@ -187,7 +187,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> Search([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        // Buscar las cuentas segun un patron de busqueda en LIN Identity.
+        // Buscar las cuentas según un patron de búsqueda en LIN Identity.
         var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token);
 
         // Si no tiene acceso
