@@ -58,6 +58,16 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, name);
     }
 
+    /// <summary>
+    /// Enviar comando a un dispositivo.
+    /// </summary>
+    /// <param name="device">Id del dispositivo.</param>
+    /// <param name="command">Comando a ejecutar.</param>
+    public async Task SendToDevice(string device, string command)
+    {
+        // Envía el comando.
+        await Clients.Client(device).SendAsync("#command", command);
+    }
 
     /// <summary>
     /// Enviar un mensaje.
