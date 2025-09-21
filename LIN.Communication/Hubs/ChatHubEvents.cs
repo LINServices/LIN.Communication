@@ -19,7 +19,7 @@ public partial class ChatHub : Hub
                 return;
 
             // Remover el dispositivo.
-            session.Devices.RemoveAll(T => T == Context.ConnectionId);
+            session.Devices.RemoveAll(T => T.ConnectionId == Context.ConnectionId);
             session.LastTime = DateTime.Now;
 
             // Establece la ultima conexión.

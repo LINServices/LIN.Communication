@@ -223,4 +223,18 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
 
     }
 
+
+    [LocalToken]
+    [HttpGet("devices")]
+    [RateLimit(requestLimit: 10, timeWindowSeconds: 30, blockDurationSeconds: 30)]
+    public HttpReadAllResponse<DeviceOnAccountModel> Devices([FromHeader] string token)
+    {
+
+        JwtModel tokenInfo = HttpContext.Items[token] as JwtModel ?? new();
+
+        var session = Mems.Sessions[tokenInfo.ProfileId];
+
+        return new ReadAllResponse<DeviceOnAccountModel>(Responses.Success, session?.Devices);
+    }
+
 }

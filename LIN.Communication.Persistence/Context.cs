@@ -36,6 +36,11 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
     public DbSet<TempMessageModel> TempMessages { get; set; }
 
 
+    public DbSet<DeviceModel> Devices { get; set; }
+    public DbSet<MeetingMemberModel> MeetingMembers { get; set; }
+    public DbSet<MeetingModel> Meetings { get; set; }
+
+
     /// <summary>
     /// Al crear.
     /// </summary>
@@ -47,6 +52,41 @@ public class Context(DbContextOptions<Context> options) : DbContext(options)
         modelBuilder.Entity<MemberChatModel>().ToTable("members");
         modelBuilder.Entity<MessageModel>().ToTable("messages");
         modelBuilder.Entity<TempMessageModel>().ToTable("temp_messages");
+
+
+        modelBuilder.Entity<DeviceModel>(et =>
+        {
+            et.HasOne(e => e.MeetingMember)
+            .WithMany(e=>e.Devices)
+            .HasForeignKey(t => t.MeetingMemberId);
+
+        });
+
+        modelBuilder.Entity<MeetingMemberModel>(et =>
+        {
+            et.HasOne(e => e.ProfileModel)
+            .WithMany()
+            .HasForeignKey(t => t.ProfileId);
+
+            et.HasOne(e => e.Meeting)
+          .WithMany(e=>e.Members)
+          .HasForeignKey(t => t.MeetingId);
+
+        });
+
+
+        modelBuilder.Entity<MeetingModel>(et =>
+        {
+            et.HasOne(e => e.Conversation)
+            .WithMany()
+            .HasForeignKey(t => t.ConversationId);
+
+            et.HasMany(e => e.Members)
+          .WithOne(e => e.Meeting)
+          .HasForeignKey(t => t.MeetingId);
+
+        });
+
 
         base.OnModelCreating(modelBuilder);
     }

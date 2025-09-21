@@ -10,9 +10,9 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     /// <param name="id">Id de la conversación</param>
     /// <param name="lastID">Id del punto de partida de la lista de mensajes.</param>
     /// <param name="token">Token de acceso</param>
-    [HttpGet("{id:int}/messages")]
     [LocalToken]
-    [RateLimit(requestLimit: 5, timeWindowSeconds: 30, blockDurationSeconds: 60)]
+    [HttpGet("{id:int}/messages")]
+    [RateLimit(requestLimit: 50, timeWindowSeconds: 30, blockDurationSeconds: 60)]
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id, [FromHeader] int lastID, [FromHeader] string token)
     {
 
@@ -43,12 +43,11 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     /// <param name="id">Id de la conversación.</param>
     /// <param name="message">Contenido del mensaje.</param>
     /// <param name="guid">Guid único</param>
-    [HttpPost("{id:int}/messages")]
     [LocalToken]
-    [RateLimit(requestLimit: 20, timeWindowSeconds: 10, blockDurationSeconds: 100)]
+    [HttpPost("{id:int}/messages")]
+    [RateLimit(requestLimit: 50, timeWindowSeconds: 10, blockDurationSeconds: 100)]
     public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid, [FromQuery] DateTime? sendAt)
     {
-
         // Validar contenido.
         if (string.IsNullOrWhiteSpace(message))
             return new()
@@ -87,7 +86,5 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
             Errors = response.Errors,
             Message = response.Message
         };
-
     }
-
 }

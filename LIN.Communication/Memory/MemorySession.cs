@@ -18,7 +18,7 @@ public class MemorySession
     /// <summary>
     /// Lista de dispositivos conectados
     /// </summary>
-    public List<string> Devices { get; set; }
+    public List<DeviceOnAccountModel> Devices { get; set; }
 
 
     /// <summary>

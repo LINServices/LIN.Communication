@@ -7,11 +7,10 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
     /// Crear una sesión de tiempo real a partir de un perfil.
     /// </summary>
     /// <param name="profile">Modelo del perfil.</param>
-    public void Load(ProfileModel profile)
+    public void Load(ProfileModel profile, DeviceOnAccountModel device)
     {
         try
         {
-
             // Perfil actual.
             MemorySession? memorySession = Mems.Sessions[profile.Id];
 
@@ -28,8 +27,10 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
                 Mems.Sessions.Add(memorySession);
             }
 
+            device.ConnectionId = Context.ConnectionId;
+
             // Agrega el dispositivo actual.
-            memorySession.Devices.Add(Context.ConnectionId);
+            memorySession.Devices.Add(device);
 
         }
         catch
@@ -66,7 +67,6 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
     /// <param name="message">Mensaje</param>
     public async Task SendMessage(int profileId, int groupName, string message, string guid, DateTime? timeToSend = null)
     {
-
         // Si el mansaje esta vacío.
         if (string.IsNullOrWhiteSpace(message))
             return;
@@ -98,7 +98,6 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         };
 
         await messageSender.Send(messageModel, guid, profile, timeToSend);
-
     }
 
 }

@@ -15,9 +15,10 @@ public class Messages(Context context)
         // Ejecución
         try
         {
-
             context.Attach(data.Conversacion);
-            context.Attach(data.Remitente);
+
+            if (data.Remitente != null)
+                context.Attach(data.Remitente);
 
             var res = context.Messages.Add(data);
             await context.SaveChangesAsync();
@@ -75,6 +76,7 @@ public class Messages(Context context)
                                  Contenido = M.Contenido,
                                  Id = M.Id,
                                  Remitente = M.Remitente,
+                                 Type = M.Type,
                                  Time = M.Time
                              }).Take(100);
 

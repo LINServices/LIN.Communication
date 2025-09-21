@@ -25,6 +25,7 @@ public static class PersistenceExtensions
         services.AddScoped<Conversations, Conversations>();
         services.AddScoped<Messages, Messages>();
         services.AddScoped<Profiles, Profiles>();
+        services.AddScoped<Meetings, Meetings>();
         return services;
 
     }

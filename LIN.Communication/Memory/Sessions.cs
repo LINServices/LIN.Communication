@@ -21,12 +21,12 @@ public class Sessions : Dictionary<int, MemorySession>
     /// <summary>
     /// Obtiene una session de acuerdo
     /// </summary>
-    /// <param name="profile">Id del dispositivo</param>
-    public MemorySession? this[string profile]
+    /// <param name="connectionId">Id del dispositivo</param>
+    public MemorySession? this[string connectionId]
     {
         get
         {
-            var session = this.Where(T => T.Value.Devices.Contains(profile)).FirstOrDefault();
+            var session = this.Where(T => T.Value.Devices.Any(t => t.ConnectionId == connectionId)).FirstOrDefault();
             return session.Value;
         }
     }

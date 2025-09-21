@@ -141,4 +141,34 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
 
     }
 
+
+    public async Task<ResponseBase> SendSystem(MessageModel message)
+    {
+        
+        // Modelo del mensaje.
+        MessageModel messageModel = new()
+        {
+            Contenido = message.Contenido,
+            Remitente = null,
+            Time = DateTime.Now,
+            Guid = Guid.NewGuid().ToString(),
+            Type = message.Type,
+            Conversacion = new()
+            {
+                Id = message.Conversacion.Id
+            }
+        };
+
+        // Envía el mensaje en tiempo real.
+        await hub.Clients.Group(message.Conversacion.Id.ToString()).SendAsync($"sendMessage", messageModel);
+
+        // Crea el mensaje en la BD.
+        await messagesData.Create(messageModel);
+
+        // Retorna el resultado.
+        return new()
+        {
+            Response = Responses.Success
+        };
+    }
 }

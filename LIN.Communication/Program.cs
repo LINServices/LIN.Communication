@@ -6,9 +6,24 @@ using LIN.Communication.Persistence.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy
+            .SetIsOriginAllowed(origin =>
+            {
+                return true;
+            })
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
 // Create services to the container.
 builder.Services.AddSignalR();
-builder.Services.AddLINHttp();
+builder.Services.AddLINHttp(useCors: false);
 builder.Services.AddLocalServices();
 builder.Services.AddAuthenticationService(builder.Configuration["services:auth"], builder.Configuration["policy:linapp"]);
 
@@ -18,6 +33,8 @@ builder.Services.AddSettingsHangfire(builder.Configuration);
 
 // App.
 var app = builder.Build();
+
+app.UseCors("AllowAll"); // aplica la política a todo
 
 app.UseLINHttp(useGateway: true);
 app.UsePersistence();
@@ -30,6 +47,12 @@ app.UseSettingsHangfire();
 Jwt.Open(builder.Configuration["jwt:key"]);
 
 app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
+{
+    options.AllowStatefulReconnects = true;
+    options.ApplicationMaxBufferSize = long.MaxValue;
+});
+
+app.MapHub<LIN.Communication.Hubs.CallHub>("/hub/calls", options =>
 {
     options.AllowStatefulReconnects = true;
     options.ApplicationMaxBufferSize = long.MaxValue;
