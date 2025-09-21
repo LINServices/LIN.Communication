@@ -2,7 +2,7 @@
 
 namespace LIN.Communication.Hubs;
 
-public class CallHub(Members members, Meetings meetings, IHubContext<ChatHub> hub, IMessageSender messageSender) : Hub
+public class CallHub(Meetings meetings, IHubContext<ChatHub> hub, IMessageSender messageSender) : Hub
 {
 
     public async Task Join(int conversation, string token)

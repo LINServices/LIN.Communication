@@ -226,7 +226,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
 
     [LocalToken]
     [HttpGet("devices")]
-    [RateLimit(requestLimit: 10, timeWindowSeconds: 30, blockDurationSeconds: 30)]
+    [RateLimit(requestLimit: 30, timeWindowSeconds: 30, blockDurationSeconds: 30)]
     public HttpReadAllResponse<DeviceOnAccountModel> Devices([FromHeader] string token)
     {
 

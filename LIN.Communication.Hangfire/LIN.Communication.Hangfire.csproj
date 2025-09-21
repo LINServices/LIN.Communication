@@ -9,10 +9,10 @@
 	<ItemGroup>
 		<PackageReference Include="Hangfire" Version="1.8.21" />
 		<PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
-		<PackageReference Include="LIN.Types.Communication" Version="1.6.6" />
+		<PackageReference Include="LIN.Types.Communication" Version="1.8.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
-		<PackageReference Include="LIN.Access.Auth" Version="4.3.0" />
-		<PackageReference Include="Http.Utils" Version="5.1.0" />
+		<PackageReference Include="LIN.Access.Auth" Version="2025.9.21" />
+		<PackageReference Include="Http.Utils" Version="5.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

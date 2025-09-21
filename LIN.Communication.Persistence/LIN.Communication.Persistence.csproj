@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="LIN.Types.Cloud.Identity" Version="1.7.0" />
-		<PackageReference Include="LIN.Types.Communication" Version="1.6.6" />
+		<PackageReference Include="LIN.Types.Cloud.Identity" Version="2025.9.21" />
+		<PackageReference Include="LIN.Types.Communication" Version="1.8.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.LINExtensions" Version="1.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />

@@ -12,7 +12,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     /// <param name="token">Token de acceso</param>
     [LocalToken]
     [HttpGet("{id:int}/messages")]
-    [RateLimit(requestLimit: 50, timeWindowSeconds: 30, blockDurationSeconds: 60)]
+    [RateLimit(requestLimit: 55, timeWindowSeconds: 30, blockDurationSeconds: 60)]
     public async Task<HttpReadAllResponse<MessageModel>> ReadAll([FromRoute] int id, [FromHeader] int lastID, [FromHeader] string token)
     {
 
@@ -45,7 +45,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     /// <param name="guid">Guid único</param>
     [LocalToken]
     [HttpPost("{id:int}/messages")]
-    [RateLimit(requestLimit: 50, timeWindowSeconds: 10, blockDurationSeconds: 100)]
+    [RateLimit(requestLimit: 55, timeWindowSeconds: 10, blockDurationSeconds: 100)]
     public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid, [FromQuery] DateTime? sendAt)
     {
         // Validar contenido.

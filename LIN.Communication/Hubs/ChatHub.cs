@@ -2,7 +2,6 @@
 
 public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Profiles profilesData) : Hub
 {
-
     /// <summary>
     /// Crear una sesión de tiempo real a partir de un perfil.
     /// </summary>
@@ -38,7 +37,6 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         }
     }
 
-
     /// <summary>
     /// Unir un dispositivo a un grupo.
     /// </summary>
@@ -47,7 +45,6 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, id.ToString());
     }
-
 
     /// <summary>
     /// Elimina un usuario de un grupo.

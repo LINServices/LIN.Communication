@@ -1,7 +1,7 @@
 ﻿namespace LIN.Communication.Controllers;
 
 [Route("conversations")]
-[RateLimit(requestLimit: 10, timeWindowSeconds: 20, blockDurationSeconds: 300)]
+[RateLimit(requestLimit: 20, timeWindowSeconds: 20, blockDurationSeconds: 30)]
 public class MembersController(IIamService Iam, Persistence.Data.Conversations conversationData, Persistence.Data.Profiles profilesData, Persistence.Data.Members membersData) : ControllerBase
 {
 
