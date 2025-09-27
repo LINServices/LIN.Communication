@@ -153,8 +153,8 @@ public class CallHub(Meetings meetings, IHubContext<ChatHub> hub, IMessageSender
         }
     }
 
-    public Task SendSdp(string targetConnectionId, string type, string sdp) =>
-        Clients.Client(targetConnectionId).SendAsync("Sdp", Context.ConnectionId, type, sdp);
+    public Task SendSdp(string targetConnectionId, string type, string sdp, string name) =>
+        Clients.Client(targetConnectionId).SendAsync("Sdp", Context.ConnectionId, type, sdp, name);
 
     public Task SendIce(string targetConnectionId, string candidate, string sdpMid, int sdpMLineIndex) =>
         Clients.Client(targetConnectionId).SendAsync("Ice", Context.ConnectionId, candidate, sdpMid, sdpMLineIndex);
