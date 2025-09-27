@@ -46,7 +46,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
     [LocalToken]
     [HttpPost("{id:int}/messages")]
     [RateLimit(requestLimit: 55, timeWindowSeconds: 10, blockDurationSeconds: 100)]
-    public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid, [FromQuery] DateTime? sendAt)
+    public async Task<HttpCreateResponse> Post([FromHeader] string token, [FromRoute] int id, [FromBody] string message, [FromQuery] string guid, [FromQuery] int type, [FromQuery] DateTime? sendAt)
     {
         // Validar contenido.
         if (string.IsNullOrWhiteSpace(message))
@@ -71,6 +71,7 @@ public class MessagesController(IMessageSender messageSender, IIamService Iam, P
             },
             Time = DateTime.Now,
             Guid = guid,
+            Type = (MessageTypes)type,
             Conversacion = new()
             {
                 Id = id

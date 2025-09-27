@@ -72,7 +72,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
     /// <param name="profileId">Id del perfil</param>
     /// <param name="groupName">Id del grupo</param>
     /// <param name="message">Mensaje</param>
-    public async Task SendMessage(int profileId, int groupName, string message, string guid, DateTime? timeToSend = null)
+    public async Task SendMessage(int profileId, int groupName, string message, string guid, MessageTypes type, DateTime? timeToSend = null)
     {
         // Si el mansaje esta vacío.
         if (string.IsNullOrWhiteSpace(message))
@@ -96,6 +96,7 @@ public partial class ChatHub(IMessageSender messageSender, Persistence.Data.Prof
         {
             Contenido = message,
             Remitente = profile,
+            Type = type,
             Time = new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, 0),
             Guid = guid,
             Conversacion = new()

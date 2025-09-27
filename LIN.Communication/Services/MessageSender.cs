@@ -120,6 +120,7 @@ public class MessageSender(IIamService IamService, IHubContext<ChatHub> hub, Per
                 Id = sender.Id
             },
             Time = DateTime.Now,
+            Type = message.Type,
             Guid = guid,
             Conversacion = new()
             {
