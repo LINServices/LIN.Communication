@@ -4,65 +4,81 @@ using LIN.Communication.Hangfire;
 using LIN.Communication.Persistence;
 using LIN.Communication.Persistence.Extensions;
 
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddCors(options =>
+try
 {
-    options.AddPolicy("AllowAll", policy =>
+
+
+
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Services.AddCors(options =>
     {
-        policy
-            .SetIsOriginAllowed(origin =>
-            {
-                return true;
-            })
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+        options.AddPolicy("AllowAll", policy =>
+        {
+            policy
+                .SetIsOriginAllowed(origin =>
+                {
+                    return true;
+                })
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
     });
-});
 
-// Create services to the container.
-builder.Services.AddSignalR();
-builder.Services.AddLINHttp(useCors: false);
-builder.Services.AddLocalServices();
-builder.Services.AddAuthenticationService(builder.Configuration["services:auth"], builder.Configuration["policy:linapp"]);
+    // Create services to the container.
+    builder.Services.AddSignalR();
+    builder.Services.AddLINHttp(useCors: false);
+    builder.Services.AddLocalServices();
+    builder.Services.AddAuthenticationService(builder.Configuration["services:auth"], builder.Configuration["policy:linapp"]);
 
-// Persistencia.
-builder.Services.AddPersistence(builder.Configuration);
-builder.Services.AddSettingsHangfire(builder.Configuration);
+    // Persistencia.
+    builder.Services.AddPersistence(builder.Configuration);
+    builder.Services.AddSettingsHangfire(builder.Configuration);
 
-// App.
-var app = builder.Build();
+    // App.
+    var app = builder.Build();
 
-app.UseCors("AllowAll"); // aplica la política a todo
+    app.UseCors("AllowAll"); // aplica la política a todo
 
-app.UseLINHttp(useGateway: true);
-app.UsePersistence();
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+    app.UseLINHttp(useGateway: true);
+    app.UsePersistence();
+    app.UseHttpsRedirection();
+    app.UseAuthorization();
+    app.MapControllers();
 
-app.UseSettingsHangfire();
+    app.UseSettingsHangfire();
 
-Jwt.Open(builder.Configuration["jwt:key"]);
+    Jwt.Open(builder.Configuration["jwt:key"]);
 
-app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
+    app.MapHub<LIN.Communication.Hubs.ChatHub>("/chat", options =>
+    {
+        options.AllowStatefulReconnects = true;
+        options.ApplicationMaxBufferSize = long.MaxValue;
+    });
+
+    app.MapHub<LIN.Communication.Hubs.CallHub>("/hub/calls", options =>
+    {
+        options.AllowStatefulReconnects = true;
+        options.ApplicationMaxBufferSize = long.MaxValue;
+    });
+
+    builder.Services.AddDatabaseAction(() =>
+    {
+        var context = app.Services.GetRequiredService<Context>();
+        context.Profiles.Where(x => x.Id == 0).FirstOrDefaultAsync();
+        return "Success";
+    });
+
+    app.Run();
+}
+catch (Exception ex)
 {
-    options.AllowStatefulReconnects = true;
-    options.ApplicationMaxBufferSize = long.MaxValue;
-});
+    if (!File.Exists("wwwroot/error.txt"))
+    {
+        File.Create("wwwroot/error.txt");
+    }
 
-app.MapHub<LIN.Communication.Hubs.CallHub>("/hub/calls", options =>
-{
-    options.AllowStatefulReconnects = true;
-    options.ApplicationMaxBufferSize = long.MaxValue;
-});
-
-builder.Services.AddDatabaseAction(() =>
-{
-    var context = app.Services.GetRequiredService<Context>();
-    context.Profiles.Where(x => x.Id == 0).FirstOrDefaultAsync();
-    return "Success";
-});
-
-app.Run();
+    File.WriteAllText("wwwroot/error.txt", ex.Message + ex.StackTrace);
+}
