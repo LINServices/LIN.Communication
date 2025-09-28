@@ -1,0 +1,66 @@
+name: Build & Deploy
+
+on:
+  workflow_run:
+    workflows: ["Run CSX"]
+    types:
+      - completed
+    branches: ["main"]
+
+env:
+  PROJECT_PATH: "LIN.Communication/LIN.Communication.csproj"
+  PUBLISH_DIR: "publish"
+  FTP_HOST: ${{ secrets.FTP_HOST }}
+  FTP_USER: ${{ secrets.FTP_USER }}
+  FTP_PASS: ${{ secrets.FTP_PASS }}
+  FTP_DIR: ${{ secrets.FTP_DIR }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Clean
+        run: dotnet clean "$PROJECT_PATH" -c Release
+
+      - name: Restore (runtime win-x86)
+        run: dotnet restore "$PROJECT_PATH" -r win-x86
+
+      - name: Build (Release, net9.0, win-x86)
+        run: dotnet build "$PROJECT_PATH" -c Release -f net9.0 -r win-x86 --no-restore
+
+      - name: Publish (net9.0 | win-x86 | self-contained)
+        run: |
+          dotnet publish "$PROJECT_PATH" \
+            --configuration Release \
+            --framework net9.0 \
+            --runtime win-x86 \
+            --self-contained true \
+            -p:PublishSingleFile=false \
+            -p:GenerateRuntimeConfigurationFiles=true \
+            --no-build \
+            --output "$PUBLISH_DIR"
+
+      # ----- Deploy FTP -----
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
+        with:
+          server: ${{ env.FTP_HOST }}     # sin "ftp://"
+          username: ${{ env.FTP_USER }}
+          password: ${{ env.FTP_PASS }}
+          protocol: ftp
+          local-dir: ./publish/
+          server-dir: ${{ env.FTP_DIR }}
+          # Ya limpiamos manualmente; no hace falta clean-slate aquí.
+          # dangerous-clean-slate: false
+          exclude: |
+            **/*.pdb
+            **/*.xml
