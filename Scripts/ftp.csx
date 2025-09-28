@@ -13,7 +13,7 @@ var options = new FtpCleanerOptions
     Port = 21,
     User = Environment.GetEnvironmentVariable("FTP_USER") ?? "",
     Pass = Environment.GetEnvironmentVariable("FTP_PASS") ?? "",
-    RemoteDir = Environment.GetEnvironmentVariable("FTP_DIR") ?? "",
+    RemoteDir = Environment.GetEnvironmentVariable("FTP_DIR") ?? "/",
     UseFtps = false,             // true si tu servidor requiere FTPS (TLS explícito)
     MaxTries = 12,
     SleepBetweenTries = TimeSpan.FromSeconds(6)
@@ -28,8 +28,9 @@ try
 }
 catch (Exception ex)
 {
-    Console.Error.WriteLine($"❌ Error: {ex.Message}");
+    Console.Error.WriteLine($"❌ Error: {ex.Message} - {ex.StackTrace}");
     Environment.ExitCode = 1;
+    throw;
 }
 
 
