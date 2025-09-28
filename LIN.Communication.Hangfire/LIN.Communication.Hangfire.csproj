@@ -12,7 +12,7 @@
 		<PackageReference Include="LIN.Types.Communication" Version="1.8.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
 		<PackageReference Include="LIN.Access.Auth" Version="2025.9.21" />
-		<PackageReference Include="Http.Utils" Version="5.1.1" />
+		<PackageReference Include="Http.Utils" Version="5.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
