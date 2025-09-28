@@ -53,7 +53,7 @@ public static class FtpCleaner
     {
         using var client = new FtpClient(opt.Host, opt.Port)
         {
-         Credentials = new(opt.User, opt.Pass)    
+           Credentials = new(opt.User, opt.Pass)    
         };
 
          client.Connect();
