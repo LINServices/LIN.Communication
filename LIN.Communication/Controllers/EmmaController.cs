@@ -34,7 +34,7 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
         StringContent stringContent = new(Newtonsoft.Json.JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
 
         // Solicitud HTTP.
-        var result = await client.PostAsync("https://api.emma.linplatform.com/emma", stringContent);
+        var result = await client.PostAsync("https://api.linplatform.com/assistant/OpenAssistant/", stringContent);
 
         // Esperar respuesta.
         var response = await result.Content.ReadAsStringAsync();
