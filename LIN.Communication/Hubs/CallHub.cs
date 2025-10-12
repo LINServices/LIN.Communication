@@ -44,6 +44,7 @@ public class CallHub(Meetings meetings, IHubContext<ChatHub> hub, IMessageSender
                 }
             });
 
+            await hub.Clients.Group($"{conversation}").SendAsync("UserInCall", conversation);
         }
         // Notificar a los clientes actuales una persona nueva.
         await Clients.Group($"{conversation}").SendAsync("PeerJoined", Context.ConnectionId);
@@ -90,12 +91,6 @@ public class CallHub(Meetings meetings, IHubContext<ChatHub> hub, IMessageSender
         var devices = await meetings.ReadDevices(conversation);
 
         await Clients.Caller.SendAsync("PeersInRoom", devices.Models.Where(t => t.DeviceIdentifier != Context.ConnectionId).Select(t => t.DeviceIdentifier));
-
-        // Lllamar a los otros integrantes, si somos los primeros.
-        if (devices.Models.Where(t => t.MeetingMemberId != member.Model.Id).Count() == 1)
-        {
-            await hub.Clients.Group($"{conversation}").SendAsync("UserInCall", conversation);
-        }
     }
 
 
