@@ -47,6 +47,7 @@ public class CallHub(Meetings meetings, IHubContext<ChatHub> hub, IMessageSender
             await hub.Clients.Group($"{conversation}").SendAsync("UserInCall", new LIN.Types.Communication.DTO.ReceiveCallDTO
             {
                 Caller = tokenInfo.Alias,
+                CallerProfileId = tokenInfo.ProfileId,
                 RoomId = conversation.ToString()
             });
         }
