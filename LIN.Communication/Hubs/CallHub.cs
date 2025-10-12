@@ -44,7 +44,11 @@ public class CallHub(Meetings meetings, IHubContext<ChatHub> hub, IMessageSender
                 }
             });
 
-            await hub.Clients.Group($"{conversation}").SendAsync("UserInCall", conversation.ToString());
+            await hub.Clients.Group($"{conversation}").SendAsync("UserInCall", new LIN.Types.Communication.DTO.ReceiveCallDTO
+            {
+                Caller = tokenInfo.Alias,
+                RoomId = conversation.ToString()
+            });
         }
         // Notificar a los clientes actuales una persona nueva.
         await Clients.Group($"{conversation}").SendAsync("PeerJoined", Context.ConnectionId);
