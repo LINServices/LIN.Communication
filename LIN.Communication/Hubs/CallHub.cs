@@ -44,7 +44,7 @@ public class CallHub(Meetings meetings, IHubContext<ChatHub> hub, IMessageSender
                 }
             });
 
-            await hub.Clients.Group($"{conversation}").SendAsync("UserInCall", conversation);
+            await hub.Clients.Group($"{conversation}").SendAsync("UserInCall", conversation.ToString());
         }
         // Notificar a los clientes actuales una persona nueva.
         await Clients.Group($"{conversation}").SendAsync("PeerJoined", Context.ConnectionId);
