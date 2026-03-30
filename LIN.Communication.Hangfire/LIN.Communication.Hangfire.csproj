@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Hangfire" Version="1.8.21" />
-		<PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
-		<PackageReference Include="LIN.Types.Communication" Version="1.9.1" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.9" />
-		<PackageReference Include="LIN.Access.Auth" Version="2025.9.21" />
-		<PackageReference Include="Http.Utils" Version="5.2.0" />
+		<PackageReference Include="Hangfire" Version="1.8.23" />
+		<PackageReference Include="Hangfire.PostgreSql" Version="1.21.1" />
+		<PackageReference Include="LIN.Types.Communication" Version="2.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
+		<PackageReference Include="LIN.Access.Auth" Version="2026.2.10" />
+		<PackageReference Include="Http.Utils" Version="6.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>
