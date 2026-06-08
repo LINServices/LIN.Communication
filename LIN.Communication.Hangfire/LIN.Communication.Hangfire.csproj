@@ -10,7 +10,7 @@
 		<PackageReference Include="Hangfire" Version="1.8.23" />
 		<PackageReference Include="Hangfire.PostgreSql" Version="1.21.1" />
 		<PackageReference Include="LIN.Types.Communication" Version="2.0.0" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
 		<PackageReference Include="LIN.Access.Auth" Version="2026.2.10" />
 		<PackageReference Include="Http.Utils" Version="6.3.0" />
 	</ItemGroup>
