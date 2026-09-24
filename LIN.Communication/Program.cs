@@ -35,7 +35,7 @@ builder.Services.AddSettingsHangfire(builder.Configuration);
 // App.
 var app = builder.Build();
 
-app.UseCors("AllowAll"); // aplica la política a todo
+app.UseCors("AllowAll");
 
 app.UseLINHttp(useGateway: true);
 app.UsePersistence();
