@@ -222,7 +222,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData, IConfigur
         return new ReadAllResponse<SessionModel<ProfileModel>>
         {
             Response = Responses.Success,
-            //Models = [.. final]
+            Models = [.. final]
         };
 
     }
