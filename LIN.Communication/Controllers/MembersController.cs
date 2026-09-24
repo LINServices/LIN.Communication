@@ -1,4 +1,6 @@
-﻿namespace LIN.Communication.Controllers;
+﻿using LIN.Types.Cloud.Identity.Platform.Abstracts;
+
+namespace LIN.Communication.Controllers;
 
 [Route("conversations")]
 [RateLimit(requestLimit: 20, timeWindowSeconds: 20, blockDurationSeconds: 30)]
@@ -98,31 +100,31 @@ public class MembersController(IIamService Iam, Persistence.Data.Conversations c
         // Obtiene los Id de las cuentas.
         var accountsId = members.Models.Select(member => member.Profile.IdentityId).ToList();
 
-        // Información de las cuentas.
-        var accounts = await Access.Auth.Controllers.Account.ReadByIdentity(accountsId, tokenAuth);
+        //// Información de las cuentas.
+        //var accounts = await Access.Identity.Platform.Controllers.Account.ReadByIdentity(accountsId, tokenAuth);
 
-        // Armar los modelos.
-        var response = (from member in members.Models
-                        join account in accounts.Models
-                        on member.Profile.IdentityId equals account.IdentityId
-                        select new SessionModel<MemberChatModel>
-                        {
-                            Account = account,
-                            Profile = new()
-                            {
-                                Rol = member.Rol,
-                                Profile = new()
-                                {
-                                    Id = member.Profile.Id,
-                                    Alias = member.Profile.Alias,
-                                    LastConnection = member.Profile.LastConnection,
-                                }
-                            }
-                        }).ToList();
+        //// Armar los modelos.
+        //var response = (from member in members.Models
+        //                join account in accounts.Models
+        //                on member.Profile.IdentityId equals account.IdentityId
+        //                select new SessionModel<MemberChatModel>
+        //                {
+        //                    Account = account,
+        //                    Profile = new()
+        //                    {
+        //                        Rol = member.Rol,
+        //                        Profile = new()
+        //                        {
+        //                            Id = member.Profile.Id,
+        //                            Alias = member.Profile.Alias,
+        //                            LastConnection = member.Profile.LastConnection,
+        //                        }
+        //                    }
+        //                }).ToList();
 
         return new ReadAllResponse<SessionModel<MemberChatModel>>
         {
-            Models = response,
+            //Models = response,
             Response = Responses.Success
         };
 

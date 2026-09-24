@@ -57,51 +57,51 @@ public class EmmaController(IIAService ia, Persistence.Data.Conversations conver
     public async Task<HttpReadOneResponse<object>> RequestFromEmma([FromHeader] string tokenAuth, [FromHeader] bool includeMethods)
     {
 
-        // Validar token.
-        var response = await LIN.Access.Auth.Controllers.Authentication.Login(tokenAuth);
+        //// Validar token.
+        //var response = await LIN.Access.Auth.Controllers.Authentication.Login(tokenAuth);
 
-        // Validar en Auth.
-        if (response.Response != Responses.Success)
-            return new ReadOneResponse<object>()
-            {
-                Model = "Este usuario no autenticado en LIN Allo."
-            };
+        //// Validar en Auth.
+        //if (response.Response != Responses.Success)
+        //    return new ReadOneResponse<object>()
+        //    {
+        //        Model = "Este usuario no autenticado en LIN Allo."
+        //    };
 
-        // Obtener el perfil.
-        var profile = await profilesData.ReadByIdentity(response.Model.Id);
+        //// Obtener el perfil.
+        //var profile = await profilesData.ReadByIdentity(response.Model.Id);
 
-        if (profile.Response != Responses.Success)
-            return new ReadOneResponse<object>()
-            {
-                Model = "Este usuario no tiene una cuenta en LIN Allo."
-            };
+        //if (profile.Response != Responses.Success)
+        //    return new ReadOneResponse<object>()
+        //    {
+        //        Model = "Este usuario no tiene una cuenta en LIN Allo."
+        //    };
 
-        var getProf = Mems.Sessions[profile.Model.Id];
+        //var getProf = Mems.Sessions[profile.Model.Id];
 
-        if (getProf is null)
-        {
+        //if (getProf is null)
+        //{
 
-            var convs = (await conversationData.ReadAll(profile.Model.Id))?.Models.Select(t =>
-            (t.Conversation.Id, t.Conversation.Name));
+        //    var convs = (await conversationData.ReadAll(profile.Model.Id))?.Models.Select(t =>
+        //    (t.Conversation.Id, t.Conversation.Name));
 
-            getProf = new MemorySession()
-            {
-                Profile = profile.Model,
-                Conversations = convs?.ToList() ?? [],
-            };
-            Mems.Sessions.Add(getProf);
-        }
+        //    getProf = new MemorySession()
+        //    {
+        //        Profile = profile.Model,
+        //        Conversations = convs?.ToList() ?? [],
+        //    };
+        //    Mems.Sessions.Add(getProf);
+        //}
 
 
-        string final = ia.GetWith(getProf?.StringOfConversations() ?? string.Empty);
+        //string final = ia.GetWith(getProf?.StringOfConversations() ?? string.Empty);
 
-        final += includeMethods
-                 ? ia.GetActions()
-                 : ia.GetDefault();
+        //final += includeMethods
+        //         ? ia.GetActions()
+        //         : ia.GetDefault();
 
         return new ReadOneResponse<object>()
         {
-            Model = final,
+            //Model = final,
             Response = Responses.Success
         };
 

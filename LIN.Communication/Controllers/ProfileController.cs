@@ -1,7 +1,9 @@
+using LIN.Types.Cloud.Identity.Platform.Abstracts;
+
 namespace LIN.Communication.Controllers;
 
 [Route("[controller]")]
-public class ProfileController(Persistence.Data.Profiles profilesData) : ControllerBase
+public class ProfileController(Persistence.Data.Profiles profilesData, IConfiguration configuration) : ControllerBase
 {
 
     /// <summary>
@@ -19,7 +21,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
             return new(Responses.InvalidParam);
 
         // Respuesta de autenticación
-        var authResponse = await Access.Auth.Controllers.Authentication.Login(user, password);
+        var authResponse = await Access.Identity.Platform.Controllers.Identities.Authentication.Login(user, password, Guid.Parse(configuration["policy:linapp"]) );
 
         // Autenticación errónea
         if (authResponse.Response != Responses.Success)
@@ -105,7 +107,7 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     {
 
         // Login en LIN Server
-        var response = await Access.Auth.Controllers.Authentication.Login(token);
+        var response = await Access.Identity.Platform.Controllers.Identities.Authentication.ReadToken(token);
 
         if (response.Response != Responses.Success)
             return new(response.Response);
@@ -187,38 +189,38 @@ public class ProfileController(Persistence.Data.Profiles profilesData) : Control
     public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> Search([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        // Buscar las cuentas según un patron de búsqueda en LIN Identity.
-        var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token);
+        //// Buscar las cuentas según un patron de búsqueda en LIN Identity.
+        //var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token);
 
-        // Si no tiene acceso
-        if (accounts.Response != Responses.Success)
-            return new ReadAllResponse<SessionModel<ProfileModel>>
-            {
-                Response = Responses.Unauthorized,
-                Message = "No tienes acceso a LIN Identity"
-            };
+        //// Si no tiene acceso
+        //if (accounts.Response != Responses.Success)
+        //    return new ReadAllResponse<SessionModel<ProfileModel>>
+        //    {
+        //        Response = Responses.Unauthorized,
+        //        Message = "No tienes acceso a LIN Identity"
+        //    };
 
-        // Obtener id de las cuentas.
-        var mappedIds = accounts.Models.Select(T => T.IdentityId).ToList();
+        //// Obtener id de las cuentas.
+        //var mappedIds = accounts.Models.Select(T => T.IdentityId).ToList();
 
-        // Obtener perfiles.
-        var profiles = await profilesData.ReadByIdentities(mappedIds);
+        //// Obtener perfiles.
+        //var profiles = await profilesData.ReadByIdentities(mappedIds);
 
-        // Armar el resultado.
-        var final = from P in profiles.Models
-                    join A in accounts.Models
-                    on P.IdentityId equals A.IdentityId
-                    select new SessionModel<ProfileModel>
-                    {
-                        Account = A,
-                        Profile = P
-                    };
+        //// Armar el resultado.
+        //var final = from P in profiles.Models
+        //            join A in accounts.Models
+        //            on P.IdentityId equals A.IdentityId
+        //            select new SessionModel<ProfileModel>
+        //            {
+        //                Account = A,
+        //                Profile = P
+        //            };
 
         // Retorna el resultado
         return new ReadAllResponse<SessionModel<ProfileModel>>
         {
             Response = Responses.Success,
-            Models = [.. final]
+            //Models = [.. final]
         };
 
     }

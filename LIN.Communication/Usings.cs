@@ -6,7 +6,6 @@ global using LIN.Communication.Services;
 global using LIN.Communication.Services.Iam;
 global using LIN.Communication.Services.Interfaces;
 global using LIN.Communication.Services.Models;
-global using LIN.Types.Cloud.Identity.Abstracts;
 global using LIN.Types.Cloud.OpenAssistant.Api;
 global using LIN.Types.Communication.Enumerations;
 // Tipos locales.

@@ -1,3 +1,5 @@
+using LIN.Types.Cloud.Identity.Platform.Identities;
+
 namespace LIN.Communication.Controllers;
 
 [LocalToken]
@@ -121,11 +123,18 @@ public class ConversationController(IIamService Iam, Persistence.Data.Conversati
         List<int> accountIds = result.Model.Conversation?.Members?.Select(t => t.Profile.IdentityId).ToList() ?? [];
 
         // Obtener cuentas en el servicio de identidad.
-        var accounts = await LIN.Access.Auth.Controllers.Account.ReadByIdentity(accountIds, tokenAuth);
+        List<Account> accounts = [];
+        foreach (var member in accountIds)
+        {
+           var account = await Access.Identity.Platform.Controllers.Identities.Accounts.ReadByIdentity(member, tokenAuth);
+            if (account.Response == Responses.Success)
+                accounts.Add(account.Model);
+        }
+        
 
         return new ReadOneResponse<MemberChatModel>()
         {
-            Alternatives = [accounts.Models],
+            Alternatives = [accounts],
             Model = result.Model,
             Response = result.Response
         };

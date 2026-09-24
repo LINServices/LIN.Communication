@@ -33,17 +33,17 @@ public class IdentityAuthorization : IDashboardAsyncAuthorizationFilter
 
             string policy = "";//Http.Services.Configuration.GetConfiguration("policy:current");
 
-            // Validar en LIN Auth.
-            var result = await Access.Auth.Controllers.Authentication.OnPolicy(username, password, policy ?? string.Empty);
+            //// Validar en LIN Auth.
+            //var result = await Access.Identity.Platform..Controllers.Authentication.OnPolicy(username, password, policy ?? string.Empty);
 
-            // Respuesta.
-            if (result.Response != Types.Responses.Responses.Success)
-            {
-                httpContext.Response.StatusCode = 401;
-                httpContext.Response.ContentType = "text/html";
-                await httpContext.Response.WriteAsync(FileCache.ReadContent("wwwroot/pages/error.html").Replace("@MESSAGE", "Credenciales incorrectas"));
-                return false;
-            }
+            //// Respuesta.
+            //if (result.Response != Types.Responses.Responses.Success)
+            //{
+            //    httpContext.Response.StatusCode = 401;
+            //    httpContext.Response.ContentType = "text/html";
+            //    await httpContext.Response.WriteAsync(FileCache.ReadContent("wwwroot/pages/error.html").Replace("@MESSAGE", "Credenciales incorrectas"));
+            //    return false;
+            //}
 
             // Generar el token JWT.
             var jwtToken = JwtService.Generate(username);

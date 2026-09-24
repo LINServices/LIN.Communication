@@ -1,5 +1,5 @@
 using Http.Extensions;
-using LIN.Access.Auth;
+using LIN.Access.Identity.Platform;
 using LIN.Communication.Hangfire;
 using LIN.Communication.Persistence;
 using LIN.Communication.Persistence.Extensions;
@@ -26,7 +26,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddSignalR();
 builder.Services.AddLINHttp(useCors: false);
 builder.Services.AddLocalServices();
-builder.Services.AddAuthenticationService(builder.Configuration["services:auth"], builder.Configuration["policy:linapp"]);
+builder.Services.AddAuthenticationService(builder.Configuration, builder.Configuration["policy:linapp"]);
 
 // Persistencia.
 builder.Services.AddPersistence(builder.Configuration);
