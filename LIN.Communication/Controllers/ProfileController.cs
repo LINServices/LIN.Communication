@@ -189,32 +189,34 @@ public class ProfileController(Persistence.Data.Profiles profilesData, IConfigur
     public async Task<HttpReadAllResponse<SessionModel<ProfileModel>>> Search([FromQuery] string pattern, [FromHeader] string token)
     {
 
-        //// Buscar las cuentas según un patron de búsqueda en LIN Identity.
-        //var accounts = await LIN.Access.Auth.Controllers.Account.Search(pattern, token);
+        var accounts = await LIN.Access.Identity.Platform.Controllers.Identities.Identities.Search(token, pattern, Types.Cloud.Identity.Platform.Identities.Enums.IdentityType.Account);
 
-        //// Si no tiene acceso
-        //if (accounts.Response != Responses.Success)
-        //    return new ReadAllResponse<SessionModel<ProfileModel>>
-        //    {
-        //        Response = Responses.Unauthorized,
-        //        Message = "No tienes acceso a LIN Identity"
-        //    };
+        // Si no tiene acceso
+        if (accounts.Response != Responses.Success)
+            return new ReadAllResponse<SessionModel<ProfileModel>>
+            {
+                Response = Responses.Unauthorized,
+                Message = "No tienes acceso a LIN Identity"
+            };
 
-        //// Obtener id de las cuentas.
-        //var mappedIds = accounts.Models.Select(T => T.IdentityId).ToList();
+        // Obtener id de las cuentas.
+        var mappedIds = accounts.Models.Select(T => T.Id).ToList();
 
-        //// Obtener perfiles.
-        //var profiles = await profilesData.ReadByIdentities(mappedIds);
+        // Obtener perfiles.
+        var profiles = await profilesData.ReadByIdentities(mappedIds);
 
-        //// Armar el resultado.
-        //var final = from P in profiles.Models
-        //            join A in accounts.Models
-        //            on P.IdentityId equals A.IdentityId
-        //            select new SessionModel<ProfileModel>
-        //            {
-        //                Account = A,
-        //                Profile = P
-        //            };
+        // Armar el resultado.
+        var final = from P in profiles.Models
+                    join A in accounts.Models
+                    on P.IdentityId equals A.Id
+                    select new SessionModel<ProfileModel>
+                    {
+                        Account = new()
+                        {
+                            Name = P.Alias
+                        },
+                        Profile = P
+                    };
 
         // Retorna el resultado
         return new ReadAllResponse<SessionModel<ProfileModel>>
