@@ -23,10 +23,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET 9 SDK
+      - name: Setup .NET 10 SDK
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Clean
         run: dotnet clean "$PROJECT_PATH" -c Release
@@ -34,14 +34,14 @@ jobs:
       - name: Restore (runtime win-x86)
         run: dotnet restore "$PROJECT_PATH" -r win-x86
 
-      - name: Build (Release, net9.0, win-x86)
-        run: dotnet build "$PROJECT_PATH" -c Release -f net9.0 -r win-x86 --no-restore
+      - name: Build (Release, net10.0, win-x86)
+        run: dotnet build "$PROJECT_PATH" -c Release -f net10.0 -r win-x86 --no-restore
 
-      - name: Publish (net9.0 | win-x86 | self-contained)
+      - name: Publish (net10.0 | win-x86 | self-contained)
         run: |
           dotnet publish "$PROJECT_PATH" \
             --configuration Release \
-            --framework net9.0 \
+            --framework net10.0 \
             --self-contained false \
             -p:PublishSingleFile=false \
             -p:GenerateRuntimeConfigurationFiles=true \
