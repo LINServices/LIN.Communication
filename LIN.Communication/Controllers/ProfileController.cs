@@ -213,7 +213,8 @@ public class ProfileController(Persistence.Data.Profiles profilesData, IConfigur
                     {
                         Account = new()
                         {
-                            Name = P.Alias
+                            Name = P.Alias,
+                            Identity = A
                         },
                         Profile = P
                     };
